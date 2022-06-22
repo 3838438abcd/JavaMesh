@@ -47,24 +47,9 @@ public class GraceConfig implements PluginConfig, Cloneable {
     private long startDelayTime = 0L;
 
     /**
-     * k8s readiness检查时间间隔
-     */
-    private long k8sReadinessWaitTime = 0L;
-
-    /**
-     * 未执行注册的最大等待时间
-     */
-    private long noRegistryMaxWaitTime = 0L;
-
-    /**
      * 是否开启服务预热
      */
     private boolean enableWarmUp = false;
-
-    /**
-     * 开启就绪检查前完成服务预热
-     */
-    private boolean readyBeforeWarmUp = false;
 
     /**
      * 预热时间
@@ -95,11 +80,6 @@ public class GraceConfig implements PluginConfig, Cloneable {
      * 关闭前自动检测请求数以及关联的请求的地址是否都已处理完毕, 确保流量不丢失, 单位秒 每shutdownCheckTimeUnit检测一次,直到达到shutdownWaitTime或者处理完
      */
     private long shutdownCheckTimeUnit = 1L;
-
-    /**
-     * 是否开启健康检查接口
-     */
-    private boolean enableHealthCheck = false;
 
     /**
      * 是否开启下线主动通知
@@ -138,7 +118,6 @@ public class GraceConfig implements PluginConfig, Cloneable {
         this.enableGrace = Boolean.parseBoolean(getConfigFromEnv(GraceConstants.ENV_GRACE_ENABLE, null));
         if (enableGrace) {
             this.enableGraceShutdown = true;
-            this.enableHealthCheck = true;
             this.enableOfflineNotify = true;
             this.enableWarmUp = true;
         }
@@ -173,22 +152,6 @@ public class GraceConfig implements PluginConfig, Cloneable {
 
     public void setEndpointExpiredTime(long endpointExpiredTime) {
         this.endpointExpiredTime = endpointExpiredTime;
-    }
-
-    public boolean isEnableHealthCheck() {
-        return enableHealthCheck;
-    }
-
-    public void setEnableHealthCheck(boolean enableHealthCheck) {
-        this.enableHealthCheck = enableHealthCheck;
-    }
-
-    public boolean isReadyBeforeWarmUp() {
-        return readyBeforeWarmUp;
-    }
-
-    public void setReadyBeforeWarmUp(boolean readyBeforeWarmUp) {
-        this.readyBeforeWarmUp = readyBeforeWarmUp;
     }
 
     public boolean isEnableGraceShutdown() {
@@ -231,14 +194,6 @@ public class GraceConfig implements PluginConfig, Cloneable {
         this.warmUpCurve = warmUpCurve;
     }
 
-    public long getNoRegistryMaxWaitTime() {
-        return noRegistryMaxWaitTime;
-    }
-
-    public void setNoRegistryMaxWaitTime(long noRegistryMaxWaitTime) {
-        this.noRegistryMaxWaitTime = noRegistryMaxWaitTime;
-    }
-
     public boolean isEnableWarmUp() {
         return enableWarmUp;
     }
@@ -253,14 +208,6 @@ public class GraceConfig implements PluginConfig, Cloneable {
 
     public void setWarmUpTime(long warmUpTime) {
         this.warmUpTime = warmUpTime;
-    }
-
-    public long getK8sReadinessWaitTime() {
-        return k8sReadinessWaitTime;
-    }
-
-    public void setK8sReadinessWaitTime(long k8sReadinessWaitTime) {
-        this.k8sReadinessWaitTime = k8sReadinessWaitTime;
     }
 
     public boolean isEnableSpring() {

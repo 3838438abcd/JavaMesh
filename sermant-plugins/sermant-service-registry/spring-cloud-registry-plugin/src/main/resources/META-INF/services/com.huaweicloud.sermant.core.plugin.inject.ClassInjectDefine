@@ -16,7 +16,6 @@
 #
 # grace
 com.huawei.registry.inject.ContextClosedEventListenerInjectDefine
-com.huawei.registry.inject.SermantLifeControllerInjectDefine
 com.huawei.registry.inject.RequestInterceptorInjectDefine
 
 # registry

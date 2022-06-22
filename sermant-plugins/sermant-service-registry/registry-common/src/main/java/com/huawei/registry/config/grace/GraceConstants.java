@@ -89,7 +89,7 @@ public class GraceConstants {
     /**
      * 默认注入时间, 1个小时
      */
-    public static final long DEFAULT_WARM_UP_INJECT_TIME_GAP = 3600L * ConfigConstants.SEC_DELTA;
+    public static final String DEFAULT_WARM_UP_INJECT_TIME_GAP = "0";
 
     /**
      * 默认预热时间

@@ -51,8 +51,8 @@ public class SpringLoadbalancerFeignResponseInterceptor extends GraceSwitchInter
     @Override
     protected ExecuteContext doAfter(ExecuteContext context) {
         final Object result = context.getResult();
-        final Object argument1 = context.getArguments()[0];
-        if (!(result instanceof Response) || !(argument1 instanceof Request)) {
+        final Object requestArgument = context.getArguments()[0];
+        if (!(result instanceof Response) || !(requestArgument instanceof Request)) {
             return context;
         }
         Response response = (Response) result;
@@ -60,14 +60,15 @@ public class SpringLoadbalancerFeignResponseInterceptor extends GraceSwitchInter
             return context;
         }
         final Collection<String> endpoints = response.headers().get(GraceConstants.MARK_SHUTDOWN_SERVICE_ENDPOINT);
-        if (endpoints != null && endpoints.size() > 0) {
-            final String shutdownEndpoint = endpoints.iterator().next();
-            GraceContext.INSTANCE.getGraceShutDownManager().addShutdownEndpoint(shutdownEndpoint);
-            Request request = (Request) argument1;
-            final Optional<String> serviceNameFromReqUrl = GraceHelper.getServiceNameFromReqUrl(request.url());
-            RefreshUtils.refreshTargetServiceInstances(serviceNameFromReqUrl.orElse(null),
-                response.headers().get(GraceConstants.MARK_SHUTDOWN_SERVICE_NAME));
+        if (endpoints == null || endpoints.isEmpty()) {
+            return context;
         }
+        final String shutdownEndpoint = endpoints.iterator().next();
+        GraceContext.INSTANCE.getGraceShutDownManager().addShutdownEndpoint(shutdownEndpoint);
+        Request request = (Request) requestArgument;
+        final Optional<String> serviceNameFromReqUrl = GraceHelper.getServiceNameFromReqUrl(request.url());
+        RefreshUtils.refreshTargetServiceInstances(serviceNameFromReqUrl.orElse(null),
+                response.headers().get(GraceConstants.MARK_SHUTDOWN_SERVICE_NAME));
         return context;
     }
 

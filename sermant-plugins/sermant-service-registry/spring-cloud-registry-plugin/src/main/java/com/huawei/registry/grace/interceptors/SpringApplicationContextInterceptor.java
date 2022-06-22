@@ -1,18 +1,23 @@
 /*
- * Copyright (C) 2022-2022 Huawei Technologies Co., Ltd. All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ */
+
+/*
+ * Based on org/apache/dubbo/config/DubboShutdownHook.java
+ * from the Apache Dubbo project.
  */
 
 package com.huawei.registry.grace.interceptors;
@@ -47,18 +52,12 @@ public class SpringApplicationContextInterceptor extends GraceSwitchInterceptor 
         GraceContext.INSTANCE.getGraceShutDownManager().setShutDown(true);
         if (graceConfig.isEnableGraceShutdown()) {
             graceShutDown();
-        } else {
-            shutDown();
         }
         return context;
     }
 
     private void graceShutDown() {
         long shutdownWaitTime = graceConfig.getShutdownWaitTime() * ConfigConstants.SEC_DELTA;
-        if (shutdownWaitTime <= 0) {
-            LOGGER.warn(String.format(Locale.ENGLISH, "Invalid shutdown wait time %d!", shutdownWaitTime));
-            return;
-        }
         final long shutdownCheckTimeUnit = graceConfig.getShutdownCheckTimeUnit() * ConfigConstants.SEC_DELTA;
         while (GraceContext.INSTANCE.getGraceShutDownManager().getRequestCount() > 0 && shutdownWaitTime > 0) {
             LOGGER.info(String.format(Locale.ENGLISH, "Wait all request complete , remained count [%s]",
@@ -72,9 +71,5 @@ public class SpringApplicationContextInterceptor extends GraceSwitchInterceptor 
         } else {
             LOGGER.debug("Graceful shutdown completed!");
         }
-    }
-
-    private void shutDown() {
-        CommonUtils.sleep(graceConfig.getShutdownWaitTime() * ConfigConstants.SEC_DELTA);
     }
 }

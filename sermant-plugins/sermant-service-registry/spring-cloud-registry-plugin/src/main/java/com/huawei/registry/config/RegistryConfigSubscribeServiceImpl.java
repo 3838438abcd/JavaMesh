@@ -17,11 +17,8 @@
 
 package com.huawei.registry.config;
 
-import com.huawei.registry.services.GraceService;
-
 import com.huaweicloud.sermant.core.plugin.config.PluginConfigManager;
 import com.huaweicloud.sermant.core.plugin.service.PluginService;
-import com.huaweicloud.sermant.core.plugin.service.PluginServiceManager;
 import com.huaweicloud.sermant.core.plugin.subscribe.ConfigSubscriber;
 import com.huaweicloud.sermant.core.plugin.subscribe.CseGroupConfigSubscriber;
 import com.huaweicloud.sermant.core.plugin.subscribe.DefaultGroupConfigSubscriber;
@@ -52,23 +49,7 @@ public class RegistryConfigSubscribeServiceImpl implements PluginService {
                     "SpringCloudRegistry");
         }
         subscriber.subscribe();
-        fixGrace();
-    }
-
-    private void fixGrace() {
-        // 基于环境变量修正优雅上下线开关, 该配置优先级最高
-        final GraceConfig graceConfig = PluginConfigManager.getPluginConfig(GraceConfig.class);
-        graceConfig.fixGraceSwitch();
-        if (graceConfig.isEnableSpring() && graceConfig.isEnableGraceShutdown()) {
-            addShutdownHook();
-        }
-    }
-
-    private void addShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            final GraceService pluginService = PluginServiceManager.getPluginService(GraceService.class);
-            pluginService.shutdown();
-        }, "SermantGraceShutdown"));
+        PluginConfigManager.getPluginConfig(GraceConfig.class).fixGraceSwitch();
     }
 
     /**
