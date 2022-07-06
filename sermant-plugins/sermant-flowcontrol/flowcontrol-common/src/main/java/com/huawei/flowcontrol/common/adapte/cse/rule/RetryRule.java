@@ -117,6 +117,11 @@ public class RetryRule extends AbstractRule {
      */
     private double randomizationFactor = DEFAULT_RANDOMIZATION_FACTOR;
 
+    /**
+     * 最大重试后失败
+     */
+    private boolean failAfterMaxAttempts = false;
+
     @Override
     public boolean isInValid() {
         if (maxAttempts < 1) {
@@ -129,6 +134,14 @@ public class RetryRule extends AbstractRule {
             return true;
         }
         return super.isInValid();
+    }
+
+    public boolean isFailAfterMaxAttempts() {
+        return failAfterMaxAttempts;
+    }
+
+    public void setFailAfterMaxAttempts(boolean failAfterMaxAttempts) {
+        this.failAfterMaxAttempts = failAfterMaxAttempts;
     }
 
     public int getMaxAttempts() {

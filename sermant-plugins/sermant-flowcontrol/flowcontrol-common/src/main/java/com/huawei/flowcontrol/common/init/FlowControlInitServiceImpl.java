@@ -17,7 +17,7 @@
 
 package com.huawei.flowcontrol.common.init;
 
-import com.huawei.flowcontrol.common.adapte.cse.entity.CseServiceMeta;
+import com.huawei.flowcontrol.common.adapte.cse.entity.FlowControlServiceMeta;
 import com.huawei.flowcontrol.common.adapte.cse.rule.RuleDynamicConfigListener;
 import com.huawei.flowcontrol.common.config.FlowControlConfig;
 import com.huawei.flowcontrol.common.factory.FlowControlThreadFactory;
@@ -67,10 +67,10 @@ public class FlowControlInitServiceImpl implements PluginService {
             final FlowControlConfig pluginConfig = PluginConfigManager.getPluginConfig(FlowControlConfig.class);
             if (pluginConfig.isUseCseRule()) {
                 // 适配cse, 开始适配cse的专用配置监听器
-                configSubscriber = new CseGroupConfigSubscriber(CseServiceMeta.getInstance().getServiceName(),
+                configSubscriber = new CseGroupConfigSubscriber(FlowControlServiceMeta.getInstance().getServiceName(),
                     new RuleDynamicConfigListener(), getDynamicConfigService(), "FlowControl");
             } else {
-                configSubscriber = new DefaultGroupConfigSubscriber(CseServiceMeta.getInstance().getServiceName(),
+                configSubscriber = new DefaultGroupConfigSubscriber(FlowControlServiceMeta.getInstance().getServiceName(),
                     new RuleDynamicConfigListener(), getDynamicConfigService(), "FlowControl");
             }
             configSubscriber.subscribe();

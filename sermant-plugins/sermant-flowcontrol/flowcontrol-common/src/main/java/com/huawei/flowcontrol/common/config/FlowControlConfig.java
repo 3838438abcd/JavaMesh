@@ -246,6 +246,45 @@ public class FlowControlConfig implements PluginConfig {
      */
     private String retryClusterInvoker = "sermant";
 
+    /**
+     * 最大缓存数
+     */
+    private int maxCacheSize = ConfigConst.DEFAULT_MAX_CACHE_SIZE;
+
+    /**
+     * 缓存定时器检查间隔, 单位秒
+     */
+    private long timedCheckInterval = ConfigConst.DEFAULT_TIME_CACHE_CHECK_INTERVAL;
+
+    /**
+     * 是否开启重试
+     */
+    private boolean enableRetry = true;
+
+    public boolean isEnableRetry() {
+        return enableRetry;
+    }
+
+    public void setEnableRetry(boolean enableRetry) {
+        this.enableRetry = enableRetry;
+    }
+
+    public int getMaxCacheSize() {
+        return maxCacheSize;
+    }
+
+    public void setMaxCacheSize(int maxCacheSize) {
+        this.maxCacheSize = maxCacheSize;
+    }
+
+    public long getTimedCheckInterval() {
+        return timedCheckInterval;
+    }
+
+    public void setTimedCheckInterval(long timedCheckInterval) {
+        this.timedCheckInterval = timedCheckInterval;
+    }
+
     public String getRetryClusterInvoker() {
         return retryClusterInvoker;
     }

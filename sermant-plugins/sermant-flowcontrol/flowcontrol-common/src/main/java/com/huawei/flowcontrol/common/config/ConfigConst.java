@@ -219,6 +219,16 @@ public class ConfigConst {
      */
     public static final String PROJECT_NAME = "project.name";
 
+    /**
+     * 默认最大的缓存数
+     */
+    public static final int DEFAULT_MAX_CACHE_SIZE = 1000;
+
+    /**
+     * 默认的缓存过期检查时间, 单位秒, 默认一个小时
+     */
+    public static final long DEFAULT_TIME_CACHE_CHECK_INTERVAL = 3600L;
+
     private ConfigConst() {
     }
 }

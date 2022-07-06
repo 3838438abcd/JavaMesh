@@ -45,11 +45,12 @@ public class RetryHandlerV2 extends AbstractRequestHandler<Retry, RetryRule> {
             return Optional.empty();
         }
         final RetryConfig retryConfig = RetryConfig.custom()
-            .maxAttempts(rule.getMaxAttempts())
-            .retryOnResult(retryPredicateCreator.createResultPredicate(retry, rule))
-            .retryOnException(retryPredicateCreator.createExceptionPredicate(retry.retryExceptions()))
-            .intervalFunction(getIntervalFunction(rule))
-            .build();
+                .maxAttempts(rule.getMaxAttempts())
+                .retryOnResult(retryPredicateCreator.createResultPredicate(retry, rule))
+                .retryOnException(retryPredicateCreator.createExceptionPredicate(retry.retryExceptions()))
+                .intervalFunction(getIntervalFunction(rule))
+                .failAfterMaxAttempts(rule.isFailAfterMaxAttempts())
+                .build();
         return Optional.of(RetryRegistry.of(retryConfig).retry(businessName));
     }
 
@@ -61,7 +62,7 @@ public class RetryHandlerV2 extends AbstractRequestHandler<Retry, RetryRule> {
     private IntervalFunction getIntervalFunction(RetryRule rule) {
         if (RetryRule.STRATEGY_RANDOM_BACKOFF.equals(rule.getRetryStrategy())) {
             return IntervalFunction.ofExponentialRandomBackoff(rule.getParsedInitialInterval(),
-                rule.getMultiplier(), rule.getRandomizationFactor());
+                    rule.getMultiplier(), rule.getRandomizationFactor());
         }
         return IntervalFunction.of(rule.getParsedWaitDuration());
     }

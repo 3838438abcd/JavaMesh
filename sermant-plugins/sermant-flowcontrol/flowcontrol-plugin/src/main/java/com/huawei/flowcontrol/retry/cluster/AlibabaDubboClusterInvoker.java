@@ -19,6 +19,7 @@ package com.huawei.flowcontrol.retry.cluster;
 
 import com.huawei.flowcontrol.common.config.CommonConst;
 import com.huawei.flowcontrol.common.entity.DubboRequestEntity;
+import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
 import com.huawei.flowcontrol.common.exception.InvokerException;
 import com.huawei.flowcontrol.common.handler.retry.AbstractRetry;
 import com.huawei.flowcontrol.common.handler.retry.Retry;
@@ -131,7 +132,9 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
-        return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()));
+        return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
+                RequestType.CLIENT,
+                invocation.getInvoker().getUrl().getParameter(CommonConst.DUBBO_REMOTE_APPLICATION));
     }
 
     /**
