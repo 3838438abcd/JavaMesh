@@ -50,6 +50,19 @@ public class DynamicConfiguration implements PluginConfig {
      */
     private long firstRefreshDelayMs = Duration.ofMinutes(1L).toMillis();
 
+    /**
+     * 是否屏蔽原生的Spring Cloud Config系的配置中心开关
+     */
+    private boolean disableOriginConfigCenter = true;
+
+    public boolean isDisableOriginConfigCenter() {
+        return disableOriginConfigCenter;
+    }
+
+    public void setDisableOriginConfigCenter(boolean disableOriginConfigCenter) {
+        this.disableOriginConfigCenter = disableOriginConfigCenter;
+    }
+
     public long getFirstRefreshDelayMs() {
         return firstRefreshDelayMs;
     }

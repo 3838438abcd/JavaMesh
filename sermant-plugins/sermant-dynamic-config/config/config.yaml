@@ -1,3 +1,4 @@
 dynamic.config.plugin:
   enableCseAdapter: true # 是否开启适配
   enableDynamicConfig: false # 是否开启动态配置插件
+  disableOriginConfigCenter: true # 是否关闭原应用的配置中心功能, 默认开启
