@@ -56,7 +56,7 @@ jobs:
           dynamic.config.plugin.enableDynamicConfig: true
           server.port: 8989
         run: |
-          ps -ef | grep nacos-config
+          ps -ef | grep nacos-config | head -n 1 | awk '{print $2}'
           ps -ef | grep nacos-config | awk '{print $2}' | xargs -n 1 kill -9
           sh cse/stop.sh
           rm -rf cse/data
