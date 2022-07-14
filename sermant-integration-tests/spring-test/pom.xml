@@ -19,16 +19,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.0.RELEASE</version>
-        <relativePath/>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>com.huawei.spring.test</groupId>
     <artifactId>spring-test</artifactId>
     <packaging>pom</packaging>
+    <version>1.0.0</version>
     <modules>
         <module>spring-nacos-config</module>
         <module>spring-intergration-test</module>
@@ -37,6 +32,8 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
+        <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -47,10 +44,11 @@
                 <!--                                <version>Finchley.SR4</version>-->
                 <!--                                <version>Edgware.SR6</version>-->
                 <!--                                <version>Finchley.RELEASE</version>-->
-                <version>Hoxton.RELEASE</version>
+<!--                <version>Hoxton.RELEASE</version>-->
                 <!--                                <version>2020.0.0</version>-->
                 <!--                <version>2021.0.0</version>-->
                 <!--                <version>Camden.SR1</version>-->
+                <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
