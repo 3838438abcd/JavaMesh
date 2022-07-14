@@ -35,7 +35,7 @@ jobs:
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package spring nacos config
-        run: mvn package -DskipTests --file sermant-integration-tests/spring-test/pom.xml
+        run: mvn package -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
       - name: start service with disable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
