@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -74,14 +75,12 @@ public class NacosConfigTest {
                 ConfigType.PROPERTIES.getType());
     }
 
-    private void checkNacos() throws NacosException, IOException, InterruptedException {
-        System.out.println("=====================");
-        Thread.sleep(5 * 1000);
+    private void checkNacos() throws NacosException, IOException {
+        System.out.printf(Locale.ENGLISH, "dataId: %s, group: %s%n", dataId, group);
         String config = configService.getConfig(dataId, group, 10000L);
         if (config == null) {
             config = configService.getConfig(dataId, group, 10000L);
         }
-        System.out.println("=====================" + config);
         Assert.assertNotNull(config);
         final Properties properties = new Properties();
         final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
@@ -127,8 +126,8 @@ public class NacosConfigTest {
         if (!isOpen) {
             return;
         }
-        publishKieConfig();
         checkNacos();
+        publishKieConfig();
         // 发布动态关闭开关
         kieClient.publishConfig("closeOriginConfigCenter", "sermant.origin.config.needClose: true");
         // 睡眠等待刷新， 由于LocalCse无实时通知能力，因此需要等待30S（长连接时间）
