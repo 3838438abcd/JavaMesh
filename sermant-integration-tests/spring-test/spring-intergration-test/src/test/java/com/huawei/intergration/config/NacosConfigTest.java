@@ -74,7 +74,8 @@ public class NacosConfigTest {
                 ConfigType.PROPERTIES.getType());
     }
 
-    private void checkNacos() throws NacosException, IOException {
+    private void checkNacos() throws NacosException, IOException, InterruptedException {
+        Thread.sleep(5 * 1000);
         String config = configService.getConfig(dataId, group, 10000L);
         if (config == null) {
             config = configService.getConfig(dataId, group, 10000L);
