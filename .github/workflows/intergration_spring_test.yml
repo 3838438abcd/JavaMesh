@@ -32,7 +32,7 @@ jobs:
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package dubbo 2.7.x tests
         run: mvn package -DskipTests --file sermant-integration-tests/spring-test/pom.xml
-      - name: start provider service
+      - name: start service with disable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
           dynamic.config.dynamicConfigType: KIE
@@ -43,3 +43,17 @@ jobs:
         run: sleep 10s
       - name: integration test
         run: mvn test --file sermant-integration-tests/spring-test/pom.xml
+      - name: start service with enable origin config center
+        env:
+          dynamic.config.serverAddress: 127.0.0.1:30110
+          dynamic.config.dynamicConfigType: KIE
+          dynamic.config.plugin.enableOriginConfigCenter: true
+          dynamic.config.plugin.enableDynamicConfig: true
+        run: |
+          ps -ef | grep java | awk '{print $1}' | xargs -n 1 | kill -9
+          sh cse/stop.sh
+          rm -rf cse/data
+          sh cse/start.sh &
+          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar &
+          sleep 10S
+          mvn test --file sermant-integration-tests/spring-test/pom.xml
