@@ -75,11 +75,13 @@ public class NacosConfigTest {
     }
 
     private void checkNacos() throws NacosException, IOException, InterruptedException {
+        System.out.println("=====================");
         Thread.sleep(5 * 1000);
         String config = configService.getConfig(dataId, group, 10000L);
         if (config == null) {
             config = configService.getConfig(dataId, group, 10000L);
         }
+        System.out.println("=====================" + config);
         Assert.assertNotNull(config);
         final Properties properties = new Properties();
         final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
