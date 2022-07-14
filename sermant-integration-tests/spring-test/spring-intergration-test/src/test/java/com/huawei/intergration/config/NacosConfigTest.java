@@ -46,7 +46,7 @@ public class NacosConfigTest {
 
     private final KieClient kieClient = new KieClient(restTemplate);
 
-    private final String serverUrl = "http://127.0.0.1:8080";
+    private final String serverUrl = "http://127.0.0.1:8989";
 
     private final String dataId = "nacos-dynamic-config.properties";
 

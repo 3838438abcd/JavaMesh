@@ -38,7 +38,7 @@ jobs:
           dynamic.config.dynamicConfigType: KIE
           dynamic.config.plugin.enableOriginConfigCenter: false
           dynamic.config.plugin.enableDynamicConfig: true
-          server.port: 8080
+          server.port: 8989
         run: nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar &
       - name: waiting for services start
         run: |
@@ -52,7 +52,7 @@ jobs:
           dynamic.config.dynamicConfigType: KIE
           dynamic.config.plugin.enableOriginConfigCenter: true
           dynamic.config.plugin.enableDynamicConfig: true
-          server.port: 8080
+          server.port: 8989
         run: |
           ps -ef | grep java | awk '{print $1}' | xargs -n 1 | kill -9
           sh cse/stop.sh
