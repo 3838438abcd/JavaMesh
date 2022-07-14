@@ -39,11 +39,11 @@ jobs:
           dynamic.config.plugin.enableOriginConfigCenter: false
           dynamic.config.plugin.enableDynamicConfig: true
           server.port: 8989
-        run: nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar &
+        run: java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar
       - name: waiting for services start
         run: |
           ps -ef | grep java
-          sleep 60
+          sleep 30
           curl http://127.0.0.1:8989/dynamic/config/check
       - name: integration test
         run: mvn test --file sermant-integration-tests/spring-test/pom.xml
