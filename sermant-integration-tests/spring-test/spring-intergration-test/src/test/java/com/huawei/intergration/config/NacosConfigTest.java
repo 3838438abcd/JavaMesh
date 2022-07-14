@@ -72,7 +72,6 @@ public class NacosConfigTest {
         configService.publishConfig(dataId, group, "sermant.test=1\nsermant"
                         + ".param1=a\nsermant.param2=b",
                 ConfigType.PROPERTIES.getType());
-        checkNacos();
     }
 
     private void checkNacos() throws NacosException, IOException {
