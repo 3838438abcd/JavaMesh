@@ -14,6 +14,7 @@ jobs:
       matrix:
         springBootVersion: ["1.5.0.RELEASE", "2.0.0.RELEASE", "2.2.0.RELEASE", "2.3.0.RELEASE", "2.4.0", "2.5.0", "2
         .6.0", "2.7.0"]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 8
