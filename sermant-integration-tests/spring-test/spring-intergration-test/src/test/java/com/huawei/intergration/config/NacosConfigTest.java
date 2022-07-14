@@ -70,9 +70,9 @@ public class NacosConfigTest {
         properties.put("serverAddr", nacosUrl);
         properties.put("enableRemoteSyncConfig", "false");
         configService = new NacosConfigService(properties);
-        configService.publishConfig(dataId, group, "sermant.test=1\nsermant"
+        Assert.assertTrue(configService.publishConfig(dataId, group, "sermant.test=1\nsermant"
                         + ".param1=a\nsermant.param2=b",
-                ConfigType.PROPERTIES.getType());
+                ConfigType.PROPERTIES.getType()));
     }
 
     private void checkNacos() throws NacosException, IOException {
