@@ -53,14 +53,14 @@ public class DynamicConfiguration implements PluginConfig {
     /**
      * 是否屏蔽原生的Spring Cloud Config系的配置中心开关
      */
-    private boolean disableOriginConfigCenter = true;
+    private boolean enableOriginConfigCenter = true;
 
-    public boolean isDisableOriginConfigCenter() {
-        return disableOriginConfigCenter;
+    public boolean isEnableOriginConfigCenter() {
+        return enableOriginConfigCenter;
     }
 
-    public void setDisableOriginConfigCenter(boolean disableOriginConfigCenter) {
-        this.disableOriginConfigCenter = disableOriginConfigCenter;
+    public void setEnableOriginConfigCenter(boolean enableOriginConfigCenter) {
+        this.enableOriginConfigCenter = enableOriginConfigCenter;
     }
 
     public long getFirstRefreshDelayMs() {

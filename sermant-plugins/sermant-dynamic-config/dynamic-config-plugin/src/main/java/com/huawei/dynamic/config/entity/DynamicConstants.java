@@ -39,7 +39,7 @@ public class DynamicConstants {
     public static final String PROPERTY_NAME = "Sermant-Dynamic-Config";
 
     /**
-     * 禁用配置开关, 用于启动时判断, 关联配置{@link DynamicConfiguration#isDisableOriginConfigCenter()}
+     * 禁用配置开关, 用于启动时判断, 关联配置{@link DynamicConfiguration#isEnableOriginConfigCenter()} ()}
      */
     public static final String DISABLE_CONFIG_SOURCE_NAME = "Sermant-Disable-Origin-Config";
 

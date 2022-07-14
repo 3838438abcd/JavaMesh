@@ -42,7 +42,7 @@ public class ZookeeperLocatorInterceptor extends DynamicConfigSwitchSupport {
 
     @Override
     public ExecuteContext doBefore(ExecuteContext context) {
-        if (configuration.isDisableOriginConfigCenter()) {
+        if (!configuration.isEnableOriginConfigCenter()) {
             context.skip(new CompositePropertySource("Empty"));
         }
         return context;

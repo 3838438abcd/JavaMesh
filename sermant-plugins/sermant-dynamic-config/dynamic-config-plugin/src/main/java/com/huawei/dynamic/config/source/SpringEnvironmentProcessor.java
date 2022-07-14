@@ -45,7 +45,7 @@ public class SpringEnvironmentProcessor implements EnvironmentPostProcessor {
     }
 
     private void tryAddDisableConfigSource(CompositePropertySource compositePropertySource) {
-        if (PluginConfigManager.getPluginConfig(DynamicConfiguration.class).isDisableOriginConfigCenter()) {
+        if (!PluginConfigManager.getPluginConfig(DynamicConfiguration.class).isEnableOriginConfigCenter()) {
             compositePropertySource
                     .addPropertySource(new OriginConfigDisableSource(DynamicConstants.DISABLE_CONFIG_SOURCE_NAME));
         }

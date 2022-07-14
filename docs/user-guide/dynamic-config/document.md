@@ -41,7 +41,7 @@ dynamic.config.dynamic_config_type=ZOOKEEPER
 dynamic.config.plugin:
   enableCseAdapter: true # 是否开启适配CSE
   enableDynamicConfig: false # 是否开启动态配置插件
-  disableOriginConfigCenter: true # 是否关闭原应用的配置中心功能, 默认开启
+  enableOriginConfigCenter: false # 是否开启原配置中心, 默认关闭
   #sourceKeys: sourceKey #针对指定键生效
 ```
 
@@ -51,7 +51,7 @@ dynamic.config.plugin:
 | ------------------------- | ------------------------------------------------------------ |
 | enableCseAdapter          | 当配置为true时, 会根据ServiceMeta指定的应用配置，服务配置以及自定义标签配置三种类型进行配置订阅；当为false时，只会根据服务名进行订阅，即对键为`service`, 值为"宿主服务名（即spring.application.name获取）" |
 | enableDynamicConfig       | 动态配置开关，仅当配置为true时，动态配置才会生效             |
-| disableOriginConfigCenter | 是否开启对宿主配置中心的屏蔽，默认开启。当前仅支持Zookeeper与Nacos配置中心（基于SpringCloud Config实现） |
+| enableOriginConfigCenter | 是否开启原配置中心, 默认不开启。当前仅支持Zookeeper与Nacos配置中心（基于SpringCloud Config实现） |
 | sourceKeys                | 当需要指定的配置键生效时，可配置该值，例如只是想读取application.yaml，否则默认会读取所有的配置；多个键使用`,`隔开。 |
 
 ### 发布配置
