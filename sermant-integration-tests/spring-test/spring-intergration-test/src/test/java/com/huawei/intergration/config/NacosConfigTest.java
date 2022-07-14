@@ -98,7 +98,7 @@ public class NacosConfigTest {
     @Test
     public void testBanNacosConfigCenter() {
         final Boolean isOpen = get("/dynamic/config/check", Boolean.class);
-        if (!isOpen) {
+        if (isOpen) {
             return;
         }
         publishKieConfig();
@@ -122,7 +122,7 @@ public class NacosConfigTest {
     @Test
     public void testDynamicClose() throws Exception {
         final Boolean isOpen = get("/dynamic/config/check", Boolean.class);
-        if (isOpen) {
+        if (!isOpen) {
             return;
         }
         publishKieConfig();
