@@ -42,11 +42,11 @@ import java.util.Properties;
 public class NacosConfigTest {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String nacosUrl = "http://localhost:8848";
+    private final String nacosUrl = "http://127.0.0.1:8848";
 
     private final KieClient kieClient = new KieClient(restTemplate);
 
-    private final String serverUrl = "http://localhost:8080";
+    private final String serverUrl = "http://127.0.0.1:8080";
 
     private final String dataId = "nacos-dynamic-config.properties";
 

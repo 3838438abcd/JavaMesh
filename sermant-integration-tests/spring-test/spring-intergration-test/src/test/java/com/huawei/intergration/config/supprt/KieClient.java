@@ -40,7 +40,7 @@ import java.util.Map;
 public class KieClient {
     private final RestTemplate restTemplate;
 
-    private String url = "http://localhost:30110/v1/default/kie/kv";
+    private final String url;
 
     /**
      * 构造函数
@@ -59,7 +59,7 @@ public class KieClient {
      */
     public KieClient(RestTemplate restTemplate, String url) {
         this.restTemplate = restTemplate;
-        this.url = url == null ? "http://localhost:30110/v1/default/kie/kv" : url;
+        this.url = url == null ? "http://127.0.0.1:30110/v1/default/kie/kv" : url;
     }
 
     /**
