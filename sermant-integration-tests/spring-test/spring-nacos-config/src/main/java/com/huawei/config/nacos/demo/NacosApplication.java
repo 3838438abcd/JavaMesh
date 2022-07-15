@@ -19,6 +19,7 @@ package com.huawei.config.nacos.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * 启动类
@@ -27,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2022-07-14
  */
 @SpringBootApplication(scanBasePackages = "com.huawei.config.nacos.demo")
+@EnableDiscoveryClient
 public class NacosApplication {
     /**
      * 启动方法
