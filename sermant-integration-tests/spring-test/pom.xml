@@ -31,10 +31,10 @@
     <packaging>pom</packaging>
     <version>1.0.0</version>
     <modules>
-        <module>spring-nacos-config</module>
-        <module>spring-intergration-test</module>
-        <module>spring-zookeeper-config</module>
         <module>spring-common</module>
+        <module>spring-nacos-config</module>
+        <module>spring-zookeeper-config</module>
+        <module>spring-intergration-test</module>
     </modules>
 
     <properties>
