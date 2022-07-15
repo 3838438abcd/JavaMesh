@@ -14,6 +14,23 @@ jobs:
       matrix:
         springBootVersion: ["1.5.0.RELEASE", "2.0.0.RELEASE", "2.2.0.RELEASE", "2.3.0.RELEASE", "2.4.0", "2.5.0", "2
         .6.0", "2.7.0"]
+        include:
+          - springBootVersion: "1.5.0.RELEASE"
+            nacosVersion: "1.5.0.RELEASE"
+          - springBootVersion: "2.0.0.RELEASE"
+            nacosVersion: "2.0.0.RELEASE"
+          - springBootVersion: "2.2.0.RELEASE"
+            nacosVersion: "2.2.0.RELEASE"
+          - springBootVersion: "2.3.0.RELEASE"
+            nacosVersion: "2.2.8.RELEASE"
+          - springBootVersion: "2.4.0"
+            nacosVersion: "2.2.8.RELEASE"
+          - springBootVersion: "2.5.0"
+            nacosVersion: "2021.0.1.0"
+          - springBootVersion: "2.6.0"
+            nacosVersion: "2021.1"
+          - springBootVersion: "2.7.0"
+            nacosVersion: "2021.1"
       fail-fast: true
     steps:
       - uses: actions/checkout@v2
@@ -36,7 +53,7 @@ jobs:
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package spring nacos config
-        run: mvn package -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
+        run: mvn package -Dspring.boot.version=${{ matrix.springBootVersion }} -Dnacos.version=${{ matrix.nacosVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
       - name: start service with disable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
