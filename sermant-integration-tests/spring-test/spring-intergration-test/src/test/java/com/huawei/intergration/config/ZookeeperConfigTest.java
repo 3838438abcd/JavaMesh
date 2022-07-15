@@ -17,13 +17,17 @@
 
 package com.huawei.intergration.config;
 
+import com.huawei.intergration.config.rule.NacosTestRule;
+import com.huawei.intergration.config.rule.ZkTestRule;
 import com.huawei.intergration.config.supprt.KieClient;
 import com.huawei.intergration.config.supprt.ZkClient;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
@@ -35,23 +39,28 @@ import java.util.Optional;
  * @since 2022-07-15
  */
 public class ZookeeperConfigTest {
+    @Rule
+    public final TestRule nacosRunCondition = new ZkTestRule();
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final KieClient kieClient = new KieClient(restTemplate);
 
     private final String serverUrl = "http://127.0.0.1:8989";
 
-    private final ZkClient zkClient = new ZkClient(null);
-
     private final String key1 = "/sermant/test";
     private final String keyA = "/sermant/param1";
     private final String keyB = "/sermant/param2";
+
+    private ZkClient zkClient;
+
 
     /**
      * 发布zk配置
      */
     @Before
     public void publishZkConfig() {
+        zkClient = new ZkClient(null);
         Assert.assertTrue(zkClient.publishConfig(key1, "1"));
         Assert.assertTrue(zkClient.publishConfig(keyA, "a"));
         Assert.assertTrue(zkClient.publishConfig(keyB, "b"));

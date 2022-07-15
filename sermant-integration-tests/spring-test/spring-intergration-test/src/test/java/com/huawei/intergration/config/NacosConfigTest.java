@@ -17,6 +17,7 @@
 
 package com.huawei.intergration.config;
 
+import com.huawei.intergration.config.rule.NacosTestRule;
 import com.huawei.intergration.config.supprt.KieClient;
 
 import com.alibaba.nacos.api.config.ConfigType;
@@ -25,7 +26,9 @@ import com.alibaba.nacos.client.config.NacosConfigService;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
@@ -41,6 +44,9 @@ import java.util.Properties;
  * @since 2022-07-14
  */
 public class NacosConfigTest {
+    @Rule
+    public final TestRule nacosRunCondition = new NacosTestRule();
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final String nacosUrl = "http://127.0.0.1:8848";
