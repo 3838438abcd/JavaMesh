@@ -13,25 +13,24 @@ jobs:
     strategy:
       matrix:
         springBootVersion: ["1.5.0.RELEASE", "2.0.0.RELEASE", "2.2.0.RELEASE", "2.3.0.RELEASE", "2.4.0", "2.5.0", "2.6.0", "2.7.0"]
-        test: ["1"]
         #nacosVersion: ["1.5.0.RELEASE", "2.0.0.RELEASE", "2.2.0.RELEASE", "2.2.8.RELEASE", "2021.0.1.0", "2021.1"]
         include:
-          - springBootVersion: "1.5.0.RELEASE"
-            nacosVersion: "1.5.0.RELEASE"
-          - springBootVersion: "2.0.0.RELEASE"
-            nacosVersion: "2.0.0.RELEASE"
-          - springBootVersion: "2.2.0.RELEASE"
-            nacosVersion: "2.2.0.RELEASE"
-          - springBootVersion: "2.3.0.RELEASE"
-            nacosVersion: "2.2.8.RELEASE"
-          - springBootVersion: "2.4.0"
-            nacosVersion: "2.2.8.RELEASE"
-          - springBootVersion: "2.5.0"
-            nacosVersion: "2021.0.1.0"
-          - springBootVersion: "2.6.0"
-            nacosVersion: "2021.1"
-          - springBootVersion: "2.7.0"
-            nacosVersion: "2021.1"
+          - nacosVersion: "1.5.0.RELEASE"
+            springBootVersion: "1.5.0.RELEASE"
+          - nacosVersion: "2.0.0.RELEASE"
+            springBootVersion: "2.0.0.RELEASE"
+          - nacosVersion: "2.2.0.RELEASE"
+            springBootVersion: "2.2.0.RELEASE"
+          - nacosVersion: "2.2.8.RELEASE"
+            springBootVersion: "2.3.0.RELEASE"
+          - nacosVersion: "2.2.8.RELEASE"
+            springBootVersion: "2.4.0"
+          - nacosVersion: "2021.0.1.0"
+            springBootVersion: "2.5.0"
+          - nacosVersion: "2021.1"
+            springBootVersion: "2.6.0"
+          - nacosVersion: "2021.1"
+            springBootVersion: "2.7.0"
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
