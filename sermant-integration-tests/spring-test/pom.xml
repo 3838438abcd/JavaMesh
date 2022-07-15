@@ -33,6 +33,7 @@
     <modules>
         <module>spring-nacos-config</module>
         <module>spring-intergration-test</module>
+        <module>spring-zookeeper-config</module>
     </modules>
 
     <properties>
