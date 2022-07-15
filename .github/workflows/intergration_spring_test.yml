@@ -66,7 +66,7 @@ jobs:
       - name: waiting for services start
         run: |
           ps -ef | grep java
-          sleep 10
+          sleep 20
           curl http://127.0.0.1:8989/dynamic/config/check
       - name: integration test
         run: mvn test --file sermant-integration-tests/spring-test/pom.xml
