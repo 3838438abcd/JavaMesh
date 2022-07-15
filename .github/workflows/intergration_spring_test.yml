@@ -145,7 +145,7 @@ jobs:
           dynamic.config.plugin.enableDynamicConfig: true
           server.port: 8989
         run: |
-          java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-nacos-config/target/zookeeper-config.jar
+          java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-zookeeper-config/target/zookeeper-config.jar
       - name: waiting for services start
         run: |
           ps -ef | grep java
@@ -165,7 +165,7 @@ jobs:
           sh cse/stop.sh
           rm -rf cse/data
           sh cse/start.sh &
-          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-nacos-config/target/zookeeper-config.jar > zk-config.log 2>&1 &
+          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-zookeeper-config/target/zookeeper-config.jar > zk-config.log 2>&1 &
       - name: wait for ready and test
         run: |
           sleep 10
