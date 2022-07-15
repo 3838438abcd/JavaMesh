@@ -15,20 +15,28 @@ jobs:
         include:
           - nacosVersion: "1.5.0.RELEASE"
             springBootVersion: "1.5.0.RELEASE"
+            springCloudVersion: "Edgware.SR6"
           - nacosVersion: "2.0.0.RELEASE"
             springBootVersion: "2.0.0.RELEASE"
+            springCloudVersion: "Finchley.RELEASE"
           - nacosVersion: "2.2.0.RELEASE"
             springBootVersion: "2.2.0.RELEASE"
+            springCloudVersion: "Hoxton.RELEASE"
           - nacosVersion: "2.2.8.RELEASE"
             springBootVersion: "2.3.0.RELEASE"
+            springCloudVersion: "Hoxton.RELEASE"
           - nacosVersion: "2.2.8.RELEASE"
             springBootVersion: "2.4.0"
+            springCloudVersion: "2020.0.0"
           - nacosVersion: "2021.0.1.0"
             springBootVersion: "2.5.0"
+            springCloudVersion: "2020.0.0"
           - nacosVersion: "2021.1"
             springBootVersion: "2.6.0"
+            springCloudVersion: "2021.0.0"
           - nacosVersion: "2021.1"
             springBootVersion: "2.7.0"
+            springCloudVersion: "2021.0.0"
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
@@ -53,7 +61,7 @@ jobs:
       - name: package spring nacos config
         run: |
           sed -i 's|<version>2.2.0.RELEASE</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
-          mvn package -Dspring.boot.version=${{ matrix.springBootVersion }} -Dnacos.version=${{ matrix.nacosVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
+          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -Dnacos.version=${{ matrix.nacosVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
       - name: start service with disable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
