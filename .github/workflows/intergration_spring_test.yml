@@ -7,25 +7,32 @@ on:
       - master
       - develop
 jobs:
-  test-for-spring-zk-config:
-    name: Test for spring zk config
+  test-for-spring-nacos-config:
+    name: Test for spring nacos config
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - springBootVersion: "1.5.0.RELEASE"
+          - nacosVersion: "1.5.0.RELEASE"
+            springBootVersion: "1.5.0.RELEASE"
             springCloudVersion: "Edgware.SR6"
-          - springBootVersion: "2.0.0.RELEASE"
+          - nacosVersion: "2.0.0.RELEASE"
+            springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
-          - springBootVersion: "2.1.0.RELEASE"
+          - nacosVersion: "2.1.0.RELEASE"
+            springBootVersion: "2.1.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
-          - springBootVersion: "2.2.0.RELEASE"
+          - nacosVersion: "2.2.0.RELEASE"
+            springBootVersion: "2.2.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - springBootVersion: "2.3.0.RELEASE"
+          - nacosVersion: "2.2.8.RELEASE"
+            springBootVersion: "2.3.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - springBootVersion: "2.4.0"
+          - nacosVersion: "2021.0.1.0"
+            springBootVersion: "2.4.0"
             springCloudVersion: "2020.0.0"
-          - springBootVersion: "2.6.2"
+          - nacosVersion: "2021.1"
+            springBootVersion: "2.6.2"
             springCloudVersion: "2021.0.0"
       fail-fast: false
     steps:
@@ -67,7 +74,7 @@ jobs:
           sleep 10
           curl http://127.0.0.1:8989/dynamic/config/check
       - name: integration test
-        run: mvn test -Ddynamic.config.test.type=zk --file sermant-integration-tests/spring-test/pom.xml
+        run: mvn test -Ddynamic.config.test.type=nacos --file sermant-integration-tests/spring-test/pom.xml
       - name: start service with enable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
@@ -84,33 +91,26 @@ jobs:
       - name: wait for ready and test
         run: |
           sleep 10
-          mvn test -Ddynamic.config.test.type=zk --file sermant-integration-tests/spring-test/pom.xml
-  test-for-spring-nacos-config:
-    name: Test for spring nacos config
+          mvn test -Ddynamic.config.test.type=nacos --file sermant-integration-tests/spring-test/pom.xml
+  test-for-spring-zk-config:
+    name: Test for spring zk config
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - nacosVersion: "1.5.0.RELEASE"
-            springBootVersion: "1.5.0.RELEASE"
+          - springBootVersion: "1.5.0.RELEASE"
             springCloudVersion: "Edgware.SR6"
-          - nacosVersion: "2.0.0.RELEASE"
-            springBootVersion: "2.0.0.RELEASE"
+          - springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
-          - nacosVersion: "2.1.0.RELEASE"
-            springBootVersion: "2.1.0.RELEASE"
+          - springBootVersion: "2.1.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
-          - nacosVersion: "2.2.0.RELEASE"
-            springBootVersion: "2.2.0.RELEASE"
+          - springBootVersion: "2.2.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - nacosVersion: "2.2.8.RELEASE"
-            springBootVersion: "2.3.0.RELEASE"
+          - springBootVersion: "2.3.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - nacosVersion: "2021.0.1.0"
-            springBootVersion: "2.4.0"
+          - springBootVersion: "2.4.0"
             springCloudVersion: "2020.0.0"
-          - nacosVersion: "2021.1"
-            springBootVersion: "2.6.2"
+          - springBootVersion: "2.6.2"
             springCloudVersion: "2021.0.0"
       fail-fast: false
     steps:
@@ -121,7 +121,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
-      - name: download zookeeper
+      - name: download zookeeper and run
         run: |
           curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
           tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
@@ -152,7 +152,7 @@ jobs:
           sleep 10
           curl http://127.0.0.1:8989/dynamic/config/check
       - name: integration test
-        run: mvn test -Ddynamic.config.test.type=nacos --file sermant-integration-tests/spring-test/pom.xml
+        run: mvn test -Ddynamic.config.test.type=zk --file sermant-integration-tests/spring-test/pom.xml
       - name: start service with enable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
@@ -169,4 +169,4 @@ jobs:
       - name: wait for ready and test
         run: |
           sleep 10
-          mvn test -Ddynamic.config.test.type=nacos --file sermant-integration-tests/spring-test/pom.xml
+          mvn test -Ddynamic.config.test.type=zk --file sermant-integration-tests/spring-test/pom.xml
