@@ -15,10 +15,10 @@
  *
  */
 
-package com.huawei.config.nacos.demo;
+package com.huawei.spring.common.controller;
 
-import com.huawei.config.nacos.demo.entity.ConfigProperty;
-import com.huawei.config.nacos.demo.entity.ConfigValue;
+import com.huawei.spring.common.entity.ConfigProperty;
+import com.huawei.spring.common.entity.ConfigValue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

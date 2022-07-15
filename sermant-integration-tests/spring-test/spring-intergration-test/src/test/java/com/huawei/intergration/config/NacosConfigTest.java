@@ -141,7 +141,6 @@ public class NacosConfigTest {
                 + ".param1: ak\nsermant.param2: bk");
     }
 
-
     private <T> T get(String api, Class<T> responseClass) {
         return restTemplate.getForObject(serverUrl + api, responseClass);
     }

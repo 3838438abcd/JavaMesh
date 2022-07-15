@@ -15,30 +15,23 @@
  *
  */
 
-package com.huawei.config.nacos.demo;
+package com.huawei.config.zookeeper;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * 启动类
+ * zk测试
  *
  * @author zhouss
- * @since 2022-07-14
+ * @since 2022-07-15
  */
 @SpringBootApplication(scanBasePackages = {
-        "com.huawei.config.nacos.demo",
+        "com.huawei.config.zookeeper",
         "com.huawei.spring.common"
 })
-@EnableDiscoveryClient
-public class NacosApplication {
-    /**
-     * 启动方法
-     *
-     * @param args 启动参数
-     */
+public class ZkApplication {
     public static void main(String[] args) {
-        SpringApplication.run(NacosApplication.class, args);
+        SpringApplication.run(ZkApplication.class, args);
     }
 }

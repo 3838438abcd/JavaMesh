@@ -34,6 +34,7 @@
         <module>spring-nacos-config</module>
         <module>spring-intergration-test</module>
         <module>spring-zookeeper-config</module>
+        <module>spring-common</module>
     </modules>
 
     <properties>
@@ -44,6 +45,23 @@
         <processor.version>2.2.0.RELEASE</processor.version>
         <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>${processor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
