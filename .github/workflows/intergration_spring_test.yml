@@ -58,7 +58,7 @@ jobs:
       - name: package spring nacos config
         run: |
           sed -i 's|<version>2.2.0.RELEASE</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
-          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
+          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -Dnacos.version=${{ matrix.nacosVersion }} -DskipTests --file sermant-integration-tests/spring-test/pom.xml
       - name: start service with disable origin config center
         env:
           dynamic.config.serverAddress: 127.0.0.1:30110
