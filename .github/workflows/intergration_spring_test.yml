@@ -29,13 +29,13 @@ jobs:
             springBootVersion: "2.4.0"
             springCloudVersion: "2020.0.0"
           - nacosVersion: "2021.0.1.0"
-            springBootVersion: "2.5.0"
+            springBootVersion: "2.4.13"
             springCloudVersion: "2020.0.0"
           - nacosVersion: "2021.1"
             springBootVersion: "2.6.0"
             springCloudVersion: "2021.0.0"
           - nacosVersion: "2021.1"
-            springBootVersion: "2.7.0"
+            springBootVersion: "2.6.2"
             springCloudVersion: "2021.0.0"
       fail-fast: false
     steps:
