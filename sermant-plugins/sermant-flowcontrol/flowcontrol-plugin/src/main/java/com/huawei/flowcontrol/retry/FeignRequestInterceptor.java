@@ -102,6 +102,8 @@ public class FeignRequestInterceptor extends InterceptorSupporter {
                     .reason(responseMsg)
                     .request(request)
                     .build());
+        } else {
+            context.skip(null);
         }
         return context;
     }
@@ -124,12 +126,13 @@ public class FeignRequestInterceptor extends InterceptorSupporter {
                 return context;
             }
             RetryContext.INSTANCE.markRetry(retry);
+            RetryContext.INSTANCE.buildRetryPolicy(httpRequestEntity.get());
+            final Supplier<Object> retryFunc = createRetryFunc(context.getObject(),
+                    context.getMethod(), allArguments, context.getResult());
+            result = retryFunc.get();
             final List<io.github.resilience4j.retry.Retry> handlers = getRetryHandler()
                 .getHandlers(httpRequestEntity.get());
             if (!handlers.isEmpty() && needRetry(handlers.get(0), result, context.getThrowable())) {
-                // 重试仅有一个策略
-                final Supplier<Object> retryFunc = createRetryFunc(context.getObject(),
-                    context.getMethod(), allArguments, context.getResult());
                 result = handlers.get(0).executeCheckedSupplier(retryFunc::get);
             }
         } catch (Throwable throwable) {
@@ -137,7 +140,7 @@ public class FeignRequestInterceptor extends InterceptorSupporter {
                 "Failed to invoke method:%s for few times, reason:%s",
                 context.getMethod().getName(), getExMsg(throwable)));
         } finally {
-            RetryContext.INSTANCE.removeRetry();
+            RetryContext.INSTANCE.remove();
         }
         context.changeResult(result);
         return context;

@@ -17,12 +17,20 @@
 
 package com.huawei.flowcontrol.inject.retry;
 
+import com.huawei.flowcontrol.common.config.ConfigConst;
+import com.huawei.flowcontrol.common.config.FlowControlConfig;
+
+import com.huaweicloud.sermant.core.plugin.config.PluginConfigManager;
+import com.huaweicloud.sermant.core.utils.ClassUtils;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -45,19 +53,20 @@ public class SpringRetryConfiguration {
     @Primary
     @ConditionalOnClass(name = "org.springframework.web.client.RestTemplate")
     public RestTemplate restTemplate() {
-        return new RetryableRestTemplate();
+        final FlowControlConfig config = PluginConfigManager.getPluginConfig(FlowControlConfig.class);
+        final RetryableRestTemplate retryableRestTemplate = new RetryableRestTemplate();
+        if (ConfigConst.REST_TEMPLATE_REQUEST_FACTORY_HTTP.equals(config.getRestTemplateRequestFactory())) {
+            final HttpComponentsClientHttpRequestFactory requestFactory =
+                    new HttpComponentsClientHttpRequestFactory();
+            requestFactory.setConnectTimeout((int) config.getRestTemplateConnectTimeoutMs());
+            requestFactory.setReadTimeout((int) config.getRestTemplateReadTimeoutMs());
+            retryableRestTemplate.setRequestFactory(requestFactory);
+        } else if (ConfigConst.REST_TEMPLATE_REQUEST_FACTORY_OK_HTTP.equals(config.getRestTemplateRequestFactory())) {
+            if (ClassUtils.loadClass("okhttp3.OkHttpClient", Thread.currentThread().getContextClassLoader())
+                    .isPresent()) {
+                retryableRestTemplate.setRequestFactory(new OkHttp3ClientHttpRequestFactory());
+            }
+        }
+        return retryableRestTemplate;
     }
-
-    /**
-     * feign重试注入
-     *
-     * @param delegate 代理
-     * @param loadBalancerClient 负载均衡客户端
-     * @return client
-     */
-    /*@Bean
-    @ConditionalOnClass(name = "feign.Client")
-    public Client feignClient(@Autowired(required = false) Client delegate, LoadBalancerClient loadBalancerClient) {
-        return new RetryableFeignClient(delegate, loadBalancerClient);
-    }*/
 }

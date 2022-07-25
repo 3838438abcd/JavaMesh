@@ -23,13 +23,13 @@ import com.huawei.flowcontrol.common.handler.retry.AbstractRetry;
 import com.huawei.flowcontrol.common.handler.retry.RetryContext;
 import com.huawei.flowcontrol.retry.handler.RetryHandlerV2;
 
+import com.huaweicloud.sermant.core.common.LoggerFactory;
+
 import io.github.resilience4j.decorators.Decorators;
 import io.github.resilience4j.decorators.Decorators.DecorateCheckedSupplier;
 import io.github.resilience4j.retry.Retry;
 import io.vavr.CheckedFunction0;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -48,6 +48,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 可重试的RestTemplate, 注意, 由于基于拦截的方式无法对网络异常等非业务抛出的异常拦截, 仅可采用注入方式实现
@@ -56,7 +58,7 @@ import java.util.Optional;
  * @since 2022-07-23
  */
 public class RetryableRestTemplate extends RestTemplate {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RetryableRestTemplate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger();
 
     private final RetryHandlerV2 retryHandlerV2 = new RetryHandlerV2();
 
@@ -90,7 +92,7 @@ public class RetryableRestTemplate extends RestTemplate {
             throw new ResourceAccessException("I/O error on " + method.name() + " request for \"" + resource + "\": "
                     + ex.getMessage(), ex);
         } finally {
-            RetryContext.INSTANCE.removeRetry();
+            RetryContext.INSTANCE.remove();
             if (response != null) {
                 response.close();
             }
@@ -106,6 +108,7 @@ public class RetryableRestTemplate extends RestTemplate {
         if (handlers.isEmpty()) {
             return Optional.empty();
         }
+        RetryContext.INSTANCE.buildRetryPolicy(httpRequestEntity);
         CheckedFunction0<ClientHttpResponse> next = () -> {
             ClientHttpRequest execution = createRequest(url, method);
             if (requestCallback != null) {
@@ -118,7 +121,7 @@ public class RetryableRestTemplate extends RestTemplate {
         try {
             response = dcs.get();
         } catch (Throwable throwable) {
-            LOGGER.error("Error occurred when retry", throwable);
+            LOGGER.log(Level.SEVERE, "Error occurred when retry", throwable);
             return Optional.of(new RetryClientHttpResponse(throwable.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
@@ -160,7 +163,7 @@ public class RetryableRestTemplate extends RestTemplate {
                     method.setAccessible(true);
                     return method;
                 } catch (NoSuchMethodException ex) {
-                    LOGGER.warn(String.format(Locale.ENGLISH,
+                    LOGGER.warning(String.format(Locale.ENGLISH,
                             "Can not find method getRawStatusCode from response class %s",
                             result.getClass().getName()));
                 }
@@ -172,11 +175,11 @@ public class RetryableRestTemplate extends RestTemplate {
             try {
                 return Optional.of(String.valueOf(getRawStatusCode.get().invoke(result)));
             } catch (IllegalAccessException ex) {
-                LOGGER.warn(String.format(Locale.ENGLISH,
+                LOGGER.warning(String.format(Locale.ENGLISH,
                         "Can not find method getRawStatusCode from class [%s]!",
                         result.getClass().getCanonicalName()));
             } catch (InvocationTargetException ex) {
-                LOGGER.warn(String.format(Locale.ENGLISH, "Invoking method getRawStatusCode failed, reason: %s",
+                LOGGER.warning(String.format(Locale.ENGLISH, "Invoking method getRawStatusCode failed, reason: %s",
                         ex.getMessage()));
             }
             return Optional.empty();

@@ -213,7 +213,7 @@ public class ApacheDubboInvokerInterceptor extends InterceptorSupporter {
         } catch (Throwable throwable) {
             result = buildErrorResponse(throwable, invocation);
         } finally {
-            RetryContext.INSTANCE.removeRetry();
+            RetryContext.INSTANCE.remove();
         }
         context.changeResult(result);
         return context;

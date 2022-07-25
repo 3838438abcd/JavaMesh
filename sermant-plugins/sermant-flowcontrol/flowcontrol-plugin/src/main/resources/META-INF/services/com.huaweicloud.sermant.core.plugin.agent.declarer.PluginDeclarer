@@ -28,3 +28,5 @@ com.huawei.flowcontrol.config.SpringBootDeclarer
 com.huawei.flowcontrol.retry.ExtentionLoaderDeclarer
 com.huawei.flowcontrol.retry.FeignRequestDeclarer
 com.huawei.flowcontrol.retry.HttpRequestDeclarer
+com.huawei.flowcontrol.retry.SpringRibbonLbDeclarer
+com.huawei.flowcontrol.retry.SpringLbDeclarer

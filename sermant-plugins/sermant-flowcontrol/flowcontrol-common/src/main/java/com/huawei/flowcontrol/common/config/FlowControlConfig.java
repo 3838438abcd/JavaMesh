@@ -261,6 +261,45 @@ public class FlowControlConfig implements PluginConfig {
      */
     private boolean enableRetry = true;
 
+    /**
+     * 连接超时时间-restTemplate
+     */
+    private long restTemplateConnectTimeoutMs = ConfigConst.CONNECT_TIMEOUT_MS;
+
+    /**
+     * 响应超时时间-restTemplate
+     */
+    private long restTemplateReadTimeoutMs = ConfigConst.SOCKET_READ_TIMEOUT_MS;
+
+    /**
+     * rest template-请求协议, 默认okHttp， 若宿主没有则使用Connection模式
+     */
+    private String restTemplateRequestFactory = "okHttp";
+
+    public String getRestTemplateRequestFactory() {
+        return restTemplateRequestFactory;
+    }
+
+    public void setRestTemplateRequestFactory(String restTemplateRequestFactory) {
+        this.restTemplateRequestFactory = restTemplateRequestFactory;
+    }
+
+    public long getRestTemplateConnectTimeoutMs() {
+        return restTemplateConnectTimeoutMs;
+    }
+
+    public void setRestTemplateConnectTimeoutMs(long restTemplateConnectTimeoutMs) {
+        this.restTemplateConnectTimeoutMs = restTemplateConnectTimeoutMs;
+    }
+
+    public long getRestTemplateReadTimeoutMs() {
+        return restTemplateReadTimeoutMs;
+    }
+
+    public void setRestTemplateReadTimeoutMs(long restTemplateReadTimeoutMs) {
+        this.restTemplateReadTimeoutMs = restTemplateReadTimeoutMs;
+    }
+
     public boolean isEnableRetry() {
         return enableRetry;
     }

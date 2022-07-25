@@ -229,6 +229,26 @@ public class ConfigConst {
      */
     public static final long DEFAULT_TIME_CACHE_CHECK_INTERVAL = 3600L;
 
+    /**
+     * 连接超时时间
+     */
+    public static final long CONNECT_TIMEOUT_MS = 1000L;
+
+    /**
+     * 响应超时时间
+     */
+    public static final long SOCKET_READ_TIMEOUT_MS = 1000L;
+
+    /**
+     * rest template OKHTTP 协议
+     */
+    public static final String REST_TEMPLATE_REQUEST_FACTORY_OK_HTTP = "okHttp";
+
+    /**
+     * 请求httpclient协议
+     */
+    public static final String REST_TEMPLATE_REQUEST_FACTORY_HTTP = "http";
+
     private ConfigConst() {
     }
 }

@@ -105,7 +105,7 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
             }
             throw new InvokerException(ex);
         } finally {
-            RetryContext.INSTANCE.removeRetry();
+            RetryContext.INSTANCE.remove();
         }
     }
 
