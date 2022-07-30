@@ -1,0 +1,106 @@
+sermant:
+  flowcontrol:
+    test:
+      target: consumer
+servicecomb:
+  matchGroup:
+    demo-instanceIsolation: |
+      matches:
+        - apiPath:
+            exact: "/instanceIsolation"
+    demo-retry: |
+      matches:
+        - apiPath:
+            prefix: "/retry"
+          serviceName: feign-provider
+          method:
+          - GET
+    demo-rateLimiting: |
+      matches:
+        - apiPath:
+            exact: "/rateLimiting"
+    demo-header: |
+      matches:
+        - apiPath:
+            exact: "/header"
+          headers:
+            key:
+              prefix: header
+    demo-circuitBreaker-serviceName-match: |
+      matches:
+        - apiPath:
+            exact: "/serviceNameMatch"
+          serviceName: feign-provider
+    demo-circuitBreaker-serviceName-no-match: |
+      matches:
+        - apiPath:
+            exact: "/serviceNameNoMatch"
+          serviceName: feign-provider2222
+    demo-circuitBreaker-timed: |
+      matches:
+        - apiPath:
+            exact: "/timedBreaker"
+    demo-circuitBreaker-exception: |
+      matches:
+        - apiPath:
+            exact: "/exceptionBreaker"
+    demo-bulkhead: |
+      matches:
+        - apiPath:
+            exact: "/bulkhead"
+  rateLimiting:
+    demo-rateLimiting: |
+      rate: 1
+    demo-header: |
+      rate: 1
+  retry:
+    demo-retry: |
+      maxAttempts: 3
+      retryOnResponseStatus:
+      - 500
+  circuitBreaker:
+    demo-instanceIsolation: |
+      minimumNumberOfCalls: 2
+      name: 熔断
+      slidingWindowSize: 10000
+      slidingWindowType: time
+      slowCallDurationThreshold: "100"
+      slowCallRateThreshold: 60
+      waitDurationInOpenState: 5s
+    demo-circuitBreaker-serviceName-no-match: |
+      minimumNumberOfCalls: 2
+      name: 熔断
+      slidingWindowSize: 10000
+      slidingWindowType: time
+      slowCallDurationThreshold: "100"
+      slowCallRateThreshold: 60
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+    demo-circuitBreaker-serviceName-match: |
+      minimumNumberOfCalls: 2
+      name: 熔断
+      slidingWindowSize: 10000
+      slidingWindowType: time
+      slowCallDurationThreshold: "100"
+      slowCallRateThreshold: 60
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+    demo-circuitBreaker-timed: |
+      minimumNumberOfCalls: 2
+      name: 熔断
+      slidingWindowSize: 10000
+      slidingWindowType: time
+      slowCallDurationThreshold: "100"
+      slowCallRateThreshold: 60
+      waitDurationInOpenState: 5s
+    demo-circuitBreaker-exception: |
+      failureRateThreshold: 50
+      minimumNumberOfCalls: 2
+      name: 熔断
+      slidingWindowSize: 10000
+      slidingWindowType: time
+      waitDurationInOpenState: 5s
+  bulkhead:
+    demo-bulkhead: |
+      maxConcurrentCalls: 2
+      maxWaitDuration: 50

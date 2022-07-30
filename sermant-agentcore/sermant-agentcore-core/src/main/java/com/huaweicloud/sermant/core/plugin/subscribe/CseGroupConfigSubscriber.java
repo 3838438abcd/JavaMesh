@@ -110,9 +110,9 @@ public class CseGroupConfigSubscriber extends AbstractGroupConfigSubscriber {
     }
 
     private void buildCustomRequest() {
-        if (StringUtils.isBlank(config.getCustomLabel()) || StringUtils.isBlank(config.getCustomLabelValue())) {
+        /*if (StringUtils.isBlank(config.getCustomLabel()) || StringUtils.isBlank(config.getCustomLabelValue())) {
             return;
-        }
+        }*/
         final HashMap<String, String> map = new HashMap<>(REQUEST_MAP_SIZE);
         map.put(config.getCustomLabel(), config.getCustomLabelValue());
         final String labelGroup = LabelGroupUtils.createLabelGroup(map);
