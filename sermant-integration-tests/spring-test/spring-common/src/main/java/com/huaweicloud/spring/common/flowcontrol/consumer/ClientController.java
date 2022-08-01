@@ -17,6 +17,8 @@
 
 package com.huaweicloud.spring.common.flowcontrol.consumer;
 
+import com.huaweicloud.spring.common.flowcontrol.handlers.RestTemplateResponseErrorHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Locale;
 import java.util.UUID;
+
+import javax.annotation.PostConstruct;
 
 /**
  * 基于Client端的治理测试
@@ -46,6 +50,14 @@ public class ClientController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    /**
+     * 初始化
+     */
+    @PostConstruct
+    public void init() {
+        restTemplate.setErrorHandler(new RestTemplateResponseErrorHandler());
+    }
 
     /**
      * 实例隔离接口测试

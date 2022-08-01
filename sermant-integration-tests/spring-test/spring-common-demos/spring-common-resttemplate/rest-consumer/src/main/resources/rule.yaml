@@ -18,23 +18,22 @@ servicecomb:
     demo-rateLimiting: |
       matches:
         - apiPath:
-            exact: "/rateLimiting"
+            exact: "/flowcontrol/rateLimiting"
     demo-header: |
       matches:
         - apiPath:
-            exact: "/header"
+            exact: "/flowcontrol/header"
           headers:
             key:
               prefix: header
     demo-circuitBreaker-serviceName-match: |
       matches:
         - apiPath:
-            exact: "/serviceNameMatch"
-          serviceName: rest-provider
+            exact: "/flowcontrol/serviceNameMatch"
     demo-circuitBreaker-serviceName-no-match: |
       matches:
         - apiPath:
-            exact: "/serviceNameNoMatch"
+            exact: "/flowcontrol/serviceNameNoMatch"
           serviceName: rest-provider2222
     demo-circuitBreaker-timed: |
       matches:
@@ -47,7 +46,7 @@ servicecomb:
     demo-bulkhead: |
       matches:
         - apiPath:
-            exact: "/bulkhead"
+            exact: "/flowcontrol/bulkhead"
   rateLimiting:
     demo-rateLimiting: |
       rate: 1
@@ -90,7 +89,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
     demo-circuitBreaker-exception: |

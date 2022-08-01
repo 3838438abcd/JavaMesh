@@ -15,26 +15,24 @@
  *
  */
 
-package com.huaweicloud.spring.rest.provider;
+package com.huaweicloud.spring.common.flowcontrol.handlers;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
- * 启动类
+ * 修改默认错误处理器逻辑, 将所有的真实结果信息返回回调{@link org.springframework.web.client.ResponseExtractor}
  *
  * @author zhouss
- * @since 2022-07-28
+ * @since 2022-08-01
  */
-@SpringBootApplication(scanBasePackages = "com.huaweicloud.spring.common.flowcontrol.provider")
-//@PropertySource(value = "classpath:rule.yaml", factory = YamlSourceFactory.class)
-public class RestProviderApplication {
-    /**
-     * 启动
-     *
-     * @param args 参数
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(RestProviderApplication.class, args);
+public class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandler {
+    @Override
+    public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
+        return;
     }
 }

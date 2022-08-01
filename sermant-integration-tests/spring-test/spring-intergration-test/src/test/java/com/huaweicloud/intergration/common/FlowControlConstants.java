@@ -15,26 +15,17 @@
  *
  */
 
-package com.huaweicloud.spring.rest.provider;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+package com.huaweicloud.intergration.common;
 
 /**
- * 启动类
+ * 流控常量
  *
  * @author zhouss
- * @since 2022-07-28
+ * @since 2022-08-01
  */
-@SpringBootApplication(scanBasePackages = "com.huaweicloud.spring.common.flowcontrol.provider")
-//@PropertySource(value = "classpath:rule.yaml", factory = YamlSourceFactory.class)
-public class RestProviderApplication {
+public class FlowControlConstants {
     /**
-     * 启动
-     *
-     * @param args 参数
+     * 流控通用响应码
      */
-    public static void main(String[] args) {
-        SpringApplication.run(RestProviderApplication.class, args);
-    }
+    public static final String COMMON_FLOW_CONTROL_CODE = "429";
 }
