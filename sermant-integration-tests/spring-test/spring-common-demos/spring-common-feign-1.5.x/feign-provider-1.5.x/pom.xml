@@ -20,48 +20,40 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-test</artifactId>
+        <artifactId>spring-common-feign-1.5.x</artifactId>
         <groupId>com.huawei.spring.test</groupId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-common-demos</artifactId>
-    <packaging>pom</packaging>
-    <description>本模块主要提供基础的demo应用，后续相关测试均可加入</description>
-    <modules>
-        <module>spring-common-feign-1.5.x</module>
-    </modules>
+    <artifactId>feign-provider-1.5.x</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.huawei.spring.test</groupId>
+            <artifactId>spring-common</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.huawei.spring.test</groupId>
+            <artifactId>feign-api-1.5.x</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>flowcontrol-test</id>
-            <modules>
-                <module>spring-common-feign</module>
-                <module>spring-common-resttemplate</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>flowcontrol-test-1.5.x</id>
-            <modules>
-                <module>spring-common-feign-1.5.x</module>
-            </modules>
-        </profile>
-    </profiles>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
-        </dependency>
-    </dependencies>
+    <build>
+        <finalName>feign-provider-1.5.x</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

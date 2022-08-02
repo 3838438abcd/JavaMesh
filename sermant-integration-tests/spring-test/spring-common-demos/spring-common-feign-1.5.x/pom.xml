@@ -20,48 +20,31 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-test</artifactId>
+        <artifactId>spring-common-demos</artifactId>
         <groupId>com.huawei.spring.test</groupId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-common-demos</artifactId>
-    <packaging>pom</packaging>
-    <description>本模块主要提供基础的demo应用，后续相关测试均可加入</description>
+    <artifactId>spring-common-feign-1.5.x</artifactId>
+    <description>仅适用于feign 1.5.x, 包名与新版会有差别</description>
     <modules>
-        <module>spring-common-feign-1.5.x</module>
+        <module>feign-api-1.5.x</module>
+        <module>feign-provider-1.5.x</module>
+        <module>feign-consumer-1.5.x</module>
     </modules>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>flowcontrol-test</id>
-            <modules>
-                <module>spring-common-feign</module>
-                <module>spring-common-resttemplate</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>flowcontrol-test-1.5.x</id>
-            <modules>
-                <module>spring-common-feign-1.5.x</module>
-            </modules>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>1.4.7.RELEASE</version>
         </dependency>
     </dependencies>
 </project>

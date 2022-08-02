@@ -8,14 +8,53 @@ on:
       - main
       - develop
 jobs:
+  test-for-flowcontrol-feign-1-5-x:
+    name: Test for flowcontrol feign 1.5.x
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - springBootVersion: "1.5.0.RELEASE"
+            springCloudVersion: "Edgware.SR2"
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+          cache: maven
+      - name: download zookeeper and run
+        run: |
+          curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
+          tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
+          bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
+      - name: package agent
+        run: mvn package -DskipTests -Pagent --file pom.xml
+      - name: package common demos
+        run: |
+          sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
+          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests -P flowcontrol-test-1.5.x --file sermant-integration-tests/spring-test/pom.xml
+      - name: start feign application
+        run: |
+          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8013 -jar \
+          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign/feign-provider-1.5.x/target/feign-provider-1.5.x.jar > feign-provider.log 2>&1 &
+          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8015 -jar \
+          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign/feign-consumer-1.5.x/target/feign-consumer-1.5.x.jar > feign-consumer.log 2>&1 &
+      - name: waiting for services start
+        run: |
+          ps -ef | grep java
+          sleep 30
+          curl http://127.0.0.1:8015/flowcontrol/rateLimiting
+      - name: integration test
+        run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
   test-for-flowcontrol:
     name: Test for flowcontrol
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - springBootVersion: "1.5.0.RELEASE"
-            springCloudVersion: "Edgware.SR6"
           - springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
           - springBootVersion: "2.1.0.RELEASE"

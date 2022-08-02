@@ -61,6 +61,13 @@
                 <module>spring-common-demos</module>
             </modules>
         </profile>
+        <profile>
+            <id>flowcontrol-test-1.5.x</id>
+            <modules>
+                <module>spring-common</module>
+                <module>spring-common-demos</module>
+            </modules>
+        </profile>
     </profiles>
 
     <dependencies>
