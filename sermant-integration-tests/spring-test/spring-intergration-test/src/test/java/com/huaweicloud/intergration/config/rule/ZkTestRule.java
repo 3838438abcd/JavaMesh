@@ -29,6 +29,6 @@ import com.huaweicloud.intergration.common.rule.SermantTestType;
 public class ZkTestRule extends AbstractTestRule {
     @Override
     protected boolean isSupport(SermantTestType testType) {
-        return testType == SermantTestType.DYNAMIC_CONFIG_NACOS;
+        return testType == SermantTestType.DYNAMIC_CONFIG_ZK;
     }
 }

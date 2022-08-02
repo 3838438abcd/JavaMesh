@@ -41,6 +41,8 @@ import java.util.function.BiFunction;
  * @since 2022-07-30
  */
 public abstract class FlowControlTest {
+    @Rule
+    public final TestRule flowControlCondition = new FlowControlTestRule();
     private static final int RATE_LIMITING_REQUEST_COUNT = 10;
     private static final int BREAKER_REQUEST_COUNT = 10;
     private static final String BREAKER_MSG = "Degraded and blocked";
