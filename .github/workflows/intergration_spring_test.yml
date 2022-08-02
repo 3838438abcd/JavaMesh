@@ -8,8 +8,8 @@ on:
       - main
       - develop
 jobs:
-  test-for-flowcontrol-feign-1-5-x:
-    name: Test for flowcontrol feign 1.5.x
+  test-for-flowcontrol-feign-resttemplate-1-5-x:
+    name: Test for flowcontrol feign or resttemplate 1.5.x
     runs-on: ubuntu-latest
     strategy:
       matrix:
