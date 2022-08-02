@@ -28,8 +28,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @since 2022-07-14
  */
 @SpringBootApplication(scanBasePackages = {
-        "com.huawei.config.nacos.demo",
-        "com.huawei.spring.common"
+        "com.huaweicloud.config.nacos.demo",
+        "com.huaweicloud.spring.common.config"
 })
 @EnableDiscoveryClient
 public class NacosApplication {

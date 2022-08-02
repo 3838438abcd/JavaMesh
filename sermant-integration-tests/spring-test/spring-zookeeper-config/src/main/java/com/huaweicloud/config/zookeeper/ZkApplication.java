@@ -27,8 +27,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2022-07-15
  */
 @SpringBootApplication(scanBasePackages = {
-        "com.huawei.config.zookeeper",
-        "com.huawei.spring.common"
+        "com.huaweicloud.config.zookeeper",
+        "com.huaweicloud.spring.common.config"
 })
 public class ZkApplication {
     public static void main(String[] args) {
