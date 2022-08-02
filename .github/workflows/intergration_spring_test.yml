@@ -40,8 +40,8 @@ jobs:
         run: |
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8013 -jar \
           sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign/feign-provider-1.5.x/target/feign-provider-1.5.x.jar > feign-provider.log 2>&1 &
-          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8015 -jar \
-          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign/feign-consumer-1.5.x/target/feign-consumer-1.5.x.jar > feign-consumer.log 2>&1 &
+          java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8015 -jar \
+          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign/feign-consumer-1.5.x/target/feign-consumer-1.5.x.jar
       - name: waiting for services start
         run: |
           ps -ef | grep java
