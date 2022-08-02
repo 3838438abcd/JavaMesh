@@ -54,6 +54,13 @@
                 <module>spring-zookeeper-config</module>
             </modules>
         </profile>
+        <profile>
+            <id>flowcontrol-test</id>
+            <modules>
+                <module>spring-common</module>
+                <module>spring-common-demos</module>
+            </modules>
+        </profile>
     </profiles>
 
     <dependencies>

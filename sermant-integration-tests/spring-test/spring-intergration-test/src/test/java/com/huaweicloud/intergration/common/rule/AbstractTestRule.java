@@ -15,37 +15,38 @@
  *
  */
 
-package com.huaweicloud.intergration.config.rule;
+package com.huaweicloud.intergration.common.rule;
 
-import com.huaweicloud.intergration.config.constants.Constants;
-import com.huaweicloud.intergration.config.enums.DynamicTestType;
+import com.huaweicloud.intergration.common.CommonConstants;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import java.util.Locale;
+import java.util.Optional;
 
 /**
- * 动态配置测试规则
+ * 测试规则
  *
  * @author zhouss
- * @since 2022-07-15
+ * @since 2022-08-02
  */
-public abstract class DynamicConfigTestRule implements TestRule {
+public abstract class AbstractTestRule implements TestRule {
     @Override
     public Statement apply(Statement base, Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                final String type = System.getProperty(Constants.DYNAMIC_CONFIG_TEST_TYPE_KEY);
+                final String type = System.getProperty(CommonConstants.TEST_TYPE);
                 if (type == null) {
                     base.evaluate();
                     return;
                 }
-
-                final DynamicTestType dynamicTestType = DynamicTestType.valueOf(type.toUpperCase(Locale.ROOT));
-                if (isSupport(dynamicTestType)) {
+                final Optional<SermantTestType> of = SermantTestType.of(type);
+                if (!of.isPresent()) {
+                    return;
+                }
+                if (of.get() == SermantTestType.ALL || isSupport(of.get())) {
                     base.evaluate();
                 }
             }
@@ -55,8 +56,8 @@ public abstract class DynamicConfigTestRule implements TestRule {
     /**
      * 是否支持
      *
-     * @param dynamicTestType 测试配置中心类型
+     * @param testType 测试类型
      * @return 是否支持
      */
-    protected abstract boolean isSupport(DynamicTestType dynamicTestType);
+    protected abstract boolean isSupport(SermantTestType testType);
 }

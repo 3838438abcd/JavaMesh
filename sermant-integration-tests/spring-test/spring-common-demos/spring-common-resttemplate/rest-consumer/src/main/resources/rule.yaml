@@ -22,18 +22,18 @@ servicecomb:
     demo-header: |
       matches:
         - apiPath:
-            exact: "/flowcontrol/header"
+            exact: "/header"
           headers:
             key:
               prefix: header
     demo-circuitBreaker-serviceName-match: |
       matches:
         - apiPath:
-            exact: "/flowcontrol/serviceNameMatch"
+            exact: "/serviceNameMatch"
     demo-circuitBreaker-serviceName-no-match: |
       matches:
         - apiPath:
-            exact: "/flowcontrol/serviceNameNoMatch"
+            exact: "/serviceNameNoMatch"
           serviceName: rest-provider2222
     demo-circuitBreaker-timed: |
       matches:
@@ -63,7 +63,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
     demo-circuitBreaker-serviceName-no-match: |
@@ -71,7 +71,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
       failureRateThreshold: 50
@@ -80,7 +80,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
       failureRateThreshold: 50
@@ -93,7 +93,7 @@ servicecomb:
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
     demo-circuitBreaker-exception: |
-      failureRateThreshold: 50
+      failureRateThreshold: 44
       minimumNumberOfCalls: 2
       name: 熔断
       slidingWindowSize: 10000
@@ -101,5 +101,5 @@ servicecomb:
       waitDurationInOpenState: 5s
   bulkhead:
     demo-bulkhead: |
-      maxConcurrentCalls: 2
-      maxWaitDuration: 50
+      maxConcurrentCalls: 1
+      maxWaitDuration: 10

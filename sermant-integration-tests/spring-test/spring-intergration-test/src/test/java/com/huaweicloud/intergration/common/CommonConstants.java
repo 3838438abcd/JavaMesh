@@ -15,20 +15,20 @@
  *
  */
 
-package com.huaweicloud.spring.feign.api.configuration;
-
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
+package com.huaweicloud.intergration.common;
 
 /**
- * 针对header方法增加请求头判断是否可以匹配成功
+ * 所有测试的公共参数
  *
  * @author zhouss
- * @since 2022-07-29
+ * @since 2022-08-02
  */
-public class HeaderMatchConfiguration implements RequestInterceptor {
-    @Override
-    public void apply(RequestTemplate template) {
-        template.header("key", "header2");
+public class CommonConstants {
+    /**
+     * spring集成测试类型
+     */
+    public static final String TEST_TYPE = "sermant.integration.test.type";
+
+    private CommonConstants() {
     }
 }

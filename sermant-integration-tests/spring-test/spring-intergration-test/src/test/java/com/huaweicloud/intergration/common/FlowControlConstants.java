@@ -28,4 +28,7 @@ public class FlowControlConstants {
      * 流控通用响应码
      */
     public static final String COMMON_FLOW_CONTROL_CODE = "429";
+
+    private FlowControlConstants() {
+    }
 }

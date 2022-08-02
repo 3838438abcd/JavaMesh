@@ -15,20 +15,20 @@
  *
  */
 
-package com.huaweicloud.spring.feign.api.configuration;
+package com.huaweicloud.intergration.flowcontrol;
 
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
+import com.huaweicloud.intergration.common.rule.AbstractTestRule;
+import com.huaweicloud.intergration.common.rule.SermantTestType;
 
 /**
- * 针对header方法增加请求头判断是否可以匹配成功
+ * 流控测试
  *
  * @author zhouss
- * @since 2022-07-29
+ * @since 2022-08-02
  */
-public class HeaderMatchConfiguration implements RequestInterceptor {
+public class FlowControlTestRule extends AbstractTestRule {
     @Override
-    public void apply(RequestTemplate template) {
-        template.header("key", "header2");
+    protected boolean isSupport(SermantTestType testType) {
+        return testType == SermantTestType.FLOW_CONTROL;
     }
 }

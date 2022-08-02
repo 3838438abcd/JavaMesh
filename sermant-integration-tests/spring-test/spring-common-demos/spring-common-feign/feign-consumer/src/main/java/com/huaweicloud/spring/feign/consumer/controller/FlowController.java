@@ -17,19 +17,20 @@
 
 package com.huaweicloud.spring.feign.consumer.controller;
 
+import com.huaweicloud.spring.common.flowcontrol.YamlSourceFactory;
 import com.huaweicloud.spring.feign.api.FlowControlServerService;
 import com.huaweicloud.spring.feign.api.FlowControlService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 流控测试
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @ResponseBody
 @RequestMapping("flowcontrol")
+@PropertySource(value = "classpath:rule.yaml", factory = YamlSourceFactory.class)
 public class FlowController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FlowController.class);
 
@@ -53,11 +55,14 @@ public class FlowController {
      * 实例隔离接口测试
      *
      * @return 实例隔离
-     * @throws InterruptedException 线程中断抛出
      */
     @RequestMapping("instanceIsolation")
-    public String instanceIsolation() throws InterruptedException {
-        return flowControlService.instanceIsolation();
+    public String instanceIsolation() {
+        try {
+            return flowControlService.instanceIsolation();
+        } catch (Exception ex) {
+            return convertMsg(ex);
+        }
     }
 
     /**
@@ -94,18 +99,25 @@ public class FlowController {
      */
     @RequestMapping("timedBreaker")
     public String timedBreaker() {
-        return flowControlServerService.timedBreaker();
+        try {
+            return flowControlServerService.timedBreaker();
+        } catch (Exception ex) {
+            return convertMsg(ex);
+        }
     }
 
     /**
      * 异常熔断测试
      *
      * @return ok
-     * @throws Exception 模拟异常率
      */
     @RequestMapping("exceptionBreaker")
-    public String exceptionBreaker() throws Exception {
-        return flowControlServerService.exceptionBreaker();
+    public String exceptionBreaker() {
+        try {
+            return flowControlServerService.exceptionBreaker();
+        } catch (Exception ex) {
+            return convertMsg(ex);
+        }
     }
 
     /**
@@ -125,7 +137,11 @@ public class FlowController {
      */
     @RequestMapping("header")
     public String header() {
-        return flowControlServerService.header();
+        try {
+            return flowControlServerService.header();
+        } catch (Exception ex) {
+            return convertMsg(ex);
+        }
     }
 
     /**
@@ -135,7 +151,11 @@ public class FlowController {
      */
     @RequestMapping("serviceNameMatch")
     public String serviceNameMatch() {
-        return flowControlServerService.serviceNameMatch();
+        try {
+            return flowControlServerService.serviceNameMatch();
+        } catch (Exception ex) {
+            return convertMsg(ex);
+        }
     }
 
     /**
@@ -146,5 +166,12 @@ public class FlowController {
     @RequestMapping("serviceNameNoMatch")
     public String serviceNameNoMatch() {
         return flowControlServerService.serviceNameNoMatch();
+    }
+
+    private String convertMsg(Exception ex) {
+        if (ex instanceof UndeclaredThrowableException) {
+            return ((UndeclaredThrowableException) ex).getUndeclaredThrowable().getMessage();
+        }
+        return ex.getMessage();
     }
 }

@@ -18,7 +18,7 @@ servicecomb:
     demo-rateLimiting: |
       matches:
         - apiPath:
-            exact: "/rateLimiting"
+            exact: "/flowcontrol/rateLimiting"
     demo-header: |
       matches:
         - apiPath:
@@ -30,12 +30,11 @@ servicecomb:
       matches:
         - apiPath:
             exact: "/serviceNameMatch"
-          serviceName: feign-provider
     demo-circuitBreaker-serviceName-no-match: |
       matches:
         - apiPath:
             exact: "/serviceNameNoMatch"
-          serviceName: feign-provider2222
+          serviceName: rest-provider2222
     demo-circuitBreaker-timed: |
       matches:
         - apiPath:
@@ -47,7 +46,7 @@ servicecomb:
     demo-bulkhead: |
       matches:
         - apiPath:
-            exact: "/bulkhead"
+            exact: "/flowcontrol/bulkhead"
   rateLimiting:
     demo-rateLimiting: |
       rate: 1
@@ -64,7 +63,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
     demo-circuitBreaker-serviceName-no-match: |
@@ -72,7 +71,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
       failureRateThreshold: 50
@@ -81,7 +80,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
       failureRateThreshold: 50
@@ -90,7 +89,7 @@ servicecomb:
       name: 熔断
       slidingWindowSize: 10000
       slidingWindowType: time
-      slowCallDurationThreshold: "100"
+      slowCallDurationThreshold: "44"
       slowCallRateThreshold: 60
       waitDurationInOpenState: 5s
     demo-circuitBreaker-exception: |
@@ -102,5 +101,5 @@ servicecomb:
       waitDurationInOpenState: 5s
   bulkhead:
     demo-bulkhead: |
-      maxConcurrentCalls: 2
-      maxWaitDuration: 50
+      maxConcurrentCalls: 1
+      maxWaitDuration: 10

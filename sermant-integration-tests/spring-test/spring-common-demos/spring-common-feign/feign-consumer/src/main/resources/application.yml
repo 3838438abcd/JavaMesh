@@ -8,3 +8,9 @@ spring:
   cloud:
     zookeeper:
       enabled: true
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 6000

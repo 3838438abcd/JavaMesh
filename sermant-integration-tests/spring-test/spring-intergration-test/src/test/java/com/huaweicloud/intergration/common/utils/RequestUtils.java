@@ -15,7 +15,7 @@
  *
  */
 
-package com.huaweicloud.intergration.common;
+package com.huaweicloud.intergration.common.utils;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;

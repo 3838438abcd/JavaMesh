@@ -17,7 +17,8 @@
 
 package com.huaweicloud.intergration.config.rule;
 
-import com.huaweicloud.intergration.config.enums.DynamicTestType;
+import com.huaweicloud.intergration.common.rule.AbstractTestRule;
+import com.huaweicloud.intergration.common.rule.SermantTestType;
 
 /**
  * nacos配置执行条件
@@ -25,9 +26,9 @@ import com.huaweicloud.intergration.config.enums.DynamicTestType;
  * @author zhouss
  * @since 2022-07-15
  */
-public class NacosTestRule extends DynamicConfigTestRule {
+public class NacosTestRule extends AbstractTestRule {
     @Override
-    protected boolean isSupport(DynamicTestType dynamicTestType) {
-        return dynamicTestType == DynamicTestType.NACOS || dynamicTestType == DynamicTestType.ALL;
+    protected boolean isSupport(SermantTestType testType) {
+        return testType == SermantTestType.DYNAMIC_CONFIG_NACOS;
     }
 }

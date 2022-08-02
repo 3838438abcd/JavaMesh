@@ -15,20 +15,20 @@
  *
  */
 
-package com.huaweicloud.spring.feign.api.configuration;
+package com.huaweicloud.spring.feign.consumer;
 
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
+import feign.Response;
+import feign.codec.ErrorDecoder;
 
 /**
- * 针对header方法增加请求头判断是否可以匹配成功
+ * 异常处理器, 修改响应信息为实际内容，而非包装内容, 代替{@link feign.codec.ErrorDecoder.Default}
  *
  * @author zhouss
- * @since 2022-07-29
+ * @since 2022-08-02
  */
-public class HeaderMatchConfiguration implements RequestInterceptor {
+public class FeignErrorDecoder implements ErrorDecoder {
     @Override
-    public void apply(RequestTemplate template) {
-        template.header("key", "header2");
+    public Exception decode(String methodKey, Response response) {
+        return new Exception(response.reason() + "#" + methodKey);
     }
 }
