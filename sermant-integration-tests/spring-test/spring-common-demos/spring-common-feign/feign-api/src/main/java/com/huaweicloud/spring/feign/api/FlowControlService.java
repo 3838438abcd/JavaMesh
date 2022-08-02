@@ -24,13 +24,70 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 流控能力测试
+ * 服务端流控测试
  *
  * @author zhouss
  * @since 2022-07-29
  */
-@FeignClient(name = "feign-provider", contextId = "flowcontrol-client", configuration = HeaderMatchConfiguration.class)
+@FeignClient(name = "feign-provider", configuration = HeaderMatchConfiguration.class)
 public interface FlowControlService {
+    /**
+     * 限流测试
+     *
+     * @return ok
+     */
+    @RequestMapping("rateLimiting")
+    String rateLimiting();
+
+    /**
+     * 慢调用熔断测试
+     *
+     * @return ok
+     */
+    @RequestMapping("timedBreaker")
+    String timedBreaker();
+
+    /**
+     * 异常熔断测试
+     *
+     * @return ok
+     * @throws Exception 模拟异常率
+     */
+    @RequestMapping("exceptionBreaker")
+    String exceptionBreaker() throws Exception;
+
+    /**
+     * 隔离仓测试
+     *
+     * @return ok
+     */
+    @RequestMapping("bulkhead")
+    String bulkhead();
+
+    /**
+     * 请求头匹配测试
+     *
+     * @return ok
+     */
+    @RequestMapping("header")
+    String header();
+
+    /**
+     * 匹配服务名测试-匹配前提, 触发流控
+     *
+     * @return ok
+     */
+    @RequestMapping("serviceNameMatch")
+    String serviceNameMatch();
+
+    /**
+     * 匹配服务名测试-不匹配前提, 不触发流控
+     *
+     * @return ok
+     */
+    @RequestMapping("serviceNameNoMatch")
+    String serviceNameNoMatch();
+
     /**
      * 实例隔离接口测试
      *

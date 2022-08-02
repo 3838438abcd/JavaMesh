@@ -18,7 +18,6 @@
 package com.huaweicloud.spring.feign.consumer.controller;
 
 import com.huaweicloud.spring.common.flowcontrol.YamlSourceFactory;
-import com.huaweicloud.spring.feign.api.FlowControlServerService;
 import com.huaweicloud.spring.feign.api.FlowControlService;
 
 import org.slf4j.Logger;
@@ -47,9 +46,6 @@ public class FlowController {
 
     @Autowired
     private FlowControlService flowControlService;
-
-    @Autowired
-    private FlowControlServerService flowControlServerService;
 
     /**
      * 实例隔离接口测试
@@ -89,7 +85,7 @@ public class FlowController {
      */
     @RequestMapping("rateLimiting")
     public String rateLimiting() {
-        return flowControlServerService.rateLimiting();
+        return flowControlService.rateLimiting();
     }
 
     /**
@@ -100,7 +96,7 @@ public class FlowController {
     @RequestMapping("timedBreaker")
     public String timedBreaker() {
         try {
-            return flowControlServerService.timedBreaker();
+            return flowControlService.timedBreaker();
         } catch (Exception ex) {
             return convertMsg(ex);
         }
@@ -114,7 +110,7 @@ public class FlowController {
     @RequestMapping("exceptionBreaker")
     public String exceptionBreaker() {
         try {
-            return flowControlServerService.exceptionBreaker();
+            return flowControlService.exceptionBreaker();
         } catch (Exception ex) {
             return convertMsg(ex);
         }
@@ -127,7 +123,7 @@ public class FlowController {
      */
     @RequestMapping("bulkhead")
     public String bulkhead() {
-        return flowControlServerService.bulkhead();
+        return flowControlService.bulkhead();
     }
 
     /**
@@ -138,7 +134,7 @@ public class FlowController {
     @RequestMapping("header")
     public String header() {
         try {
-            return flowControlServerService.header();
+            return flowControlService.header();
         } catch (Exception ex) {
             return convertMsg(ex);
         }
@@ -152,7 +148,7 @@ public class FlowController {
     @RequestMapping("serviceNameMatch")
     public String serviceNameMatch() {
         try {
-            return flowControlServerService.serviceNameMatch();
+            return flowControlService.serviceNameMatch();
         } catch (Exception ex) {
             return convertMsg(ex);
         }
@@ -165,7 +161,7 @@ public class FlowController {
      */
     @RequestMapping("serviceNameNoMatch")
     public String serviceNameNoMatch() {
-        return flowControlServerService.serviceNameNoMatch();
+        return flowControlService.serviceNameNoMatch();
     }
 
     private String convertMsg(Exception ex) {
