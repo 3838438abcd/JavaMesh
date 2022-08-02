@@ -40,15 +40,11 @@ import java.util.function.BiFunction;
  * @author zhouss
  * @since 2022-07-30
  */
-public class FlowControlTest {
-    @Rule
-    public final TestRule flowControlCondition = new FlowControlTestRule();
+public abstract class FlowControlTest {
     private static final int RATE_LIMITING_REQUEST_COUNT = 10;
     private static final int BREAKER_REQUEST_COUNT = 10;
     private static final String BREAKER_MSG = "Degraded and blocked";
     private static final String RATE_LIMITING_MSG = "Flow Limited";
-
-    private static final String restConsumerUrl = "http://127.0.0.1:8005/flowcontrol";
 
     /**
      * 测试服务端限流
@@ -87,7 +83,7 @@ public class FlowControlTest {
      */
     @Test
     public void testRetry() {
-        final Integer tryCount = RequestUtils.get(restConsumerUrl + "/retry", Collections.emptyMap(), Integer.class);
+        final Integer tryCount = RequestUtils.get(getRestConsumerUrl() + "/retry", Collections.emptyMap(), Integer.class);
         Assert.assertTrue(tryCount > 0);
     }
 
@@ -142,7 +138,7 @@ public class FlowControlTest {
     }
 
     private void process(String api, String flowControlMsg, int requestCount, AtomicBoolean check) {
-        String url = restConsumerUrl + api;
+        String url = getRestConsumerUrl() + api;
         AtomicBoolean expected = new AtomicBoolean(false);
         final BiFunction<ClientHttpResponse, String, String> callback =
                 (clientHttpResponse, result) -> {
@@ -173,4 +169,11 @@ public class FlowControlTest {
             Assert.assertTrue(expected.get());
         }
     }
+
+    /**
+     * 获取请求地址
+     *
+     * @return 地址
+     */
+    protected abstract String getRestConsumerUrl();
 }

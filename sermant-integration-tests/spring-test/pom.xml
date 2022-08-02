@@ -38,6 +38,9 @@
         <processor.version>2.2.0.RELEASE</processor.version>
         <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
     </properties>
+    <modules>
+        <module>spring-intergration-test</module>
+    </modules>
 
     <profiles>
         <profile>
