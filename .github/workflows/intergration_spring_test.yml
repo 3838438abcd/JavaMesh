@@ -14,26 +14,19 @@ jobs:
     strategy:
       matrix:
         include:
-          - nacosVersion: "1.5.0.RELEASE"
-            springBootVersion: "1.5.0.RELEASE"
+          - springBootVersion: "1.5.0.RELEASE"
             springCloudVersion: "Edgware.SR6"
-          - nacosVersion: "2.0.0.RELEASE"
-            springBootVersion: "2.0.0.RELEASE"
+          - springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
-          - nacosVersion: "2.1.0.RELEASE"
-            springBootVersion: "2.1.0.RELEASE"
-            springCloudVersion: "Greenwich.RELEASE"
-          - nacosVersion: "2.2.0.RELEASE"
-            springBootVersion: "2.2.0.RELEASE"
+          - springBootVersion: "2.1.0.RELEASE"
+            springCloudVersion: "Finchley.RELEASE"
+          - springBootVersion: "2.2.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - nacosVersion: "2.2.8.RELEASE"
-            springBootVersion: "2.3.0.RELEASE"
+          - springBootVersion: "2.3.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - nacosVersion: "2021.0.1.0"
-            springBootVersion: "2.4.0"
+          - springBootVersion: "2.4.0"
             springCloudVersion: "2020.0.0"
-          - nacosVersion: "2021.1"
-            springBootVersion: "2.6.2"
+          - springBootVersion: "2.6.2"
             springCloudVersion: "2021.0.0"
       fail-fast: false
     steps:
@@ -64,7 +57,7 @@ jobs:
       - name: waiting for services start
         run: |
           ps -ef | grep java
-          sleep 10
+          sleep 20
           curl http://127.0.0.1:8015/flowcontrol/rateLimiting
       - name: integration test
         run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
@@ -74,19 +67,26 @@ jobs:
     strategy:
       matrix:
         include:
-          - springBootVersion: "1.5.0.RELEASE"
+          - nacosVersion: "1.5.0.RELEASE"
+            springBootVersion: "1.5.0.RELEASE"
             springCloudVersion: "Edgware.SR6"
-          - springBootVersion: "2.0.0.RELEASE"
+          - nacosVersion: "2.0.0.RELEASE"
+            springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
-          - springBootVersion: "2.1.0.RELEASE"
-            springCloudVersion: "Finchley.RELEASE"
-          - springBootVersion: "2.2.0.RELEASE"
+          - nacosVersion: "2.1.0.RELEASE"
+            springBootVersion: "2.1.0.RELEASE"
+            springCloudVersion: "Greenwich.RELEASE"
+          - nacosVersion: "2.2.0.RELEASE"
+            springBootVersion: "2.2.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - springBootVersion: "2.3.0.RELEASE"
+          - nacosVersion: "2.2.8.RELEASE"
+            springBootVersion: "2.3.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
-          - springBootVersion: "2.4.0"
+          - nacosVersion: "2021.0.1.0"
+            springBootVersion: "2.4.0"
             springCloudVersion: "2020.0.0"
-          - springBootVersion: "2.6.2"
+          - nacosVersion: "2021.1"
+            springBootVersion: "2.6.2"
             springCloudVersion: "2021.0.0"
       fail-fast: false
     steps:
