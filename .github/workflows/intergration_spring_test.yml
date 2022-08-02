@@ -19,7 +19,7 @@ jobs:
           - springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
           - springBootVersion: "2.1.0.RELEASE"
-            springCloudVersion: "Finchley.RELEASE"
+            springCloudVersion: "Greenwich.RELEASE"
           - springBootVersion: "2.2.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
           - springBootVersion: "2.3.0.RELEASE"
@@ -57,7 +57,7 @@ jobs:
       - name: waiting for services start
         run: |
           ps -ef | grep java
-          sleep 20
+          sleep 30
           curl http://127.0.0.1:8015/flowcontrol/rateLimiting
       - name: integration test
         run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
@@ -157,7 +157,7 @@ jobs:
           - springBootVersion: "2.0.0.RELEASE"
             springCloudVersion: "Finchley.RELEASE"
           - springBootVersion: "2.1.0.RELEASE"
-            springCloudVersion: "Finchley.RELEASE"
+            springCloudVersion: "Greenwich.RELEASE"
           - springBootVersion: "2.2.0.RELEASE"
             springCloudVersion: "Hoxton.RELEASE"
           - springBootVersion: "2.3.0.RELEASE"

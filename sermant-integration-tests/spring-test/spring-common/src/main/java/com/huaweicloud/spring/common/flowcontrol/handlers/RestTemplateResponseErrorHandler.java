@@ -17,12 +17,8 @@
 
 package com.huaweicloud.spring.common.flowcontrol.handlers;
 
-import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
-
-import java.io.IOException;
-import java.net.URI;
 
 /**
  * 修改默认错误处理器逻辑, 将所有的真实结果信息返回回调{@link org.springframework.web.client.ResponseExtractor}
@@ -32,7 +28,7 @@ import java.net.URI;
  */
 public class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandler {
     @Override
-    public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
+    public void handleError(ClientHttpResponse response) {
         return;
     }
 }
