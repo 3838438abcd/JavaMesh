@@ -1,7 +1,5 @@
 server:
   port: 8005
-down:
-  serviceName: feign-provider
 spring:
   application:
     name: feign-consumer

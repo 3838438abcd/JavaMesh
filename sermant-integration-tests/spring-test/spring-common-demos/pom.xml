@@ -29,9 +29,6 @@
     <artifactId>spring-common-demos</artifactId>
     <packaging>pom</packaging>
     <description>本模块主要提供基础的demo应用，后续相关测试均可加入</description>
-    <modules>
-        <module>spring-common-feign-1.5.x</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
