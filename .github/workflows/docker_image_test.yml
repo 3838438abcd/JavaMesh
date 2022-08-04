@@ -18,4 +18,4 @@ jobs:
       - name: test kie
         run: |
           sleep 10
-          curl localhost:30110
+          curl http://127.0.0.1:30110/apidocs.json
