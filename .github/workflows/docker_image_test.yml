@@ -17,6 +17,5 @@ jobs:
       - name: check
         run: |
           ls -l
-#          git clone git@github.com:apache/servicecomb-kie.git
-#          cd servicecomb-kie/deployments/docker
-#          sudo docker-compose up
+          cd deployments/docker
+          sudo docker-compose up
