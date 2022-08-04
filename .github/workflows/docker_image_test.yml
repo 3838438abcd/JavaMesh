@@ -118,7 +118,7 @@ jobs:
       - name: build kie
         run: |
           ls -l
-          echo "============================"
+          echo "============构建脚本================"
           cd ./build
           cat > test.sh <<EOF
           . ./binary.sh
@@ -131,9 +131,10 @@ jobs:
           sudo docker version
           sudo docker build -t servicecomb/kie:latest .
           EOF
-
+          echo "================================="
+          ls -l
           export VERSION=0.0.1
-          echo "===================="
+          echo "=========执行脚本==========="
           cat test.sh
           sh ./test.sh
           docker images
