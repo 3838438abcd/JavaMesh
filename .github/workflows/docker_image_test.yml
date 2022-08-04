@@ -124,9 +124,10 @@ jobs:
           cat > test.sh <<EOF
           . ./build_binary.sh
           echo "building docker..."
-          buildAndPackage "linux" "amd64"
+          #buildAndPackage "linux" "amd64"
+          echo "=====当前路径=========="
           cp ../scripts/start.sh ./
-          cp ../build/docker/server/Dockerfile ./
+          cp ./docker/server/Dockerfile ./
           sudo docker version
           sudo docker build -t servicecomb/kie:latest .
           EOF
