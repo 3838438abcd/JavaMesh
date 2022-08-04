@@ -45,7 +45,7 @@ jobs:
           sh ./build.sh
           docker images
   test-kie:
-    name: build kie image
+    name: test-kie
     runs-on: ubuntu-latest
     needs:
       - build-kie-image
@@ -67,7 +67,7 @@ jobs:
           ME_CONFIG_MONGODB_ADMINPASSWORD: 123
           ME_CONFIG_MONGODB_SERVER: mongo
       servicecomb-kie:
-        image: servicecomb/kie:0.2.0
+        image: servicecomb/test-kie:0.2.0
         ports:
           - 30110:30110
         env:
@@ -77,4 +77,5 @@ jobs:
     steps:
       - name: test
         run: |
+          sleep 20
           curl -v http://127.0.0.1:30110/apidocs.json
