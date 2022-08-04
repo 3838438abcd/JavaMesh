@@ -75,3 +75,4 @@ jobs:
       - name: start compose
         run: |
           curl -v localhost:27017
+          curl -v 127.0.0.1:30110/apidocs.json
