@@ -20,7 +20,7 @@ jobs:
         with:
           repository: apache/servicecomb-kie
       - name: docker login
-        uses: docker/login-action@v1.14.1
+        uses: docker/login-action@v2.0.0
         with:
           registry: docker.io
           username: justforstudy
