@@ -121,13 +121,11 @@ jobs:
           echo "============构建脚本================"
           cd ./build
           cat > test.sh <<EOF
-          . ./binary.sh
-
+          . ./build_binary.sh
           echo "building docker..."
           buildAndPackage "linux" "amd64"
           cp ../scripts/start.sh ./
           cp ../build/docker/server/Dockerfile ./
-
           sudo docker version
           sudo docker build -t servicecomb/kie:latest .
           EOF
