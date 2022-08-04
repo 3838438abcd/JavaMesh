@@ -1,83 +1,59 @@
-name: intergration spring test
-env:
-  projectSpringBootVersion: 2.2.0.RELEASE
-on:
-  push:
-  pull_request:
-    branches:
-      - main
-      - develop
-jobs:
-  test-for-spring-1-5-x:
-    name: Test for spring 1.5.x
-    runs-on: ubuntu-latest
-    services:
-      mongo:
-        image: mongo:4.0
-        ports:
-          - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: 123456
-      mongo-express:
-        image: mongo-express
-        ports:
-          - 8081:8081
-        env:
-          ME_CONFIG_MONGODB_ADMINUSERNAME: root
-          ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
-          ME_CONFIG_MONGODB_URL: mongodb://root:123456@mongo:27017/
-      servicecomb-kie:
-        image: servicecomb/kie
-        ports:
-          - 30110:30110
-        env:
-          MONGODB_USER: root
-          MONGODB_PWD: 123456
-          MONGODB_ADDR: http://127.0.0.1:27017
-    strategy:
-      matrix:
-        include:
-          - springBootVersion: "1.5.0.RELEASE"
-            springCloudVersion: "Edgware.SR2"
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 8
-        uses: actions/setup-java@v2
-        with:
-          java-version: '8'
-          distribution: 'adopt'
-          cache: maven
-      - name: download zookeeper and run
-        run: |
-          curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
-          tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
-          bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
-      - name: package agent
-        run: mvn package -DskipTests -Pagent --file pom.xml
-      - name: package common demos
-        run: |
-          sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
-          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests -P flowcontrol-test-1.5.x --file sermant-integration-tests/spring-test/pom.xml
-      - name: start applications
-        run: |
-          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8013 -jar \
-          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign-1.5.x/feign-provider-1.5.x/target/feign-provider-1.5.x.jar > feign-provider.log 2>&1 &
-          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8015 -jar \
-          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign-1.5.x/feign-consumer-1.5.x/target/feign-consumer-1.5.x.jar > feign-consumer.log 2>&1 &
-          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8003 -jar \
-          sermant-integration-tests/spring-test/spring-common-demos/spring-common-resttemplate/rest-provider/target/rest-provider.jar > rest-provider.log 2>&1 &
-          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8005 -jar \
-          sermant-integration-tests/spring-test/spring-common-demos/spring-common-resttemplate/rest-consumer/target/rest-consumer.jar > rest-consumer.log 2>&1 &
-      - name: waiting for services start
-        run: |
-          ps -ef | grep java
-          sleep 50
-          curl http://127.0.0.1:8015/flowcontrol/rateLimiting
-          curl http://127.0.0.1:8005/flowcontrol/rateLimiting
-      - name: integration test
-        run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
+#name: intergration spring test
+#env:
+#  projectSpringBootVersion: 2.2.0.RELEASE
+#on:
+#  push:
+#  pull_request:
+#    branches:
+#      - main
+#      - develop
+#jobs:
+#  test-for-spring-1-5-x:
+#    name: Test for spring 1.5.x
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        include:
+#          - springBootVersion: "1.5.0.RELEASE"
+#            springCloudVersion: "Edgware.SR2"
+#      fail-fast: false
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Set up JDK 8
+#        uses: actions/setup-java@v2
+#        with:
+#          java-version: '8'
+#          distribution: 'adopt'
+#          cache: maven
+#      - name: download zookeeper and run
+#        run: |
+#          curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
+#          tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
+#          bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
+#      - name: package agent
+#        run: mvn package -DskipTests -Pagent --file pom.xml
+#      - name: package common demos
+#        run: |
+#          sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
+#          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests -P flowcontrol-test-1.5.x --file sermant-integration-tests/spring-test/pom.xml
+#      - name: start applications
+#        run: |
+#          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8013 -jar \
+#          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign-1.5.x/feign-provider-1.5.x/target/feign-provider-1.5.x.jar > feign-provider.log 2>&1 &
+#          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8015 -jar \
+#          sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign-1.5.x/feign-consumer-1.5.x/target/feign-consumer-1.5.x.jar > feign-consumer.log 2>&1 &
+#          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8003 -jar \
+#          sermant-integration-tests/spring-test/spring-common-demos/spring-common-resttemplate/rest-provider/target/rest-provider.jar > rest-provider.log 2>&1 &
+#          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dserver.port=8005 -jar \
+#          sermant-integration-tests/spring-test/spring-common-demos/spring-common-resttemplate/rest-consumer/target/rest-consumer.jar > rest-consumer.log 2>&1 &
+#      - name: waiting for services start
+#        run: |
+#          ps -ef | grep java
+#          sleep 50
+#          curl http://127.0.0.1:8015/flowcontrol/rateLimiting
+#          curl http://127.0.0.1:8005/flowcontrol/rateLimiting
+#      - name: integration test
+#        run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
 #  test-for-spring:
 #    name: Test for spring
 #    runs-on: ubuntu-latest

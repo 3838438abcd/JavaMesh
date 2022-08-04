@@ -1,71 +1,78 @@
-#name: docker images test
-#on:
-#  push:
-#  pull_request:
-#    branches:
-#      - main
-#      - develop
-#jobs:
-#  build-kie-image:
-#    name: build kie image
-#    runs-on: ubuntu-latest
-#    services:
-#      mongo:
-#        image: mongo:4.0
-#        ports:
-#          - 27017:27017
-#        env:
-#          MONGO_INITDB_DATABASE: servicecomb
-#          MONGO_INITDB_ROOT_USERNAME: kie
-#          MONGO_INITDB_ROOT_PASSWORD: 123
-#      mongo-express:
-#        image: mongo-express
-#        ports:
-#          - 8081:8081
-#        env:
-#          ME_CONFIG_MONGODB_ADMINUSERNAME: kie
-#          ME_CONFIG_MONGODB_ADMINPASSWORD: 123
-#          ME_CONFIG_MONGODB_SERVER: mongo
-#    steps:
-#      - name: Set up Go
-#        uses: actions/setup-go@v1
-#        with:
-#          go-version: 1.17
-#        id: go
-#      - name: test
-#        uses: actions/checkout@v3
-#        with:
-#          repository: apache/servicecomb-kie
-#      - name: docker login
-#        uses: docker/login-action@v2.0.0
-#        with:
-#          username: justforstudy
-#          password: 123456qwerty
-#      - name: build kie
-#        run: |
-#          echo "============构建脚本================"
-#          export PROJECT_PATH=$(pwd)
-#          export VERSION=0.2.0
-#          cd ./build
-#          cat > build.sh <<EOF
-#          . ./build_binary.sh
-#          echo "building docker..."
-#          buildAndPackage "linux" "amd64"
-#          cp ${PROJECT_PATH}/scripts/start.sh ./
-#          cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
-#          sudo docker version
-#          sudo docker build -t servicecomb/test-kie:${VERSION} .
-#          EOF
-#          sudo chmod 777 *.sh
-#          echo "================处理脚本build_binary.sh=============="
-#          for((i=1;i<9;i++)); do sed -i '$d' ./build_binary.sh ; done
-#          tail -n 6 ./build_binary.sh
-#          echo "================删除完成================="
-#          ls -l
-#          echo "=========执行脚本==========="
-#          set -x
-#          sh ./build.sh
-#          docker images
-#          docker run servicecomb/test-kie:0.2.0 -e MONGODB_USER=kie -e MONGODB_PWD=123 -e MONGODB_ADDR=http://127.0.0.1:27017 -d -p 30110:30110
-#          sleep 20
-#          curl -v http://127.0.0.1:30110/apidocs.json
+name: docker images test
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  build-kie-image:
+    name: build kie image
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:4.0
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: 123456
+      mongo-express:
+        image: mongo-express
+        ports:
+          - 8081:8081
+        env:
+          ME_CONFIG_MONGODB_ADMINUSERNAME: root
+          ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+          ME_CONFIG_MONGODB_URL: mongodb://root:123456@mongo:27017/
+      servicecomb-kie:
+        image: servicecomb/kie
+        ports:
+          - 30110:30110
+        env:
+          MONGODB_USER: root
+          MONGODB_PWD: 123456
+          MONGODB_ADDR: http://127.0.0.1:27017
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+        id: go
+      - name: test
+        uses: actions/checkout@v3
+        with:
+          repository: apache/servicecomb-kie
+      - name: docker login
+        uses: docker/login-action@v2.0.0
+        with:
+          username: justforstudy
+          password: 123456qwerty
+      - name: build kie
+        run: |
+          echo "============构建脚本================"
+          export PROJECT_PATH=$(pwd)
+          export VERSION=0.2.0
+          cd ./build
+          cat > build.sh <<EOF
+          . ./build_binary.sh
+          echo "building docker..."
+          buildAndPackage "linux" "amd64"
+          cp ${PROJECT_PATH}/scripts/start.sh ./
+          cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
+          sudo docker version
+          sudo docker build -t servicecomb/test-kie:${VERSION} .
+          EOF
+          sudo chmod 777 *.sh
+          echo "================处理脚本build_binary.sh=============="
+          for((i=1;i<9;i++)); do sed -i '$d' ./build_binary.sh ; done
+          tail -n 6 ./build_binary.sh
+          echo "================删除完成================="
+          ls -l
+          echo "=========执行脚本==========="
+          set -x
+          sh ./build.sh
+          docker images
+          docker run servicecomb/test-kie:0.2.0 -e MONGODB_USER=root -e MONGODB_PWD=123456 -e MONGODB_ADDR=http://127.0.0.1:27017 -p 30110:30110
+          sleep 20
+          curl -v http://127.0.0.1:30110/apidocs.json
