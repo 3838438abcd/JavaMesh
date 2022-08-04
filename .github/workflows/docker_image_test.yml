@@ -118,6 +118,7 @@ jobs:
       - name: build kie
         run: |
           ls -l
+          echo "=============当前路径$(pwd)=========="
           echo "============构建脚本================"
           cd ./build
           cat > test.sh <<EOF
@@ -130,7 +131,9 @@ jobs:
           sudo docker build -t servicecomb/kie:latest .
           EOF
           sudo chmod 777 *.sh
-          echo "================================="
+          echo "================删除最后7行=============="
+          for((i=1;i<7;i++)); do sed -i '$d' ./build_binary.sh ; done
+          echo "================删除完成================="
           ls -l
           echo "=========执行脚本==========="
           set -x
