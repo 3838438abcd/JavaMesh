@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: test kie
         run: |
-          wget http://localhost:30110/apidocs.json
+          curl http://127.0.0.1:30110/v1/default/kie/kv
       - uses: actions/checkout@v2
       - name: Set up JDK 8
         uses: actions/setup-java@v2
