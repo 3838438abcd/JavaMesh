@@ -6,8 +6,8 @@ on:
       - main
       - develop
 jobs:
-  test-kie:
-    name: pull kie
+  build-kie-image:
+    name: build kie image
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
@@ -21,29 +21,60 @@ jobs:
           repository: apache/servicecomb-kie
       - name: build kie
         run: |
-          ls -l
-          echo "=============当前路径$(pwd)=========="
           echo "============构建脚本================"
           export PROJECT_PATH=$(pwd)
           export VERSION=0.2.0
           cd ./build
-          cat > test.sh <<EOF
+          cat > build.sh <<EOF
           . ./build_binary.sh
           echo "building docker..."
           buildAndPackage "linux" "amd64"
-          echo "=====当前路径$(pwd)=========="
           cp ${PROJECT_PATH}/scripts/start.sh ./
           cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
           sudo docker version
           sudo docker build -t servicecomb/test-kie:${VERSION} .
           EOF
           sudo chmod 777 *.sh
-          echo "================删除最后9行=============="
+          echo "================处理脚本build_binary.sh=============="
           for((i=1;i<9;i++)); do sed -i '$d' ./build_binary.sh ; done
           tail -n 6 ./build_binary.sh
           echo "================删除完成================="
           ls -l
           echo "=========执行脚本==========="
           set -x
-          sh ./test.sh
+          sh ./build.sh
           docker images
+  test-kie:
+    name: build kie image
+    runs-on: ubuntu-latest
+    needs:
+      - build-kie-image
+    services:
+      mongo:
+        image: mongo:4.0
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_DATABASE: servicecomb
+          MONGO_INITDB_ROOT_USERNAME: kie
+          MONGO_INITDB_ROOT_PASSWORD: 123
+      mongo-express:
+        image: mongo-express
+        ports:
+          - 8081:8081
+        env:
+          ME_CONFIG_MONGODB_ADMINUSERNAME: kie
+          ME_CONFIG_MONGODB_ADMINPASSWORD: 123
+          ME_CONFIG_MONGODB_SERVER: mongo
+      servicecomb-kie:
+        image: servicecomb/kie:0.2.0
+        ports:
+          - 30110:30110
+        env:
+          MONGODB_USER: kie
+          MONGODB_PWD: 123
+          MONGODB_ADDR: mongo
+    steps:
+      - name: test
+        run: |
+          curl -v http://127.0.0.1:30110/apidocs.json
