@@ -33,8 +33,8 @@ jobs:
         id: go
       - name: build kie
         run: |
-          curl -o apache-servicecomb-kie-0.2.0-linux-amd64.tar.gz -L https://dlcdn.apache.org/servicecomb/servicecomb-kie/0.2.0/apache-servicecomb-kie-0.2.0-linux-amd64.tar.gz
-          tar -zxf apache-servicecomb-kie-0.2.0-linux-amd64.tar.gz
+          curl -o apache-servicecomb-kie-0.2.0-linux-arm64.tar.gz -L https://dlcdn.apache.org/servicecomb/servicecomb-kie/0.2.0/apache-servicecomb-kie-0.2.0-linux-arm64.tar.gz
+          tar -zxf apache-servicecomb-kie-0.2.0-linux-arm64.tar.gz
           ls -l
           echo "===========start========="
           chmod +x kie
