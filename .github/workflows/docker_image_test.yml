@@ -21,6 +21,8 @@ jobs:
           repository: apache/servicecomb-kie
       - name: build kie
         run: |
+          ls -l
+          echo "============================"
           cd build
           cat > test.sh <<EOF
           . ./build_binary.sh
