@@ -43,12 +43,19 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: apache/servicecomb-kie
-      - name: use kie
-        uses: docker://servicecomb/kie
+      - name: run
         env:
           MONGODB_USER: root
           MONGODB_PWD: 123456
           MONGODB_ADDR: http://127.0.0.1:27017
+        run: |
+          go run cmd/kieserver main.go
+#      - name: use kie
+#        uses: docker://servicecomb/kie
+#        env:
+#          MONGODB_USER: root
+#          MONGODB_PWD: 123456
+#          MONGODB_ADDR: http://127.0.0.1:27017
 #        ports:
 #          - 30110:30110
 #      - name: build deploy
