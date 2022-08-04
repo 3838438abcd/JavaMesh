@@ -22,6 +22,7 @@ jobs:
       - name: docker login
         uses: docker/login-action@v1.14.1
         with:
+          registry: docker.io
           username: justforstudy
           password: 123456qwerty
       - name: build kie
@@ -39,7 +40,7 @@ jobs:
           sudo docker version
           sudo docker build -t servicecomb/test-kie:${VERSION} .
           sudo docker tag servicecomb/test-kie:${VERSION} justforstudy/test-kie:${VERSION}
-          #sudo docker push justforstudy/test-kie:${VERSION}
+          sudo docker push justforstudy/test-kie:${VERSION}
           EOF
           sudo chmod 777 *.sh
           echo "================处理脚本build_binary.sh=============="
