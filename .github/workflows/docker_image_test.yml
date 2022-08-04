@@ -74,6 +74,6 @@ jobs:
     steps:
       - name: test
         run: |
-          docker run servicecomb/test-kie:${VERSION} -e MONGODB_USER=kie -e MONGODB_PWD=123 -e MONGODB_ADDR=mongo -d -p 30110:30110 -d
+          docker run servicecomb/test-kie:0.2.0 -e MONGODB_USER=kie -e MONGODB_PWD=123 -e MONGODB_ADDR=mongo -d -p 30110:30110 -d
           sleep 20
           curl -v http://127.0.0.1:30110/apidocs.json
