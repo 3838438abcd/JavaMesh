@@ -23,7 +23,7 @@ jobs:
         uses: docker/login-action@v2.0.0
         with:
           username: justforstudy
-          password: 123456qwerty1
+          password: 123456qwerty
       - name: build kie
         run: |
           echo "============构建脚本================"
