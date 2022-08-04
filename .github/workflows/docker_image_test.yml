@@ -1,21 +1,21 @@
-name: docker images test
-on:
-  push:
-  pull_request:
-    branches:
-      - main
-      - develop
-jobs:
-  test-kie:
-    name: use kie
-    runs-on: ubuntu-latest
-    services:
-      kie:
-        image: servicecomb/kie:0.2.1
-        ports:
-          - 30110:30110
-    steps:
-      - name: test kie
-        run: |
-          sleep 10
-          curl  -H "Expect:" -v -o apidocs.json -L http://127.0.0.1:30111/apidocs.json
+#name: docker images test
+#on:
+#  push:
+#  pull_request:
+#    branches:
+#      - main
+#      - develop
+#jobs:
+#  test-kie:
+#    name: use kie
+#    runs-on: ubuntu-latest
+#    services:
+#      kie:
+#        image: servicecomb/kie:0.2.1
+#        ports:
+#          - 30110:30110
+#    steps:
+#      - name: test kie
+#        run: |
+#          sleep 10
+#          curl  -H "Expect:" -v -o apidocs.json -L http://127.0.0.1:30110/apidocs.json
