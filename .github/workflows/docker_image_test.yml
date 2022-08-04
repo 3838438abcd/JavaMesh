@@ -1,0 +1,17 @@
+name: docker images test
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  test-kie:
+    name: pull kie
+    runs-on: ubuntu-latest
+    steps:
+      - name: kie
+        uses: docker://servicecomb/kie:0.2.1
+      - name: test
+        run: |
+          curl localhost:30110
