@@ -23,7 +23,7 @@ jobs:
         run: |
           ls -l
           echo "============================"
-          cd build
+          cd ./build
           cat > test.sh <<EOF
           . ./build_binary.sh
 
@@ -37,7 +37,6 @@ jobs:
           sudo docker tag servicecomb/kie:latest servicecomb/kie:${version}
           EOF
 
-          cd build
           export VERSION=0.0.1
           echo "===================="
           cat test.sh
