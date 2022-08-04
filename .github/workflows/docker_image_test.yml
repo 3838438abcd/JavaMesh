@@ -19,10 +19,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: apache/servicecomb-kie
-      - name: check
+      - name: build kie
         run: |
-          ls -l
-          cd deployments/docker
-          sudo docker-compose up -d
-          sleep 30
-          curl -v http://127.0.0.1:30110/apidocs.json
+          cd build
+          export VERSION=0.0.1 #optional, it is latest by default
+          sh ./build_docker.sh
+          docker images
