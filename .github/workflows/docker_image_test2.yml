@@ -49,8 +49,8 @@ jobs:
           MONGODB_USER: root
           MONGODB_PWD: 123456
           MONGODB_ADDR: http://127.0.0.1:27017
-        ports:
-          - 30110:30110
+#        ports:
+#          - 30110:30110
 #      - name: build deploy
 #        run: |
 #          cat > compose.yaml <<EOF
