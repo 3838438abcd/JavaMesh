@@ -39,8 +39,8 @@ jobs:
           cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
           sudo docker version
           sudo docker build -t servicecomb/test-kie:${VERSION} .
-          sudo docker tag servicecomb/test-kie:${VERSION} justforstudy/test-kie:${VERSION}
-          sudo docker push justforstudy/test-kie:${VERSION}
+          sudo docker tag servicecomb/test-kie:${VERSION} test-kie:${VERSION}
+          sudo docker push test-kie:${VERSION}
           EOF
           sudo chmod 777 *.sh
           echo "================处理脚本build_binary.sh=============="
