@@ -133,8 +133,7 @@ jobs:
           EOF
           echo "================================="
           ls -l
-          export VERSION=0.0.1
           echo "=========执行脚本==========="
-          cat test.sh
+          set -x
           sh ./test.sh
           docker images
