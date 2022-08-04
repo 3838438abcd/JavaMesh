@@ -1,22 +1,17 @@
-#name: docker images test
-#on:
-#  push:
-#  pull_request:
-#    branches:
-#      - main
-#      - develop
-#jobs:
-#  test-kie:
-#    name: pull kie
-#    runs-on: ubuntu-latest
-#    services:
-#      kie:
-#        image: servicecomb/kie:0.2.1
-#        ports:
-#          - 30110:30110
-#    steps:
-#      - name: kie
-#        uses: docker://servicecomb/kie:0.2.1
-#      - name: test
-#        run: |
-#          curl localhost:30110
+name: docker images test
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  test-kie:
+    name: pull kie
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          git clone git@github.com:apache/servicecomb-kie.git
+          cd servicecomb-kie/deployments/docker
+          sudo docker-compose up
