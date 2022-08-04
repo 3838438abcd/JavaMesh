@@ -21,8 +21,21 @@ jobs:
           repository: apache/servicecomb-kie
       - name: build kie
         run: |
-          go run cmd/kieserver/main.go
-#          cd build
-#          export VERSION=0.0.1
-#          sh ./build_docker.sh
-#          docker images
+          cd build
+          cat > test.sh <<EOF
+          . ./build_binary.sh
+
+          echo "building docker..."
+          buildAndPackage "linux" "amd64"
+          cp ../scripts/start.sh ./
+          cp ../build/docker/server/Dockerfile ./
+
+          sudo docker version
+          sudo docker build -t servicecomb/kie:latest .
+          sudo docker tag servicecomb/kie:latest servicecomb/kie:${version}
+          EOF
+
+          cd build
+          export VERSION=0.0.1
+          sh ./build_docker.sh
+          docker images
