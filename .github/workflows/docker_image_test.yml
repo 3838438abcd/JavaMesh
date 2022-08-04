@@ -38,7 +38,6 @@ jobs:
           cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
           sudo docker version
           sudo docker build -t servicecomb/test-kie:${VERSION} .
-          docker run servicecomb/test-kie:${VERSION} -e MONGODB_USER=kie -e MONGODB_PWD=123 -e MONGODB_ADDR=mongo -d -p 30110:30110 -d
           EOF
           sudo chmod 777 *.sh
           echo "================处理脚本build_binary.sh=============="
@@ -72,17 +71,9 @@ jobs:
           ME_CONFIG_MONGODB_ADMINUSERNAME: kie
           ME_CONFIG_MONGODB_ADMINPASSWORD: 123
           ME_CONFIG_MONGODB_SERVER: mongo
-      servicecomb-kie:
-        image: servicecomb/test-kie:0.2.0
-        options: --pull never
-        ports:
-          - 30110:30110
-        env:
-          MONGODB_USER: kie
-          MONGODB_PWD: 123
-          MONGODB_ADDR: mongo
     steps:
       - name: test
         run: |
+          docker run servicecomb/test-kie:${VERSION} -e MONGODB_USER=kie -e MONGODB_PWD=123 -e MONGODB_ADDR=mongo -d -p 30110:30110 -d
           sleep 20
           curl -v http://127.0.0.1:30110/apidocs.json
