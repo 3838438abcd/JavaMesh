@@ -22,9 +22,8 @@ jobs:
       - name: docker login
         uses: docker/login-action@v2.0.0
         with:
-          registry: docker.io/justforstudy/testkie
           username: justforstudy
-          password: 123456qwerty
+          password: 123456qwerty1
       - name: build kie
         run: |
           echo "============构建脚本================"
