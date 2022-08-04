@@ -132,7 +132,8 @@ jobs:
           EOF
           sudo chmod 777 *.sh
           echo "================删除最后7行=============="
-          for((i=1;i<7;i++)); do sed -i '$d' ./build_binary.sh ; done
+          for((i=1;i<9;i++)); do sed -i '$d' ./build_binary.sh ; done
+          tail -n 6 ./build_binary.sh
           echo "================删除完成================="
           ls -l
           echo "=========执行脚本==========="
