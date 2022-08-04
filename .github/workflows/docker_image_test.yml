@@ -19,5 +19,5 @@ jobs:
           ls -l
           cd deployments/docker
           sudo docker-compose up -d
-          sleep 10
-          curl -v http://127.0.0.1:30110/v3/default/kie/kv
+          sleep 30
+          curl -v http://127.0.0.1:30110/apidocs.json
