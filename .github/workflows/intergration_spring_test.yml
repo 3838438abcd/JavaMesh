@@ -237,6 +237,7 @@ jobs:
         run: |
           tar -zxf localcse-2.0.2.tar.gz
           cd ./Local-CSE-2.0.2-1
+          chmod +x ./cse
           ls -l
           echo "==========="
           sh ./start.sh &
