@@ -49,16 +49,16 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
-#      - name: download nacos server and run
-#        run: |
-#          curl -o nacos-server-1.4.2.tar.gz -L https://github.com/alibaba/nacos/releases/download/1.4.2/nacos-server-1.4.2.tar.gz
-#          tar -zxf nacos-server-1.4.2.tar.gz
-#          bash nacos/bin/startup.sh -m standalone
-      - name: download localcse and run
+      - name: download nacos server and run
         run: |
-          curl -o Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
-          unzip Local-CSE-2.1.3-linux-amd64.zip -d cse
-          sh cse/start.sh &
+          curl -o nacos-server-1.4.2.tar.gz -L https://github.com/alibaba/nacos/releases/download/1.4.2/nacos-server-1.4.2.tar.gz
+          tar -zxf nacos-server-1.4.2.tar.gz
+          bash nacos/bin/startup.sh -m standalone
+#      - name: download localcse and run
+#        run: |
+#          curl -o Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
+#          unzip Local-CSE-2.1.3-linux-amd64.zip -d cse
+#          sh cse/start.sh &
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package spring nacos config
@@ -90,9 +90,9 @@ jobs:
           server.port: 8989
         run: |
           ps -ef | grep nacos-config | head -n 1 | awk '{print $2}' | xargs -n 1 kill -9
-          sh cse/stop.sh
-          rm -rf cse/data
-          sh cse/start.sh &
+#          sh cse/stop.sh
+#          rm -rf cse/data
+#          sh cse/start.sh &
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar &
       - name: wait for ready and test
         run: |
@@ -168,9 +168,9 @@ jobs:
           server.port: 8989
         run: |
           ps -ef | grep zookeeper-config | head -n 1 | awk '{print $2}' | xargs -n 1 kill -9
-          sh cse/stop.sh
-          rm -rf cse/data
-          sh cse/start.sh &
+#          sh cse/stop.sh
+#          rm -rf cse/data
+#          sh cse/start.sh &
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-zookeeper-config/target/zookeeper-config.jar > zk-config.log 2>&1 &
       - name: wait for ready and test
         run: |
