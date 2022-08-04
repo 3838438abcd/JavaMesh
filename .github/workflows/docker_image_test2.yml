@@ -1,30 +1,30 @@
-name: docker images test
-on:
-  push:
-  pull_request:
-    branches:
-      - main
-      - develop
-jobs:
-  build-kie-image:
-    name: build kie image
-    runs-on: ubuntu-latest
-    services:
-      mongo:
-        image: mongo:4.0
-        ports:
-          - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: 123456
-      mongo-express:
-        image: mongo-express
-        ports:
-          - 8081:8081
-        env:
-          ME_CONFIG_MONGODB_ADMINUSERNAME: root
-          ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
-          ME_CONFIG_MONGODB_URL: mongodb://root:123456@mongo:27017/
+#name: docker images test
+#on:
+#  push:
+#  pull_request:
+#    branches:
+#      - main
+#      - develop
+#jobs:
+#  build-kie-image:
+#    name: build kie image
+#    runs-on: ubuntu-latest
+#    services:
+#      mongo:
+#        image: mongo:4.0
+#        ports:
+#          - 27017:27017
+#        env:
+#          MONGO_INITDB_ROOT_USERNAME: root
+#          MONGO_INITDB_ROOT_PASSWORD: 123456
+#      mongo-express:
+#        image: mongo-express
+#        ports:
+#          - 8081:8081
+#        env:
+#          ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#          ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+#          ME_CONFIG_MONGODB_URL: mongodb://root:123456@mongo:27017/
 #      servicecomb-kie:
 #        image: servicecomb/kie
 #        ports:
@@ -33,63 +33,54 @@ jobs:
 #          MONGODB_USER: root
 #          MONGODB_PWD: 123456
 #          MONGODB_ADDR: http://127.0.0.1:27017
-    steps:
-      - name: Set up Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.17
-        id: go
-      - name: test
-        uses: actions/checkout@v3
-        with:
-          repository: apache/servicecomb-kie
-      - name: run
-        env:
-          MONGODB_USER: root
-          MONGODB_PWD: 123456
-          MONGODB_ADDR: http://127.0.0.1:27017
-        run: |
-          ls -l
-          echo "=================="
-          go run ./cmd/kieserver main.go
-#      - name: use kie
-#        uses: docker://servicecomb/kie
-#        env:
-#          MONGODB_USER: root
-#          MONGODB_PWD: 123456
-#          MONGODB_ADDR: http://127.0.0.1:27017
-#        ports:
-#          - 30110:30110
-#      - name: build deploy
-#        run: |
-#          cat > compose.yaml <<EOF
-#          version: '3.1'
-#          services:
-#            mongo:
-#              image: mongo:4.0
-#              ports:
-#                - 27017:27017
-#              environment:
-#                MONGO_INITDB_ROOT_USERNAME: root
-#                MONGO_INITDB_ROOT_PASSWORD: 123456
-#            mongo-express:
-#              image: mongo-express
-#              ports:
-#                - 8081:8081
-#              environment:
-#                ME_CONFIG_MONGODB_ADMINUSERNAME: root
-#                ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
-#                ME_CONFIG_MONGODB_SERVER: mongo
-#            servicecomb-kie:
-#              image: servicecomb/kie
-#              ports:
-#                - 30110:30110
-#              environment:
-#                MONGODB_USER: root
-#                MONGODB_PWD: 123456
-#                MONGODB_ADDR: mongo
-#          EOF
-      - name: start compose
-        run: |
-          curl -v localhost:27017
-          curl -v -k http://127.0.0.1:30110/v1/default/kie/kv?label=service%3AflowControlDemo
+#    steps:
+#      - name: Set up Go
+#        uses: actions/setup-go@v1
+#        with:
+#          go-version: 1.17
+#        id: go
+#      - name: test
+#        uses: actions/checkout@v3
+#        with:
+#          repository: apache/servicecomb-kie
+##      - name: use kie
+##        uses: docker://servicecomb/kie
+##        env:
+##          MONGODB_USER: root
+##          MONGODB_PWD: 123456
+##          MONGODB_ADDR: http://127.0.0.1:27017
+##        ports:
+##          - 30110:30110
+##      - name: build deploy
+##        run: |
+##          cat > compose.yaml <<EOF
+##          version: '3.1'
+##          services:
+##            mongo:
+##              image: mongo:4.0
+##              ports:
+##                - 27017:27017
+##              environment:
+##                MONGO_INITDB_ROOT_USERNAME: root
+##                MONGO_INITDB_ROOT_PASSWORD: 123456
+##            mongo-express:
+##              image: mongo-express
+##              ports:
+##                - 8081:8081
+##              environment:
+##                ME_CONFIG_MONGODB_ADMINUSERNAME: root
+##                ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+##                ME_CONFIG_MONGODB_SERVER: mongo
+##            servicecomb-kie:
+##              image: servicecomb/kie
+##              ports:
+##                - 30110:30110
+##              environment:
+##                MONGODB_USER: root
+##                MONGODB_PWD: 123456
+##                MONGODB_ADDR: mongo
+##          EOF
+##      - name: start compose
+##        run: |
+##          curl -v localhost:27017
+##          curl -v -k http://127.0.0.1:30110/v1/default/kie/kv?label=service%3AflowControlDemo
