@@ -37,5 +37,5 @@ jobs:
 
           cd build
           export VERSION=0.0.1
-          sh ./build_docker.sh
+          sh ./test.sh
           docker images
