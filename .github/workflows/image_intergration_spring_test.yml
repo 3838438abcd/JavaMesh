@@ -57,11 +57,11 @@ jobs:
           curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
           tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
           bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
-      - name: download localcse and run
-        run: |
-          curl -o Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
-          unzip Local-CSE-2.1.3-linux-amd64.zip -d cse
-          sh cse/start.sh &
+#      - name: download localcse and run
+#        run: |
+#          curl -o Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
+#          unzip Local-CSE-2.1.3-linux-amd64.zip -d cse
+#          sh cse/start.sh &
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package spring zk config
