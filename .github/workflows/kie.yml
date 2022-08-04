@@ -1,0 +1,41 @@
+name: docker images test
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  build-kie-image:
+    name: build kie image
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:4.0
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: 123456
+      mongo-express:
+        image: mongo-express
+        ports:
+          - 8081:8081
+        env:
+          ME_CONFIG_MONGODB_ADMINUSERNAME: root
+          ME_CONFIG_MONGODB_ADMINPASSWORD: 123456
+          ME_CONFIG_MONGODB_URL: mongodb://root:123456@mongo:27017/
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+        id: go
+      - name: build kie
+        run: |
+          curl -o apache-servicecomb-kie-0.2.0-linux-amd64.tar.gz -L https://dlcdn.apache.org/servicecomb/servicecomb-kie/0.2.0/apache-servicecomb-kie-0.2.0-linux-amd64.tar.gz
+          tar -zxf apache-servicecomb-kie-0.2.0-linux-amd64.tar.gz
+          ls -l
+          echo "===========start========="
+          chmod +x kie
+          sh kie
