@@ -49,7 +49,9 @@ jobs:
           MONGODB_PWD: 123456
           MONGODB_ADDR: http://127.0.0.1:27017
         run: |
-          go run cmd/kieserver main.go
+          ls -l
+          echo "=================="
+          go run ./cmd/kieserver main.go
 #      - name: use kie
 #        uses: docker://servicecomb/kie
 #        env:
