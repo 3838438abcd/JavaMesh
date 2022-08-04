@@ -52,5 +52,4 @@ jobs:
         run: |
           cat compose.yaml
           echo "========="
-          cd ./deployments/docker
           sudo docker-compose -f compose.yaml up
