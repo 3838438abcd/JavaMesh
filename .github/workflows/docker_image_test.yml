@@ -38,8 +38,7 @@ jobs:
           cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
           sudo docker version
           sudo docker build -t servicecomb/test-kie:${VERSION} .
-          sudo docker tag servicecomb/test-kie:${VERSION} justforstudy/testkie:${VERSION}
-          sudo docker push justforstudy/testkie:${VERSION}
+          docker run servicecomb/test-kie:${VERSION} -e MONGODB_USER=kie -e MONGODB_PWD=123 -e MONGODB_ADDR=mongo -d -p 30110:30110 -d
           EOF
           sudo chmod 777 *.sh
           echo "================处理脚本build_binary.sh=============="
