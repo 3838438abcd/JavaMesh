@@ -68,6 +68,7 @@ jobs:
           ME_CONFIG_MONGODB_SERVER: mongo
       servicecomb-kie:
         image: servicecomb/test-kie:0.2.0
+        options: --pull never
         ports:
           - 30110:30110
         env:
