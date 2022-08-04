@@ -21,7 +21,8 @@ jobs:
           repository: apache/servicecomb-kie
       - name: build kie
         run: |
-          cd build
-          export VERSION=0.0.1 #optional, it is latest by default
-          sh ./build_docker.sh
-          docker images
+          go run cmd/kieserver/main.go
+#          cd build
+#          export VERSION=0.0.1
+#          sh ./build_docker.sh
+#          docker images
