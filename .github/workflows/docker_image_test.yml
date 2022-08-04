@@ -120,19 +120,21 @@ jobs:
           ls -l
           echo "=============当前路径$(pwd)=========="
           echo "============构建脚本================"
+          export PROJECT_PATH=$(pwd)
+          export VERSION=0.2.0
           cd ./build
           cat > test.sh <<EOF
           . ./build_binary.sh
           echo "building docker..."
           buildAndPackage "linux" "amd64"
           echo "=====当前路径$(pwd)=========="
-          cp /home/runner/work/Sermant/Sermant/scripts/start.sh ./
-          cp /home/runner/work/Sermant/Sermant/build/docker/server/Dockerfile ./
+          cp ${PROJECT_PATH}/scripts/start.sh ./
+          cp ${PROJECT_PATH}/build/docker/server/Dockerfile ./
           sudo docker version
-          sudo docker build -t servicecomb/kie:latest .
+          sudo docker build -t servicecomb/test-kie:${VERSION} .
           EOF
           sudo chmod 777 *.sh
-          echo "================删除最后7行=============="
+          echo "================删除最后9行=============="
           for((i=1;i<9;i++)); do sed -i '$d' ./build_binary.sh ; done
           tail -n 6 ./build_binary.sh
           echo "================删除完成================="
