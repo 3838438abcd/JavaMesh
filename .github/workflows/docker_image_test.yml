@@ -125,7 +125,7 @@ jobs:
           . ./build_binary.sh
           echo "building docker..."
           #buildAndPackage "linux" "amd64"
-          echo "=====当前路径=========="
+          echo "=====当前路径$(pwd)=========="
           cp ../scripts/start.sh ./
           cp ./docker/server/Dockerfile ./
           sudo docker version
