@@ -32,15 +32,7 @@ jobs:
           bash nacos/bin/startup.sh -m standalone
       - name: download localcse and run
         run: |
-          tryTimes=3
-          for ((i=1; i<=${tryTimes};i++))
-          do
-            echo "try down cse at $i times"
-            curl localhost:30111
-            if [ $? == 0 ];then
-              break
-            fi
-          done
+          sh ./sermant-integration-tests/scripts/down-cse.sh
 #          curl -o Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
 #          unzip Local-CSE-2.1.3-linux-amd64.zip -d cse
 #          sh cse/start.sh &
