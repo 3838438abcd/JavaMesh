@@ -17,18 +17,22 @@
 
 #!/bin/bash
 tryTimes=3
-#set -x
-download() {
-#  curl -o Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
-  curl -v localhost:30110
-}
+echo "root path: ${ROOT_PATH}"
 for ((i=1; i<=${tryTimes};i++))
 do
-  echo "try down cse at $i times"
-  curl localhost:30111
+  echo "try download cse at $i time"
+  curl -o ${ROOT_PATH}/Local-CSE-2.1.3-linux-amd64.zip -L https://cse-bucket.obs.cn-north-1.myhuaweicloud.com/LocalCSE/Local-CSE-2.1.3-linux-amd64.zip
   if [ $? == 0 ];then
     break
   fi
 done
-#unzip Local-CSE-2.1.3-linux-amd64.zip -d cse
-#sh cse/start.sh &
+ls -l
+if [ -f ${ROOT_PATH}/Local-CSE-2.1.3-linux-amd64.zip ];then
+  echo "download cse success, and start cse"
+  unzip ${ROOT_PATH}/Local-CSE-2.1.3-linux-amd64.zip -d ${ROOT_PATH}/cse
+  sh ${ROOT_PATH}/cse/start.sh &
+else
+  exit 1
+fi
+
+
