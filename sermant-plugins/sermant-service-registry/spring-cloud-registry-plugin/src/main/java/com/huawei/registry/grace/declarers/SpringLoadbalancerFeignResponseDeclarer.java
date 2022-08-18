@@ -17,9 +17,9 @@
 
 package com.huawei.registry.grace.declarers;
 
+import com.huawei.registry.declarers.AbstractBaseConfigDeclarer;
 import com.huawei.registry.grace.interceptors.SpringLoadbalancerFeignResponseInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -30,7 +30,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-05-25
  */
-public class SpringLoadbalancerFeignResponseDeclarer extends AbstractPluginDeclarer {
+public class SpringLoadbalancerFeignResponseDeclarer extends AbstractBaseConfigDeclarer {
     private static final String[] ENHANCE_CLASSES = {
         "org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient",
         "org.springframework.cloud.netflix.feign.ribbon.LoadBalancerFeignClient",
@@ -54,5 +54,10 @@ public class SpringLoadbalancerFeignResponseDeclarer extends AbstractPluginDecla
                 InterceptDeclarer.build(MethodMatcher.nameEquals("execute")
                         .and(MethodMatcher.paramTypesEqual("feign.Request", "feign.Request$Options")), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace() && getGraceConfig().isEnableGraceShutdown();
     }
 }

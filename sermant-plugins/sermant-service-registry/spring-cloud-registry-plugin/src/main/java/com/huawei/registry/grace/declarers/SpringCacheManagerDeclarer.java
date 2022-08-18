@@ -17,9 +17,9 @@
 
 package com.huawei.registry.grace.declarers;
 
+import com.huawei.registry.declarers.AbstractBaseConfigDeclarer;
 import com.huawei.registry.grace.interceptors.SpringCacheManagerInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -30,7 +30,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-05-23
  */
-public class SpringCacheManagerDeclarer extends AbstractPluginDeclarer {
+public class SpringCacheManagerDeclarer extends AbstractBaseConfigDeclarer {
     /**
      * 增强类的全限定名
      */
@@ -60,5 +60,10 @@ public class SpringCacheManagerDeclarer extends AbstractPluginDeclarer {
                 InterceptDeclarer.build(MethodMatcher.isConstructor()
                                 .and(MethodMatcher.paramCountEquals(CONSTRUCTOR_COUNT)), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace() && getGraceConfig().isEnableGraceShutdown();
     }
 }

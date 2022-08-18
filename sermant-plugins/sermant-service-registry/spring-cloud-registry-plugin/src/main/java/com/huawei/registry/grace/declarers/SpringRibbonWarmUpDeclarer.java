@@ -18,9 +18,9 @@
 package com.huawei.registry.grace.declarers;
 
 import com.huawei.registry.config.grace.GraceContext;
+import com.huawei.registry.declarers.AbstractBaseConfigDeclarer;
 import com.huawei.registry.grace.interceptors.SpringRibbonWarmUpInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -31,7 +31,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-05-17
  */
-public class SpringRibbonWarmUpDeclarer extends AbstractPluginDeclarer {
+public class SpringRibbonWarmUpDeclarer extends AbstractBaseConfigDeclarer {
     /**
      * 通用自动注册类
      */
@@ -55,5 +55,10 @@ public class SpringRibbonWarmUpDeclarer extends AbstractPluginDeclarer {
                 InterceptDeclarer.build(MethodMatcher.nameEquals("getEligibleServers")
                         .and(MethodMatcher.paramTypesEqual("java.util.List", "java.lang.Object")), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace() && getGraceConfig().isEnableWarmUp();
     }
 }

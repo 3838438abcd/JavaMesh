@@ -17,9 +17,9 @@
 
 package com.huawei.registry.grace.declarers;
 
+import com.huawei.registry.declarers.AbstractBaseConfigDeclarer;
 import com.huawei.registry.grace.interceptors.SpringLoadbalancerRestTemplateResponseInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -30,7 +30,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-05-25
  */
-public class SpringLoadbalancerRestTemplateResponseDeclarer extends AbstractPluginDeclarer {
+public class SpringLoadbalancerRestTemplateResponseDeclarer extends AbstractBaseConfigDeclarer {
     private static final String[] ENHANCE_CLASSES = {
         "org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor",
         "org.springframework.cloud.client.loadbalancer.RetryLoadBalancerInterceptor"
@@ -54,5 +54,10 @@ public class SpringLoadbalancerRestTemplateResponseDeclarer extends AbstractPlug
                         .and(MethodMatcher.paramTypesEqual("org.springframework.http.HttpRequest", "byte[]",
                                 "org.springframework.http.client.ClientHttpRequestExecution")), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace() && getGraceConfig().isEnableGraceShutdown();
     }
 }

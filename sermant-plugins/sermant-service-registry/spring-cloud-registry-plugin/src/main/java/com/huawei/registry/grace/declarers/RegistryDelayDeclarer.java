@@ -17,9 +17,9 @@
 package com.huawei.registry.grace.declarers;
 
 import com.huawei.registry.config.grace.GraceContext;
+import com.huawei.registry.declarers.AbstractBaseConfigDeclarer;
 import com.huawei.registry.grace.interceptors.RegistryDelayInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -30,7 +30,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-05-17
  */
-public class RegistryDelayDeclarer extends AbstractPluginDeclarer {
+public class RegistryDelayDeclarer extends AbstractBaseConfigDeclarer {
     /**
      * 旧版本1.5.x(springboot)
      */
@@ -66,5 +66,10 @@ public class RegistryDelayDeclarer extends AbstractPluginDeclarer {
         return new InterceptDeclarer[]{
             InterceptDeclarer.build(MethodMatcher.nameEquals("start"), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace();
     }
 }

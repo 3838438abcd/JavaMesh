@@ -19,7 +19,6 @@ package com.huawei.registry.declarers;
 
 import com.huawei.registry.interceptors.SpringFactoriesInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -30,7 +29,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-04-08
  */
-public class SpringFactoriesDeclarer extends AbstractPluginDeclarer {
+public class SpringFactoriesDeclarer extends AbstractBaseConfigDeclarer {
     private static final String ENHANCE_CLASS = "org.springframework.core.io.support.SpringFactoriesLoader";
 
     private static final String INTERCEPTOR_CLASS = SpringFactoriesInterceptor.class.getCanonicalName();
@@ -46,5 +45,10 @@ public class SpringFactoriesDeclarer extends AbstractPluginDeclarer {
             InterceptDeclarer.build(MethodMatcher.nameContains("loadSpringFactories", "loadFactoryNames"),
                     INTERCEPTOR_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return getRegisterConfig().isEnableSpringRegister() || isEnableGrace();
     }
 }

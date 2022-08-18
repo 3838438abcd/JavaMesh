@@ -18,7 +18,6 @@ package com.huawei.registry.declarers;
 
 import com.huawei.registry.interceptors.RegistrationInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -29,7 +28,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2021-12-16
  */
-public class RegistrationDeclarer extends AbstractPluginDeclarer {
+public class RegistrationDeclarer extends AbstractBaseConfigDeclarer {
     /**
      * 增强类的全限定名
      */
@@ -50,5 +49,10 @@ public class RegistrationDeclarer extends AbstractPluginDeclarer {
         return new InterceptDeclarer[]{
             InterceptDeclarer.build(MethodMatcher.nameEquals("register"), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace() || isEnableSpringDoubleRegistry();
     }
 }

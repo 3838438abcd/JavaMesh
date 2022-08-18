@@ -17,9 +17,9 @@
 
 package com.huawei.registry.grace.declarers;
 
+import com.huawei.registry.declarers.AbstractBaseConfigDeclarer;
 import com.huawei.registry.grace.interceptors.SpringZuulResponseInterceptor;
 
-import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
@@ -30,7 +30,7 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
  * @author zhouss
  * @since 2022-05-25
  */
-public class SpringZuulResponseDeclarer extends AbstractPluginDeclarer {
+public class SpringZuulResponseDeclarer extends AbstractBaseConfigDeclarer {
     private static final String ENHANCE_CLASS = "com.netflix.zuul.http.ZuulServlet";
 
     /**
@@ -50,5 +50,10 @@ public class SpringZuulResponseDeclarer extends AbstractPluginDeclarer {
                         .and(MethodMatcher.paramTypesEqual("javax.servlet.ServletRequest",
                                 "javax.servlet.ServletResponse")), INTERCEPT_CLASS)
         };
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnableGrace() && getGraceConfig().isEnableGraceShutdown();
     }
 }
