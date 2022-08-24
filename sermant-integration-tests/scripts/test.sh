@@ -20,3 +20,4 @@ if [ $? == 0 ];then
 else
   cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep Origin Config Center
   exit 9
+fi
