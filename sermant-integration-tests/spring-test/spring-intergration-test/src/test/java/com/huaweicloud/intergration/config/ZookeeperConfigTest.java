@@ -128,6 +128,9 @@ public class ZookeeperConfigTest {
             check(40 * 1000, 2000, this::checkAgentConfig);
         } finally {
             LOGGER.info("=============after env: [{}]========", get("/dynamic/config/env", String.class));
+            LOGGER.info("=============value:[{}]============property:[{}]",
+                    get("/dynamic/config/value",String.class),
+                    get("/dynamic/config/property", String.class));
             kieClient.deleteKey(closeSwitchKey);
             kieClient.deleteKey(testConfigKey);
         }
