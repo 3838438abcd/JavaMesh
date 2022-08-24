@@ -22,9 +22,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.bootstrap.config.BootstrapPropertySource;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +74,11 @@ public class ZkApplication {
     public void refresh() {
         LOGGER.info("====================环境刷新=================");
         LOGGER.info(environment.toString());
+        final PropertySource<?> propertySource = ((ConfigurableEnvironment) environment).getPropertySources()
+                .get("bootstrapProperties-config/application");
+        if (propertySource instanceof BootstrapPropertySource) {
+            LOGGER.info("======bootstrap:[{}]==========", ((BootstrapPropertySource<?>) propertySource).getDelegate());
+        }
         LOGGER.info("====================环境结束=================");
     }
 }
