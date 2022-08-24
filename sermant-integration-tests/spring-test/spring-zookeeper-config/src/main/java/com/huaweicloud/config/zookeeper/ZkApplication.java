@@ -17,9 +17,13 @@
 
 package com.huaweicloud.config.zookeeper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +45,8 @@ import java.util.Map;
     "com.huaweicloud.spring.common.config"
 })
 public class ZkApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZkApplication.class);
+
     @Autowired
     private Environment environment;
 
@@ -59,5 +65,12 @@ public class ZkApplication {
         labels.put("app", environment.getProperty("service.meta.application"));
         labels.put("environment", environment.getProperty("service.meta.environment"));
         return labels;
+    }
+
+    @EventListener(value = RefreshEvent.class)
+    public void refresh() {
+        LOGGER.info("====================环境刷新=================");
+        LOGGER.info(environment.toString());
+        LOGGER.info("====================环境结束=================");
     }
 }
