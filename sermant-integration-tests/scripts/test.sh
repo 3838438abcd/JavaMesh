@@ -22,11 +22,17 @@ if [ $? == 0 ];then
   echo "====================query notify=============="
   cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep unSubscribed
   echo "================end===================="
+  echo "==================application log============="
+  cat zk-config.log
+  echo "==================end log============="
 else
   echo "================all content================="
   cat logs/sermant/core/app/2022-08-24/sermant-0.log
   echo "====================query notify=============="
   cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep unSubscribed
   echo "================end===================="
+  echo "==================application log============="
+  cat zk-config.log
+  echo "==================end log============="
   exit 9
 fi
