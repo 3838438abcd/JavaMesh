@@ -93,6 +93,7 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
     private boolean check() {
         final boolean isNeedClose =
                 Boolean.parseBoolean(environment.getProperty(DynamicConstants.ORIGIN_CONFIG_CENTER_CLOSE_KEY));
+        LOGGER.info("============是否关闭:" + isNeedClose + "=====关闭过?" + isShutdown.get() + "==========");
         return isNeedClose && isShutdown.compareAndSet(false, true);
     }
 
