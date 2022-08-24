@@ -18,13 +18,13 @@ mvn test -Dsermant.integration.test.type=dynamic_config_zk --file sermant-integr
 if [ $? == 0 ];then
   echo "success"
   echo "====================query notify=============="
-  cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep Origin Config Center
+  cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep unSubscribed
   echo "================end===================="
 else
   echo "================all content================="
   cat logs/sermant/core/app/2022-08-24/sermant-0.log
   echo "====================query notify=============="
-  cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep Origin Config Center
+  cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep unSubscribed
   echo "================end===================="
   exit 9
 fi
