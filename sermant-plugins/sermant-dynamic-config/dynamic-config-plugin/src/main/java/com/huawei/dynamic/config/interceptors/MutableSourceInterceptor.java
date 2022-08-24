@@ -25,42 +25,46 @@ import com.huaweicloud.sermant.core.common.LoggerFactory;
 import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
 import com.huaweicloud.sermant.core.plugin.config.PluginConfigManager;
 
-import org.springframework.core.env.CompositePropertySource;
-import org.springframework.core.env.PropertySource;
+import org.springframework.cloud.bootstrap.config.BootstrapPropertySource;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 拦截loadFactories注入自定义配置源
+ * 针对addFirst方法拦截, 当动态源配置中心时, 拦截禁止添加源配置中心配置源, 阻止配置生效
  *
  * @author zhouss
  * @since 2022-04-08
  */
-public class BootstrapSourceInterceptor extends DynamicConfigSwitchSupport {
+public class MutableSourceInterceptor extends DynamicConfigSwitchSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger();
+
+    private static final String ZOOKEEPER_SOURCE = "org.springframework.cloud.zookeeper.config.ZookeeperPropertySource";
+
+    private static final String NACOS_SOURCE = "com.alibaba.cloud.nacos.client.NacosPropertySource";
+
+    private static final String BOOTSTRAP_SOURCE = "org.springframework.cloud.bootstrap.config.BootstrapPropertySource";
 
     private final DynamicConfiguration configuration;
 
     /**
      * 构造器
      */
-    public BootstrapSourceInterceptor() {
+    public MutableSourceInterceptor() {
         configuration = PluginConfigManager.getPluginConfig(DynamicConfiguration.class);
     }
 
     @Override
     public ExecuteContext doBefore(ExecuteContext context) {
-        LOGGER.log(Level.SEVERE, "==============dynamicClose:" + isDynamicClosed() + "=========");
-        final Object argument = context.getArguments()[0];
-        if (!argument.getClass().getName().equals("org.springframework.cloud.zookeeper.config.ZookeeperPropertySource")
-                || !(argument instanceof PropertySource)) {
+        final Object source = context.getArguments()[0];
+        if (!source.getClass().getName().equals(BOOTSTRAP_SOURCE)) {
             return context;
         }
         if (!configuration.isEnableOriginConfigCenter() || isDynamicClosed()) {
-            LOGGER.log(Level.SEVERE, "==============change to empty=========");
-            context.getArguments()[0] = new CompositePropertySource(((PropertySource<?>) argument).getName() +
-                    "-empty");
+            BootstrapPropertySource<?> bootstrapPropertySource = (BootstrapPropertySource<?>) source;
+            if (isTargetSource(bootstrapPropertySource.getDelegate())) {
+                LOGGER.info("================skip source:" + source + "=========");
+                context.skip(null);
+            }
         }
         return context;
     }
@@ -76,5 +80,10 @@ public class BootstrapSourceInterceptor extends DynamicConfigSwitchSupport {
             return false;
         }
         return !Boolean.parseBoolean(config.toString());
+    }
+
+    private boolean isTargetSource(Object source) {
+        final String name = source.getClass().getName();
+        return name.equals(ZOOKEEPER_SOURCE) || name.equals(NACOS_SOURCE);
     }
 }

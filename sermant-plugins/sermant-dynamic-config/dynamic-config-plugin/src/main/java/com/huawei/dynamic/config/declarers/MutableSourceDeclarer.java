@@ -17,8 +17,7 @@
 
 package com.huawei.dynamic.config.declarers;
 
-import com.huawei.dynamic.config.interceptors.BootstrapSourceInterceptor;
-import com.huawei.dynamic.config.interceptors.ZookeeperLocatorInterceptor;
+import com.huawei.dynamic.config.interceptors.MutableSourceInterceptor;
 
 import com.huaweicloud.sermant.core.plugin.agent.declarer.AbstractPluginDeclarer;
 import com.huaweicloud.sermant.core.plugin.agent.declarer.InterceptDeclarer;
@@ -26,16 +25,16 @@ import com.huaweicloud.sermant.core.plugin.agent.matcher.ClassMatcher;
 import com.huaweicloud.sermant.core.plugin.agent.matcher.MethodMatcher;
 
 /**
- * 拦截bootstrap property source阻止创建zookeeper源
+ * 针对addFirst方法拦截, 当动态源配置中心时, 拦截禁止添加源配置中心配置源, 阻止配置生效
  *
  * @author zhouss
  * @since 2022-04-08
  */
-public class BootstrapSourceDeclarer extends AbstractPluginDeclarer {
+public class MutableSourceDeclarer extends AbstractPluginDeclarer {
     private static final String ENHANCE_CLASS =
-            "org.springframework.cloud.bootstrap.config.BootstrapPropertySource";
+            "org.springframework.core.env.MutablePropertySources";
 
-    private static final String INTERCEPTOR_CLASS = BootstrapSourceInterceptor.class.getCanonicalName();
+    private static final String INTERCEPTOR_CLASS = MutableSourceInterceptor.class.getCanonicalName();
 
     @Override
     public ClassMatcher getClassMatcher() {
@@ -45,7 +44,8 @@ public class BootstrapSourceDeclarer extends AbstractPluginDeclarer {
     @Override
     public InterceptDeclarer[] getInterceptDeclarers(ClassLoader classLoader) {
         return new InterceptDeclarer[]{
-                InterceptDeclarer.build(MethodMatcher.isConstructor(), INTERCEPTOR_CLASS)
+                InterceptDeclarer.build(MethodMatcher.nameEquals("addFirst").and(MethodMatcher.paramCountEquals(1)),
+                        INTERCEPTOR_CLASS)
         };
     }
 }
