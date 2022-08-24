@@ -119,6 +119,7 @@ public class ZookeeperConfigTest {
             if (!isOpen) {
                 return;
             }
+            LOGGER.info("=============before env: [{}]========", get("/dynamic/config/env", String.class));
             checkZkConfig();
             // 发布动态关闭开关
             publishKieConfig();
@@ -126,6 +127,7 @@ public class ZookeeperConfigTest {
             // 睡眠等待刷新， 由于LocalCse无实时通知能力，因此需要等待30S（长连接时间）,保证配置已刷新
             check(40 * 1000, 2000, this::checkAgentConfig);
         } finally {
+            LOGGER.info("=============after env: [{}]========", get("/dynamic/config/env", String.class));
             kieClient.deleteKey(closeSwitchKey);
             kieClient.deleteKey(testConfigKey);
         }

@@ -28,6 +28,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -73,6 +74,7 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
             }
             disableConfigCenter();
             LOGGER.info("==============屏蔽状态:" + ConfigHolder.INSTANCE.getConfig(OriginConfigDisableSource.ZK_CONFIG_CENTER_ENABLED) + "=====");
+            LOGGER.info("======清理环境变量前:" + environment + "=======");
             for (ConfigCenterCloser closer : configCenterClosers) {
                 if (!closer.isSupport(beanFactory)) {
                     continue;
@@ -80,6 +82,7 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
                 if (closer.close(beanFactory, environment)) {
                     LOGGER.warning(String.format(Locale.ENGLISH, "Origin Config Center [%s] has been unSubscribed!",
                             closer.type()));
+                    LOGGER.info("======清理环境变量后:" + environment + "=======");
                 }
             }
         });

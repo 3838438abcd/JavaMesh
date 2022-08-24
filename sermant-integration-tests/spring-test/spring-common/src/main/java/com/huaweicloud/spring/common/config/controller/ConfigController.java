@@ -48,6 +48,11 @@ public class ConfigController {
         return configValue.getTest();
     }
 
+    @RequestMapping("env")
+    public String getEnv() {
+        return environment.toString();
+    }
+
     @RequestMapping("property")
     public String getProperty() {
         return configProperty.getParam1() + "," + configProperty.getParam2();
