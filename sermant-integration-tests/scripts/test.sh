@@ -17,6 +17,9 @@
 mvn test -Dsermant.integration.test.type=dynamic_config_zk --file sermant-integration-tests/spring-test/pom.xml
 if [ $? == 0 ];then
   echo "success"
+  echo "====================query notify=============="
+  cat logs/sermant/core/app/2022-08-24/sermant-0.log | grep Origin Config Center
+  echo "================end===================="
 else
   echo "================all content================="
   cat logs/sermant/core/app/2022-08-24/sermant-0.log
