@@ -185,8 +185,7 @@ public interface ConfigCenterCloser {
      * @param configurableEnvironment 环境变量
      */
     default void removeConfigurationPropertySources(ConfigurableEnvironment configurableEnvironment) {
-        configurableEnvironment.getPropertySources().remove("configurationProperties");
-        /*final PropertySource<?> propertySource = configurableEnvironment.getPropertySources()
+        final PropertySource<?> propertySource = configurableEnvironment.getPropertySources()
                 .get("configurationProperties");
         if (propertySource == null) {
             return;
@@ -198,7 +197,7 @@ public interface ConfigCenterCloser {
         final Optional<Object> adaptedSources = ReflectUtils.getFieldValue(source, "adaptedSources");
         if (adaptedSources.isPresent()) {
             configurableEnvironment.getPropertySources().remove("configurationProperties");
-        }*/
+        }
     }
 
     /**
