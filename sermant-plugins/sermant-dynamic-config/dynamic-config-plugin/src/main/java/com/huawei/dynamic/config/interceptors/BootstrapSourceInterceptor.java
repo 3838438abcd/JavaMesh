@@ -52,14 +52,14 @@ public class BootstrapSourceInterceptor extends DynamicConfigSwitchSupport {
     @Override
     public ExecuteContext doBefore(ExecuteContext context) {
         LOGGER.log(Level.SEVERE, "==============dynamicClose:" + isDynamicClosed() + "=========");
-        final Object argument = context.getArguments()[1];
+        final Object argument = context.getArguments()[0];
         if (!argument.getClass().getName().equals("org.springframework.cloud.zookeeper.config.ZookeeperPropertySource")
                 || !(argument instanceof PropertySource)) {
             return context;
         }
         if (!configuration.isEnableOriginConfigCenter() || isDynamicClosed()) {
             LOGGER.log(Level.SEVERE, "==============change to empty=========");
-            context.getArguments()[1] = new CompositePropertySource(((PropertySource<?>) argument).getName() +
+            context.getArguments()[0] = new CompositePropertySource(((PropertySource<?>) argument).getName() +
                     "-empty");
         }
         return context;
