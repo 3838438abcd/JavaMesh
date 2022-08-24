@@ -52,7 +52,7 @@ public class ZookeeperLocatorInterceptor extends DynamicConfigSwitchSupport {
     public ExecuteContext doBefore(ExecuteContext context) {
         LOGGER.log(Level.SEVERE, "==============dynamicClose:" + isDynamicClosed() + "=========");
         if (!configuration.isEnableOriginConfigCenter() || isDynamicClosed()) {
-            context.skip(new CompositePropertySource("Empty"));
+            context.skip(null);
         }
         return context;
     }
