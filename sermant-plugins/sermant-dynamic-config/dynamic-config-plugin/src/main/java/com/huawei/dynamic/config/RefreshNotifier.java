@@ -54,6 +54,7 @@ public class RefreshNotifier {
      * @param event 通知事件
      */
     public void refresh(DynamicConfigEvent event) {
+        LOGGER.warning("============所有监听器:" + dynamicConfigListeners + "===========");
         for (DynamicConfigListener listener : dynamicConfigListeners) {
             listener.configChange(event);
         }

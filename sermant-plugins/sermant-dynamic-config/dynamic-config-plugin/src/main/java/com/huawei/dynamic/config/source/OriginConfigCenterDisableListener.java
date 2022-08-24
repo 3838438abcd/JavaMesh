@@ -72,6 +72,7 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
                 return;
             }
             disableConfigCenter();
+            LOGGER.info("==============屏蔽状态:" + ConfigHolder.INSTANCE.getConfig(OriginConfigDisableSource.ZK_CONFIG_CENTER_ENABLED) + "=====");
             for (ConfigCenterCloser closer : configCenterClosers) {
                 if (!closer.isSupport(beanFactory)) {
                     continue;

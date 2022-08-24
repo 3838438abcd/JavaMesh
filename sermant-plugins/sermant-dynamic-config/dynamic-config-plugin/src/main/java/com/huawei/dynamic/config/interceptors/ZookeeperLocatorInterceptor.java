@@ -21,10 +21,14 @@ import com.huawei.dynamic.config.ConfigHolder;
 import com.huawei.dynamic.config.DynamicConfiguration;
 import com.huawei.dynamic.config.source.OriginConfigDisableSource;
 
+import com.huaweicloud.sermant.core.common.LoggerFactory;
 import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
 import com.huaweicloud.sermant.core.plugin.config.PluginConfigManager;
 
 import org.springframework.core.env.CompositePropertySource;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 拦截loadFactories注入自定义配置源
@@ -33,6 +37,8 @@ import org.springframework.core.env.CompositePropertySource;
  * @since 2022-04-08
  */
 public class ZookeeperLocatorInterceptor extends DynamicConfigSwitchSupport {
+    private static final Logger LOGGER = LoggerFactory.getLogger();
+
     private final DynamicConfiguration configuration;
 
     /**
@@ -44,6 +50,7 @@ public class ZookeeperLocatorInterceptor extends DynamicConfigSwitchSupport {
 
     @Override
     public ExecuteContext doBefore(ExecuteContext context) {
+        LOGGER.log(Level.SEVERE, "==============dynamicClose:" + isDynamicClosed() + "=========");
         if (!configuration.isEnableOriginConfigCenter() || isDynamicClosed()) {
             context.skip(new CompositePropertySource("Empty"));
         }
