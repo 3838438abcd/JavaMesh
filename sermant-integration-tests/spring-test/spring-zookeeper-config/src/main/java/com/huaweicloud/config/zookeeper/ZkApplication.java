@@ -22,16 +22,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.bootstrap.config.BootstrapPropertySource;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,8 +77,11 @@ public class ZkApplication {
         LOGGER.info(environment.toString());
         final PropertySource<?> propertySource = ((ConfigurableEnvironment) environment).getPropertySources()
                 .get("bootstrapProperties-config/application");
-        if (propertySource instanceof BootstrapPropertySource) {
-            LOGGER.info("======bootstrap:[{}]==========", ((BootstrapPropertySource<?>) propertySource).getDelegate());
+        if (propertySource != null && propertySource.getClass().getName().equals("org.springframework.cloud.bootstrap"
+                + ".config.BootstrapPropertySource")) {
+            final Method getDelegate = ReflectionUtils.findMethod(propertySource.getClass(), "getDelegate");
+            final Object o = ReflectionUtils.invokeMethod(getDelegate, propertySource);
+            LOGGER.info("======bootstrap:[{}]==========", o);
         }
         LOGGER.info("====================环境结束=================");
     }
