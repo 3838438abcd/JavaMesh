@@ -102,6 +102,13 @@ jobs:
           curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
           tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
           bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package common demos
@@ -177,6 +184,13 @@ jobs:
         run: |
           export ROOT_PATH=$(pwd)
           bash ./sermant-integration-tests/scripts/downloadAndStartCse.sh
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package spring nacos config
@@ -256,6 +270,13 @@ jobs:
         run: |
           export ROOT_PATH=$(pwd)
           bash ./sermant-integration-tests/scripts/downloadAndStartCse.sh
+      - name: cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: package agent
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package spring zk config
