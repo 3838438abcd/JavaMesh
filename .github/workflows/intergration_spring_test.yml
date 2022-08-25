@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: download cse
+      - name: download cse and upload
         run: |
           export ROOT_PATH=$(pwd)
           bash ./sermant-integration-tests/scripts/downloadCse.sh
