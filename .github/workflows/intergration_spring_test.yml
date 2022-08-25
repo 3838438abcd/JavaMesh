@@ -65,14 +65,23 @@ jobs:
           dynamic.config.dynamicConfigType: KIE
           service.meta.environment: development
         run: |
+          mkdir -p ./logs/feign-provider-1.5.x
+          mkdir -p ./logs/feign-consumer-1.5.x
+          mkdir -p ./logs/rest-consumer-1.5.x
+          mkdir -p ./logs/rest-provider-1.5.x
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=feign -Dserver.port=8013 -jar \
+          -Dsermant.log.path=./logs/feign-provider-1.5.x \
           sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign-1.5.x/feign-provider-1.5.x/target/feign-provider-1.5.x.jar > feign-provider.log 2>&1 &
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=feign -Dserver.port=8015 -jar \
+          -Dsermant.log.path=./logs/feign-consumer-1.5.x \
           sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign-1.5.x/feign-consumer-1.5.x/target/feign-consumer-1.5.x.jar > feign-consumer.log 2>&1 &
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=rest -Dserver.port=8003 -jar \
+          -Dsermant.log.path=./logs/rest-provider-1.5.x \
           sermant-integration-tests/spring-test/spring-common-demos/spring-common-resttemplate/rest-provider/target/rest-provider.jar > rest-provider.log 2>&1 &
           nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=rest -Dserver.port=8005 -jar \
+          -Dsermant.log.path=./logs/rest-consumer-1.5.x \
           sermant-integration-tests/spring-test/spring-common-demos/spring-common-resttemplate/rest-consumer/target/rest-consumer.jar > rest-consumer.log 2>&1 &
+          ls -l ./logs
       - name: waiting for services start
         run: |
           ps -ef | grep java
