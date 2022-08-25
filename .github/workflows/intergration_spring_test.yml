@@ -90,10 +90,10 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: ${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }}-logs
+          name: ${{ job.name }}-${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }}-logs
           path: |
             ./*.log
-            ./sermant-agent*/**/*.log
+            ./logs/**/*.log
           if-no-files-found: warn
   test-for-spring:
     name: Test for spring
