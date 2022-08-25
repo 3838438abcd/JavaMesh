@@ -113,9 +113,9 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: download-cse
-          uses: actions/download-artifact@v3
-          with:
-            name: local-cse
+        uses: actions/download-artifact@v3
+        with:
+          name: local-cse
       - name: start cse
         run: |
           export ROOT_PATH=$(pwd)
@@ -205,9 +205,9 @@ jobs:
           tar -zxf nacos-server-1.4.2.tar.gz
           bash nacos/bin/startup.sh -m standalone
       - name: download-cse
-          uses: actions/download-artifact@v3
-          with:
-            name: local-cse
+        uses: actions/download-artifact@v3
+        with:
+          name: local-cse
       - name: start cse
         run: |
           export ROOT_PATH=$(pwd)
@@ -296,9 +296,9 @@ jobs:
           tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
           bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
       - name: download-cse
-          uses: actions/download-artifact@v3
-          with:
-            name: local-cse
+        uses: actions/download-artifact@v3
+        with:
+          name: local-cse
       - name: start cse
         run: |
           export ROOT_PATH=$(pwd)
