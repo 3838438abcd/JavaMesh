@@ -90,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: ${{ job.name }}-${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }}-logs
+          name: ${{ jobs.name }}-${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }}-logs
           path: |
             ./*.log
             ./logs/**/*.log
