@@ -88,13 +88,13 @@ jobs:
           bash ./sermant-integration-tests/scripts/checkService.sh http://127.0.0.1:8015/flowcontrol/rateLimiting 60
           bash ./sermant-integration-tests/scripts/checkService.sh http://127.0.0.1:8005/flowcontrol/rateLimiting 60
           bash ./sermant-integration-tests/scripts/checkService.sh http://127.0.0.1:8005/lb/ping 60
+      - name: test run
+        run: |
+          exit 100
       - name: integration test module FLOW_CONTROL
         run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
       - name: integration test module LOAD_BALANCER
         run: mvn test -Dsermant.integration.test.type=LOAD_BALANCER -Dspring.boot.version=${{ matrix.springBootVersion }} --file sermant-integration-tests/spring-test/pom.xml
-      - name: test run
-        run: |
-          exit 100
       - name: upload error log
         uses: actions/upload-artifact@v3
         if: failure()
