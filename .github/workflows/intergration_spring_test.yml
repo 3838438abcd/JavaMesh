@@ -57,9 +57,9 @@ jobs:
         with:
           name: local-cse
       - name: download-agent
-          uses: actions/download-artifact@v3
-          with:
-            name: sermant-agent
+        uses: actions/download-artifact@v3
+        with:
+          name: sermant-agent
       - name: check agent
         run: ls -l
       - name: start cse
