@@ -17,6 +17,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: local-cse
+          if-no-files-found: warn
       - name: download cse and upload
         run: |
           num=`ls -l | grep Local-CSE-2.1.3-linux-amd64.zip| wc -l`;
