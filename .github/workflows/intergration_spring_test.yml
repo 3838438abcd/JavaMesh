@@ -97,11 +97,13 @@ jobs:
         run: mvn test -Dsermant.integration.test.type=FLOW_CONTROL --file sermant-integration-tests/spring-test/pom.xml
       - name: integration test module LOAD_BALANCER
         run: mvn test -Dsermant.integration.test.type=LOAD_BALANCER -Dspring.boot.version=${{ matrix.springBootVersion }} --file sermant-integration-tests/spring-test/pom.xml
+      - name: error
+        run: exit 1
       - name: if failure then upload error log
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: (test-for-spring-1-5-x)-(${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }})-logs
+          name: (${{ github.job }})-(${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }})-logs
           path: |
             ./*.log
             ./logs/**/*.log
