@@ -22,8 +22,6 @@ jobs:
             ${{ runner.os }}-local-cse
       - name: download cse
         run: |
-          ls -l
-          echo "===================="
           num=`ls -l | grep Local-CSE-2.1.3-linux-amd64.zip | wc -l`;
           if [ $num -eq 0 ];then
             export ROOT_PATH=$(pwd)
