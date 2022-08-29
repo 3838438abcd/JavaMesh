@@ -8,8 +8,8 @@ on:
       - main
       - develop
 jobs:
-  download-cse-and-upload:
-    name: download cse and upload
+  download-cse-and-cache:
+    name: download cse and cache
     runs-on: ubuntu-latest
     steps:
       - name: cache local cse
@@ -30,7 +30,7 @@ jobs:
   test-for-spring-1-5-x:
     name: Test for spring 1.5.x
     runs-on: ubuntu-latest
-    needs: [download-cse-and-upload]
+    needs: [download-cse-and-cache]
     strategy:
       matrix:
         include:
@@ -110,7 +110,7 @@ jobs:
   test-for-spring:
     name: Test for spring
     runs-on: ubuntu-latest
-    needs: [download-cse-and-upload]
+    needs: [download-cse-and-cache]
     strategy:
       matrix:
         include:
@@ -207,7 +207,7 @@ jobs:
   test-for-spring-nacos-config:
     name: Test for spring nacos config
     runs-on: ubuntu-latest
-    needs: [download-cse-and-upload]
+    needs: [download-cse-and-cache]
     strategy:
       matrix:
         include:
@@ -316,7 +316,7 @@ jobs:
   test-for-spring-zk-config:
     name: Test for spring zk config
     runs-on: ubuntu-latest
-    needs: [download-cse-and-upload]
+    needs: [download-cse-and-cache]
     strategy:
       matrix:
         include:
