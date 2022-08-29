@@ -161,7 +161,7 @@ jobs:
           ls -l
       - name: package agent
         run: |
-          num = `ls -l | grep sermant-agent-1.0.0 | wc -l`;
+          num=`ls -l | grep sermant-agent-1.0.0 | wc -l`;
           if [ $num -eq 0 ];then
             mvn package -DskipTests -Pagent --file pom.xml
           fi
