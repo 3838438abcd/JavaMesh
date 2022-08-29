@@ -149,7 +149,15 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: cache agent
+        uses: actions/cache@v3
+        with:
+          path: ./sermant-agent-*
+          key: ${{ runner.os }}-agent-${{ hashFiles('**/sermant-agent.jar') }}
+          restore-keys: |
+            ${{ runner.os }}-agent-
       - name: package agent
+        if: failure()
         run: mvn package -DskipTests -Pagent --file pom.xml
       - name: package common demos
         run: |
