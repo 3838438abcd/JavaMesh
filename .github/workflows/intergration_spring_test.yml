@@ -153,7 +153,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./sermant-agent-1.0.0
-          key: ${{ runner.os }}-agent-${{ hashFiles('**/sermant-agent.jar') }}
+          key: ${{ runner.os }}-agent-${{ hashFiles('./sermant-agent-1.0.0/agent/sermant-agent.jar') }}
           restore-keys: |
             ${{ runner.os }}-agent-
       - name: check agent
