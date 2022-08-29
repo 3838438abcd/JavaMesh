@@ -160,7 +160,11 @@ jobs:
         run: |
           ls -l
       - name: package agent
-        run: mvn package -DskipTests -Pagent --file pom.xml
+        run: |
+          num = `ls -l | grep sermant-agent-1.0.0 | wc -l`;
+          if [ $num -eq 0 ];then
+            mvn package -DskipTests -Pagent --file pom.xml
+          fi
       - name: package common demos
         run: |
           sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
