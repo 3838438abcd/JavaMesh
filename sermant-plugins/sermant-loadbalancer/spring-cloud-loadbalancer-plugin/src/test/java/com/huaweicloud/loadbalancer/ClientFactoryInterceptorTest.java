@@ -99,7 +99,6 @@ public class ClientFactoryInterceptorTest {
      */
     @Test
     public void test() {
-        setUpProvider();
         // 测试配置为null
         ClientFactoryInterceptor nullConfigInterceptor = new ClientFactoryInterceptor();
         nullConfigInterceptor.after(context);
@@ -116,6 +115,7 @@ public class ClientFactoryInterceptorTest {
 
             // 测试已配置负载均衡与原生负载均衡一致
             RuleManagerHelper.publishRule(FOO, SpringLoadbalancerType.ROUND_ROBIN.getMapperName());
+            setUpProvider();
             interceptor.after(context);
             Assert.assertNotNull(context.getResult());
 
