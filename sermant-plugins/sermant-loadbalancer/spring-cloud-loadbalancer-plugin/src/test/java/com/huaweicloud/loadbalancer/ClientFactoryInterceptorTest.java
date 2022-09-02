@@ -61,13 +61,17 @@ public class ClientFactoryInterceptorTest {
      * 构造方法
      */
     public ClientFactoryInterceptorTest() throws NoSuchMethodException {
+        setUpProvider();
+        Object[] arguments = new Object[1];
+        arguments[0] = FOO;
+        context = ExecuteContext.forMemberMethod(new Object(), String.class.getMethod("trim"), arguments, null, null);
+    }
+
+    private void setUpProvider() {
         ObjectProvider<ServiceInstanceListSupplier> suppliers = ServiceInstanceListSuppliers
                 .toProvider(FOO, new TestServiceInstance());
         SpringLoadbalancerCache.INSTANCE.putOrigin(FOO, new RoundRobinLoadBalancer(suppliers, FOO));
         SpringLoadbalancerCache.INSTANCE.putProvider(FOO, suppliers);
-        Object[] arguments = new Object[1];
-        arguments[0] = FOO;
-        context = ExecuteContext.forMemberMethod(new Object(), String.class.getMethod("trim"), arguments, null, null);
     }
 
     /**
@@ -90,6 +94,7 @@ public class ClientFactoryInterceptorTest {
      */
     @Test
     public void test() {
+        setUpProvider();
         // 测试配置为null
         ClientFactoryInterceptor nullConfigInterceptor = new ClientFactoryInterceptor();
         nullConfigInterceptor.after(context);
