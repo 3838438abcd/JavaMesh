@@ -74,6 +74,7 @@ public class ClientFactoryInterceptorTest {
         SpringLoadbalancerCache.INSTANCE.putProvider(FOO, suppliers);
         System.out.println("=======设置原始provider:" + suppliers.getClass());
         System.out.println("=======设置provider:" + SpringLoadbalancerCache.INSTANCE.getProvider(FOO).getClass().getName());
+        System.out.println("=======子类?:" + (SpringLoadbalancerCache.INSTANCE.getProvider(FOO) instanceof ObjectProvider));
     }
 
     /**
