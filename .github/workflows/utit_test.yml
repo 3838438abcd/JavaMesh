@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # 设置服务器
+    runs-on: windows-latest # 设置服务器
     steps:
       - uses: actions/checkout@v2 # Action 获取当前分支的源码
       - name: set up JDK 8 # Action 设置 JDK
@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-maven-
       # 使用Maven
       - name: Build with Maven
-        run: mvn test -P test --file pom.xml
+        run: mvn -B test -P test --file pom.xml
       - uses: ashley-taylor/junit-report-annotations-action@master
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
