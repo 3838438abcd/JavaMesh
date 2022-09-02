@@ -96,13 +96,12 @@ public class ClientFactoryInterceptor extends AbstractInterceptor {
     private Optional<Object> createLoadbalancer(SpringLoadbalancerType type, String serviceId) {
         Class<?> clazz = getLoadBalancerClass(type);
         final Object provider = SpringLoadbalancerCache.INSTANCE.getProvider(serviceId);
-        if (!(provider instanceof ObjectProvider)) {
+        if (provider == null) {
             return Optional.empty();
         }
         ObjectProvider<ServiceInstanceListSupplier> realProvider =
                 (ObjectProvider<ServiceInstanceListSupplier>) provider;
         if (clazz == RoundRobinLoadBalancer.class) {
-            System.out.println("===========创建轮询============");
             return Optional.of(new RoundRobinLoadBalancer(realProvider, serviceId));
         } else {
             return Optional.of(new RandomLoadBalancer(realProvider, serviceId));
