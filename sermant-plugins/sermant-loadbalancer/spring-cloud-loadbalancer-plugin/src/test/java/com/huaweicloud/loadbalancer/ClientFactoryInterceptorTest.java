@@ -39,6 +39,7 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.support.ServiceInstanceListSuppliers;
+import org.springframework.cloud.loadbalancer.support.SimpleObjectProvider;
 
 import java.net.URI;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class ClientFactoryInterceptorTest {
                 .toProvider(FOO, new TestServiceInstance());
         SpringLoadbalancerCache.INSTANCE.putOrigin(FOO, new RoundRobinLoadBalancer(suppliers, FOO));
         SpringLoadbalancerCache.INSTANCE.putProvider(FOO, suppliers);
+        SpringLoadbalancerCache.INSTANCE.putProvider(FOO, new SimpleObjectProvider<>(new TestServiceInstance()));
         System.out.println("=======设置原始provider:" + suppliers.getClass());
         System.out.println("=======设置provider:" + SpringLoadbalancerCache.INSTANCE.getProvider(FOO).getClass().getName());
         System.out.println("=======子类?:" + (SpringLoadbalancerCache.INSTANCE.getProvider(FOO) instanceof ObjectProvider));
