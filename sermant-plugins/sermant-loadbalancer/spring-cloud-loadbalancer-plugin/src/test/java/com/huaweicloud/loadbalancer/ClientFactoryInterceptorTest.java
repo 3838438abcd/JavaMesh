@@ -55,7 +55,7 @@ public class ClientFactoryInterceptorTest {
 
     private final ExecuteContext context;
 
-    private MockedStatic<ServiceManager> serviceManagerMockedStatic;
+    private static MockedStatic<ServiceManager> serviceManagerMockedStatic;
 
     /**
      * 构造方法
@@ -73,15 +73,15 @@ public class ClientFactoryInterceptorTest {
     /**
      * 配置转换器
      */
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         serviceManagerMockedStatic = Mockito.mockStatic(ServiceManager.class);
         serviceManagerMockedStatic.when(() -> ServiceManager.getService(RuleConverter.class))
                 .thenReturn(new YamlRuleConverter());
     }
 
-    @After
-    public void close() {
+    @AfterClass
+    public static void close() {
         serviceManagerMockedStatic.close();
     }
 

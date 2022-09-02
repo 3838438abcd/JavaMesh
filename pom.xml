@@ -276,6 +276,15 @@
     </dependencyManagement>
     <profiles>
         <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>sermant-plugins</module>
+            </modules>
+        </profile>
+        <profile>
             <id>agent</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
