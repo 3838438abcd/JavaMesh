@@ -30,10 +30,8 @@ import com.huaweicloud.sermant.core.plugin.config.PluginConfigManager;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.loadbalancer.core.RandomLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer;
+import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -97,18 +95,16 @@ public class ClientFactoryInterceptor extends AbstractInterceptor {
 
     private Optional<Object> createLoadbalancer(SpringLoadbalancerType type, String serviceId) {
         Class<?> clazz = getLoadBalancerClass(type);
-        try {
-            System.out.println("===============负载均衡类：" + clazz + "=====================");
-            final Object provider = SpringLoadbalancerCache.INSTANCE.getProvider(serviceId);
-            System.out.println("===============provider：" + provider.getClass() + "=====================");
-            System.out.println("===============子类?：" + (provider instanceof ObjectProvider) + "=====================");
-            System.out.println("===============serviceId：" + serviceId + "=====================");
-            Constructor<?> constructor = clazz.getConstructor(ObjectProvider.class, String.class);
-            return Optional.of(constructor.newInstance(provider, serviceId));
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
-                | InvocationTargetException e) {
-            LOGGER.warning(String.format(Locale.ENGLISH, "Cannot create loadbalancer [%s].", clazz.getName()));
+        final Object provider = SpringLoadbalancerCache.INSTANCE.getProvider(serviceId);
+        if (!(provider instanceof ObjectProvider)) {
             return Optional.empty();
+        }
+        ObjectProvider<ServiceInstanceListSupplier> realProvider =
+                (ObjectProvider<ServiceInstanceListSupplier>) provider;
+        if (clazz == RoundRobinLoadBalancer.class) {
+            return Optional.of(new RoundRobinLoadBalancer(realProvider, serviceId));
+        } else {
+            return Optional.of(new RandomLoadBalancer(realProvider, serviceId));
         }
     }
 
