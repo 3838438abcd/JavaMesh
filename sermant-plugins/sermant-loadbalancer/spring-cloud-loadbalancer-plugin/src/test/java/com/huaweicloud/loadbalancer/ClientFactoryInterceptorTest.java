@@ -52,7 +52,7 @@ import java.util.Map;
  * @since 2022-03-01
  */
 public class ClientFactoryInterceptorTest {
-    private static final String FOO = "foo";
+    private static final String FOO = "test";
 
     private final ExecuteContext context;
 
