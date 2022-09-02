@@ -21,7 +21,6 @@ import com.huaweicloud.loadbalancer.cache.RibbonLoadbalancerCache;
 import com.huaweicloud.loadbalancer.config.LbContext;
 import com.huaweicloud.loadbalancer.config.LoadbalancerConfig;
 import com.huaweicloud.loadbalancer.config.RibbonLoadbalancerType;
-import com.huaweicloud.loadbalancer.rule.LoadbalancerRule;
 import com.huaweicloud.loadbalancer.rule.RuleManager;
 import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
 import com.huaweicloud.sermant.core.plugin.agent.interceptor.AbstractInterceptor;
@@ -40,10 +39,12 @@ import com.netflix.loadbalancer.WeightedResponseTimeRule;
 import com.netflix.loadbalancer.ZoneAvoidanceRule;
 
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Ribbon BaseLoadBalancer负载均衡增强类
@@ -58,11 +59,15 @@ public class RibbonLoadBalancerInterceptor extends AbstractInterceptor {
     private static final String DEFAULT_RIBBON_LOADBALANCER_KEY = "default";
 
     /**
-     * 是否备份原生的负载均衡类型
+     * 存储哪些服务备份过负载均衡, 无需考虑线程安全
      */
-    private final AtomicBoolean isBackUp = new AtomicBoolean();
+    private final Set<String> backUpMarks = new HashSet<>();
 
-    private final Map<RibbonLoadbalancerType, AbstractLoadBalancerRule> map;
+    /**
+     * 服务负载均衡缓存key: 服务名, value: 负载均衡缓存
+     */
+    private final Map<String, Map<RibbonLoadbalancerType, AbstractLoadBalancerRule>> servicesRuleMap =
+            new ConcurrentHashMap<>();
 
     private final LoadbalancerConfig config;
 
@@ -70,22 +75,25 @@ public class RibbonLoadBalancerInterceptor extends AbstractInterceptor {
      * 构造方法
      */
     public RibbonLoadBalancerInterceptor() {
-        map = new EnumMap<>(RibbonLoadbalancerType.class);
-        map.put(RibbonLoadbalancerType.RANDOM, new RandomRule());
-        map.put(RibbonLoadbalancerType.ROUND_ROBIN, new RoundRobinRule());
-        map.put(RibbonLoadbalancerType.RETRY, new RetryRule());
-        map.put(RibbonLoadbalancerType.BEST_AVAILABLE, new BestAvailableRule());
-        map.put(RibbonLoadbalancerType.AVAILABILITY_FILTERING, new AvailabilityFilteringRule());
-        map.put(RibbonLoadbalancerType.RESPONSE_TIME_WEIGHTED, new ResponseTimeWeightedRule());
-        map.put(RibbonLoadbalancerType.ZONE_AVOIDANCE, new ZoneAvoidanceRule());
-        map.put(RibbonLoadbalancerType.WEIGHTED_RESPONSE_TIME, new WeightedResponseTimeRule());
         this.config = PluginConfigManager.getPluginConfig(LoadbalancerConfig.class);
+    }
+
+    private Map<RibbonLoadbalancerType, AbstractLoadBalancerRule> buildRuleMap() {
+        Map<RibbonLoadbalancerType, AbstractLoadBalancerRule> ruleMap = new EnumMap<>(RibbonLoadbalancerType.class);
+        ruleMap.put(RibbonLoadbalancerType.RANDOM, new RandomRule());
+        ruleMap.put(RibbonLoadbalancerType.ROUND_ROBIN, new RoundRobinRule());
+        ruleMap.put(RibbonLoadbalancerType.RETRY, new RetryRule());
+        ruleMap.put(RibbonLoadbalancerType.BEST_AVAILABLE, new BestAvailableRule());
+        ruleMap.put(RibbonLoadbalancerType.AVAILABILITY_FILTERING, new AvailabilityFilteringRule());
+        ruleMap.put(RibbonLoadbalancerType.RESPONSE_TIME_WEIGHTED, new ResponseTimeWeightedRule());
+        ruleMap.put(RibbonLoadbalancerType.ZONE_AVOIDANCE, new ZoneAvoidanceRule());
+        ruleMap.put(RibbonLoadbalancerType.WEIGHTED_RESPONSE_TIME, new WeightedResponseTimeRule());
+        return ruleMap;
     }
 
     @Override
     public ExecuteContext before(ExecuteContext context) {
         LbContext.INSTANCE.setCurLoadbalancerType(LbContext.LOADBALANCER_RIBBON);
-        backUp((BaseLoadBalancer) context.getObject());
         setRule(context);
         return context;
     }
@@ -93,6 +101,14 @@ public class RibbonLoadBalancerInterceptor extends AbstractInterceptor {
     @Override
     public ExecuteContext after(ExecuteContext context) {
         return context;
+    }
+
+    private AbstractLoadBalancerRule getTargetRule(String serviceName, RibbonLoadbalancerType type) {
+        return getTargetServiceRuleMap(serviceName).get(type);
+    }
+
+    private Map<RibbonLoadbalancerType, AbstractLoadBalancerRule> getTargetServiceRuleMap(String serviceName) {
+        return servicesRuleMap.computeIfAbsent(serviceName, key -> buildRuleMap());
     }
 
     private void setRule(ExecuteContext context) {
@@ -112,10 +128,11 @@ public class RibbonLoadBalancerInterceptor extends AbstractInterceptor {
             return;
         }
         String serviceName = serviceNameOptional.get();
+        backUp(serviceName, (BaseLoadBalancer) context.getObject());
         final Optional<RibbonLoadbalancerType> targetType = RibbonLoadbalancerCache.INSTANCE
                 .getTargetServiceLbType(serviceName);
         if (targetType.isPresent()) {
-            doSet(context.getObject(), map.get(targetType.get()));
+            doSet(context.getObject(), getTargetRule(serviceName, targetType.get()));
             return;
         }
         tryUseDefaultType(serviceName, context);
@@ -130,7 +147,7 @@ public class RibbonLoadBalancerInterceptor extends AbstractInterceptor {
         final Optional<RibbonLoadbalancerType> ribbonLoadbalancerType = RibbonLoadbalancerType
                 .matchLoadbalancer(defaultRule);
         if (ribbonLoadbalancerType.isPresent()) {
-            final AbstractLoadBalancerRule rule = map.get(ribbonLoadbalancerType.get());
+            final AbstractLoadBalancerRule rule = getTargetRule(serviceName, ribbonLoadbalancerType.get());
             doSet(context.getObject(), rule);
             RibbonLoadbalancerCache.INSTANCE.put(serviceName, ribbonLoadbalancerType.get());
         }
@@ -166,26 +183,19 @@ public class RibbonLoadBalancerInterceptor extends AbstractInterceptor {
         loadBalancer.setRule(rule);
     }
 
-    private void backUp(BaseLoadBalancer loadBalancer) {
-        if (!isBackUp.compareAndSet(false, true)) {
+    private void backUp(String serviceName, BaseLoadBalancer loadBalancer) {
+        if (backUpMarks.contains(serviceName)) {
             return;
         }
+        backUpMarks.add(serviceName);
         final IRule rule = loadBalancer.getRule();
-        for (Entry<RibbonLoadbalancerType, AbstractLoadBalancerRule> entry : map.entrySet()) {
+        final Map<RibbonLoadbalancerType, AbstractLoadBalancerRule> targetServiceRuleMap = getTargetServiceRuleMap(
+                serviceName);
+        for (Entry<RibbonLoadbalancerType, AbstractLoadBalancerRule> entry : targetServiceRuleMap.entrySet()) {
             if (entry.getValue().getClass() == rule.getClass()) {
-                RibbonLoadbalancerCache.INSTANCE.setOriginType(entry.getKey());
+                RibbonLoadbalancerCache.INSTANCE.backUpOriginType(serviceName, entry.getKey());
                 break;
             }
         }
-    }
-
-    private Optional<RibbonLoadbalancerType> getRibbonLoadbalancerType(String serviceName) {
-        final Optional<LoadbalancerRule> targetServiceRule = RuleManager.INSTANCE
-                .getTargetServiceRule(serviceName);
-        if (!targetServiceRule.isPresent()) {
-            return Optional.empty();
-        }
-        return RibbonLoadbalancerType
-                .matchLoadbalancer(targetServiceRule.get().getRule());
     }
 }
