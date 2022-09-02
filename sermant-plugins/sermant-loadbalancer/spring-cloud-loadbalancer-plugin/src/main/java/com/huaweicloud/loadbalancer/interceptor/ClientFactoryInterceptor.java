@@ -96,6 +96,8 @@ public class ClientFactoryInterceptor extends AbstractInterceptor {
     private Optional<Object> createLoadbalancer(SpringLoadbalancerType type, String serviceId) {
         Class<?> clazz = getLoadBalancerClass(type);
         final Object provider = SpringLoadbalancerCache.INSTANCE.getProvider(serviceId);
+
+        // 此处若junit OS为Linux将无法使用instanceof判断真正的provider类型, 此处当前仅使用判null处理
         if (provider == null) {
             return Optional.empty();
         }

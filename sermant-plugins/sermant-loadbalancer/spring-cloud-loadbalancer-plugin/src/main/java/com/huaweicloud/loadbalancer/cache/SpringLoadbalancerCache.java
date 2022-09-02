@@ -137,6 +137,7 @@ public enum SpringLoadbalancerCache {
      * @param loadBalancer 负载均衡器
      */
     public void putOrigin(String serviceId, Object loadBalancer) {
+        System.out.println("=====存放负载均衡: serviceId:" + serviceId + "  loadbalancer:" + loadBalancer.getClass());
         originCache.putIfAbsent(serviceId, loadBalancer);
     }
 
