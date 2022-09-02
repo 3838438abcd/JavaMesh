@@ -102,6 +102,7 @@ public class ClientFactoryInterceptor extends AbstractInterceptor {
         ObjectProvider<ServiceInstanceListSupplier> realProvider =
                 (ObjectProvider<ServiceInstanceListSupplier>) provider;
         if (clazz == RoundRobinLoadBalancer.class) {
+            System.out.println("===========创建轮询============");
             return Optional.of(new RoundRobinLoadBalancer(realProvider, serviceId));
         } else {
             return Optional.of(new RandomLoadBalancer(realProvider, serviceId));
