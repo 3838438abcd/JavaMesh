@@ -63,32 +63,37 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
     private final RetryHandlerV2 retryHandler = new RetryHandlerV2();
 
+    private final Invoker<T> delegate;
+
     /**
      * alibaba集群调用器构造
      *
      * @param directory service
      */
     public AlibabaDubboClusterInvoker(Directory<T> directory) {
+        this(directory, null);
+    }
+
+    /**
+     * alibaba集群调用器构造
+     *
+     * @param directory service
+     * @param delegate 原集群调用器
+     */
+    public AlibabaDubboClusterInvoker(Directory<T> directory, Invoker<T> delegate) {
         super(directory);
+        this.delegate = delegate;
     }
 
     @Override
     protected Result doInvoke(Invocation invocation, List<Invoker<T>> invokers, LoadBalance loadbalance)
-        throws RpcException {
+            throws RpcException {
         checkInvokers(invokers, invocation);
-        CheckedFunction0<Result> supplier = () -> {
-            checkInvokers(invokers, invocation);
-            Invoker<T> invoker = select(loadbalance, invocation, invokers, null);
-            Result result = invoker.invoke(invocation);
-            if (result.hasException()) {
-                throw result.getException();
-            }
-            return result;
-        };
         RetryContext.INSTANCE.markRetry(retry);
         final List<io.github.resilience4j.retry.Retry> handlers = retryHandler
-            .getHandlers(convertToAlibabaDubboEntity(invocation, invokers.get(0)));
-        DecorateCheckedSupplier<Result> dcs = Decorators.ofCheckedSupplier(supplier);
+                .getHandlers(convertToAlibabaDubboEntity(invocation, invokers.get(0)));
+        DecorateCheckedSupplier<Result> dcs = Decorators
+                .ofCheckedSupplier(buildFunc(invocation, invokers, loadbalance));
         io.github.resilience4j.retry.Retry retryRule = null;
         if (!handlers.isEmpty()) {
             // 重试仅支持一种策略
@@ -100,13 +105,35 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         } catch (Throwable ex) {
             if (retryRule != null) {
                 LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
-                    "Retry %d times failed for interface %s.%s", retryRule.getRetryConfig().getMaxAttempts() - 1,
-                    invocation.getInvoker().getInterface().getName(), invocation.getMethodName()));
+                        "Retry %d times failed for interface %s.%s", retryRule.getRetryConfig().getMaxAttempts() - 1,
+                        invocation.getInvoker().getInterface().getName(), invocation.getMethodName()));
             }
             throw new InvokerException(ex);
         } finally {
             RetryContext.INSTANCE.remove();
         }
+    }
+
+    private CheckedFunction0<Result> buildFunc(Invocation invocation, List<Invoker<T>> invokers,
+            LoadBalance loadbalance) {
+        if (delegate == null) {
+            return () -> {
+                checkInvokers(invokers, invocation);
+                Invoker<T> invoker = select(loadbalance, invocation, invokers, null);
+                Result result = invoker.invoke(invocation);
+                if (result.hasException()) {
+                    throw result.getException();
+                }
+                return result;
+            };
+        }
+        return () -> {
+            Result result = delegate.invoke(invocation);
+            if (result != null && result.hasException()) {
+                throw result.getException();
+            }
+            return result;
+        };
     }
 
     /**
@@ -119,22 +146,26 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         String interfaceName = invoker.getInterface().getName();
         String methodName = invocation.getMethodName();
         String version = invocation.getAttachment(ConvertUtils.DUBBO_ATTACHMENT_VERSION);
+        final URL url = invoker.getUrl();
+        boolean isGeneric = false;
+        if (version == null) {
+            version = url.getParameter(CommonConst.URL_VERSION_KEY, ConvertUtils.ABSENT_VERSION);
+        }
         if (ConvertUtils.isGenericService(interfaceName, methodName)) {
             // 针对泛化接口, 实际接口、版本名通过url获取, 方法名基于参数获取, 为请求方法的第一个参数
-            final URL url = invoker.getUrl();
+            isGeneric = true;
             interfaceName = url.getParameter(CommonConst.GENERIC_INTERFACE_KEY, interfaceName);
             final Object[] arguments = invocation.getArguments();
             if (arguments != null && arguments.length > 0 && arguments[0] instanceof String) {
                 methodName = (String) invocation.getArguments()[0];
             }
-            version = url.getParameter(CommonConst.URL_VERSION_KEY, version);
         }
 
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
         return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
                 RequestType.CLIENT,
-                invoker.getUrl().getParameter(CommonConst.DUBBO_REMOTE_APPLICATION));
+                invoker.getUrl().getParameter(CommonConst.DUBBO_REMOTE_APPLICATION), isGeneric);
     }
 
     /**

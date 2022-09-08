@@ -48,31 +48,40 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
     /**
      * 转换apache dubbo 注意，该方法不可抽出，由于宿主依赖仅可由该拦截器加载，因此抽出会导致找不到类
      *
+     * @param invoker 调用器
      * @param invocation 调用信息
      * @return DubboRequestEntity
      */
-    private DubboRequestEntity convertToApacheDubboEntity(org.apache.dubbo.rpc.Invocation invocation) {
-        String interfaceName = invocation.getInvoker().getInterface().getName();
+    private DubboRequestEntity convertToApacheDubboEntity(Invocation invocation, Invoker<?> invoker) {
+        Invoker<?> curInvoker = invocation.getInvoker();
+        if (curInvoker == null) {
+            curInvoker = invoker;
+        }
+        String interfaceName = curInvoker.getInterface().getName();
         String methodName = invocation.getMethodName();
         String version = invocation.getAttachment(ConvertUtils.DUBBO_ATTACHMENT_VERSION);
+        final URL url = curInvoker.getUrl();
+        boolean isGeneric = false;
+        if (version == null) {
+            version = url.getParameter(CommonConst.URL_VERSION_KEY, ConvertUtils.ABSENT_VERSION);
+        }
         if (ConvertUtils.isGenericService(interfaceName, methodName)) {
             // 针对泛化接口, 实际接口、版本名通过url获取, 方法名基于参数获取, 为请求方法的第一个参数
-            final URL url = invocation.getInvoker().getUrl();
             interfaceName = url.getParameter(CommonConst.GENERIC_INTERFACE_KEY, interfaceName);
             final Object[] arguments = invocation.getArguments();
             if (arguments != null && arguments.length > 0 && arguments[0] instanceof String) {
                 methodName = (String) invocation.getArguments()[0];
             }
-            version = url.getParameter(CommonConst.URL_VERSION_KEY, version);
+            isGeneric = true;
         }
 
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
-        final boolean isProvider = isProvider(invocation.getInvoker());
+        final boolean isProvider = isProvider(curInvoker);
         return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
                 isProvider ? RequestType.SERVER : RequestType.CLIENT,
-                invocation.getInvoker().getUrl().getParameter(isProvider ? CommonConst.DUBBO_APPLICATION
-                        : CommonConst.DUBBO_REMOTE_APPLICATION));
+                curInvoker.getUrl().getParameter(isProvider ? CommonConst.DUBBO_APPLICATION
+                        : CommonConst.DUBBO_REMOTE_APPLICATION), isGeneric);
     }
 
     @Override
@@ -81,22 +90,30 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
         if (allArguments[1] instanceof Invocation) {
             final FlowControlResult result = new FlowControlResult();
             Invocation invocation = (Invocation) allArguments[1];
-            chooseDubboService().onBefore(className, convertToApacheDubboEntity(invocation), result,
-                    isProvider(context));
+            chooseDubboService().onBefore(className, convertToApacheDubboEntity(invocation,
+                    (Invoker<?>) allArguments[0]), result, isProvider(context));
             if (!result.isSkip()) {
                 return context;
             }
-            context.skip(AsyncRpcResult.newDefaultAsyncResult(
-                    wrapException(invocation, (Invoker<?>) allArguments[0], result),
-                    invocation));
+            skipResult(context, invocation, (Invoker<?>) allArguments[0], result);
         }
         return context;
     }
 
+    private void skipResult(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
+            FlowControlResult result) {
+        if (result.getResponse().isReplaceResult()) {
+            context.skip(AsyncRpcResult.newDefaultAsyncResult(result.getResponse().getResult(), invocation));
+        } else {
+            context.skip(AsyncRpcResult.newDefaultAsyncResult(wrapException(invocation, invoker, result), invocation));
+        }
+    }
+
     private RpcException wrapException(Invocation invocation, Invoker<?> invoker, FlowControlResult result) {
+        final DubboRequestEntity entity = convertToApacheDubboEntity(invocation, invoker);
         return new RpcException(result.getResponse().getCode(),
-                String.format(Locale.ENGLISH, "Failed to invoke service %s.%s: %s",
-                        invoker.getInterface().getName(), invocation.getMethodName(), result.buildResponseMsg()));
+                String.format(Locale.ENGLISH, "Failed to invoke%s service %s: %s",
+                        entity.isGeneric() ? " generic" : "", entity.getApiPath(), result.buildResponseMsg()));
     }
 
     private boolean isProvider(ExecuteContext context) {

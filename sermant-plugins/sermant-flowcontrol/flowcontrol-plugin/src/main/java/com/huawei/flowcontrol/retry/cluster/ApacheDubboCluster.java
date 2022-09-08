@@ -17,10 +17,15 @@
 
 package com.huawei.flowcontrol.retry.cluster;
 
+import com.huawei.flowcontrol.common.config.FlowControlConfig;
+
+import com.huaweicloud.sermant.core.plugin.config.PluginConfigManager;
+
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.Cluster;
 import org.apache.dubbo.rpc.cluster.Directory;
+import org.apache.dubbo.rpc.cluster.support.AbstractClusterInvoker;
 
 /**
  * apache dubbo调用实现
@@ -31,6 +36,17 @@ import org.apache.dubbo.rpc.cluster.Directory;
 public class ApacheDubboCluster implements Cluster {
     @Override
     public <T> Invoker<T> join(Directory<T> directory) throws RpcException {
-        return new ApacheDubboClusterInvoker<T>(directory);
+        final FlowControlConfig pluginConfig = PluginConfigManager.getPluginConfig(FlowControlConfig.class);
+        Invoker<T> delegate = null;
+        if (pluginConfig.isUseOriginInvoker()) {
+            Object curCluster = ClusterInvokerCreator.INSTANCE.buildInvoker();
+            if (curCluster instanceof Cluster) {
+                delegate = ((Cluster)curCluster).join(directory);
+            }
+        }
+        if (delegate != null) {
+            return new ApacheDubboClusterInvoker<>(directory, delegate);
+        }
+        return new ApacheDubboClusterInvoker<>(directory);
     }
 }
