@@ -20,12 +20,14 @@ package com.huaweicloud.sermant.core.utils;
 import com.huaweicloud.sermant.core.common.LoggerFactory;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -76,7 +78,7 @@ public class ReflectUtils {
      * @return 结果
      */
     public static Optional<Object> invokeMethod(Object target, String methodName, Class<?>[] paramsType,
-        Object[] params) {
+            Object[] params) {
         if (methodName == null || target == null) {
             return Optional.empty();
         }
@@ -104,12 +106,20 @@ public class ReflectUtils {
             return Optional.ofNullable(method.invoke(target, params));
         } catch (InvocationTargetException | IllegalAccessException ex) {
             LOGGER.warning(String.format(Locale.ENGLISH, "Can not invoke method [%s] in class [%s], reason: %s",
-                method.getName(), target.getClass().getName(), ex.getMessage()));
+                    method.getName(), target.getClass().getName(), ex.getMessage()));
         }
         return Optional.empty();
     }
 
-    private static Optional<Method> findMethod(Class<?> clazz, String methodName, Class<?>[] paramsType) {
+    /**
+     * 查找方法, 若子类无法找到, 则会遍历寻找父类
+     *
+     * @param clazz 对象
+     * @param methodName 方法名称
+     * @param paramsType 方法参数
+     * @return 方法
+     */
+    public static Optional<Method> findMethod(Class<?> clazz, String methodName, Class<?>[] paramsType) {
         if (clazz == null) {
             return Optional.empty();
         }
@@ -136,8 +146,72 @@ public class ReflectUtils {
                 }
             } else {
                 LOGGER.warning(String.format(Locale.ENGLISH, "Can not find method named [%s] from class [%s]",
-                    methodName, clazz.getName()));
+                        methodName, clazz.getName()));
             }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 构造对象
+     *
+     * @param className 类权限定名
+     * @param paramsTypes 构造器参数类型
+     * @param params 构造器参数
+     * @return 实例
+     */
+    public static Optional<Object> buildWithConstructor(String className, Class<?>[] paramsTypes, Object[] params) {
+        try {
+            final Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+            return buildWithConstructor(clazz, paramsTypes, params);
+        } catch (ClassNotFoundException exception) {
+            LOGGER.fine(String.format(Locale.ENGLISH, "Can not find class [%s]", className));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 构造对象
+     *
+     * @param clazz 对象类
+     * @param paramsTypes 构造器参数类型
+     * @param params 构造器参数
+     * @return 实例
+     */
+    public static Optional<Object> buildWithConstructor(Class<?> clazz, Class<?>[] paramsTypes, Object[] params) {
+        if (clazz == null) {
+            return Optional.empty();
+        }
+        final Optional<Constructor<?>> constructor = findConstructor(clazz, paramsTypes);
+        if (!constructor.isPresent()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(constructor.get().newInstance(params));
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            LOGGER.fine(String.format(Locale.ENGLISH,
+                    "Can not create constructor for class [%s] with params [%s]", clazz.getName(),
+                    Arrays.toString(params)));
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 查找构造器
+     *
+     * @param clazz 对象类
+     * @param paramsTypes 构造器参数
+     * @return 构造器
+     */
+    public static Optional<Constructor<?>> findConstructor(Class<?> clazz, Class<?>[] paramsTypes) {
+        if (clazz == null) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(clazz.getConstructor(paramsTypes));
+        } catch (NoSuchMethodException e) {
+            LOGGER.fine(String.format(Locale.ENGLISH, "Can not find constructor for class [%s] with params [%s]",
+                    clazz.getName(), Arrays.toString(paramsTypes)));
         }
         return Optional.empty();
     }
@@ -175,7 +249,7 @@ public class ReflectUtils {
                 field.set(target, value);
             } catch (IllegalAccessException ex) {
                 LOGGER.warning(String.format(Locale.ENGLISH, "Set value for field [%s] failed! %s", fieldName,
-                    ex.getMessage()));
+                        ex.getMessage()));
             }
             return value;
         });
@@ -194,7 +268,7 @@ public class ReflectUtils {
                 modifiersField.setInt(field, field.getModifiers() & Modifier.FINAL);
             } catch (IllegalAccessException ex) {
                 LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
-                    "Could not update final field named %s", field.getName()));
+                        "Could not update final field named %s", field.getName()));
             }
         }
     }
@@ -217,7 +291,7 @@ public class ReflectUtils {
             }
         } catch (IllegalAccessException ex) {
             LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
-                "Could not acquire the value of field %s", fieldName));
+                    "Could not acquire the value of field %s", fieldName));
         }
         return Optional.empty();
     }
@@ -249,7 +323,7 @@ public class ReflectUtils {
                 return getField(clazz.getSuperclass(), fieldName);
             } else {
                 LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
-                    "Could not find field named %s", fieldName));
+                        "Could not find field named %s", fieldName));
             }
         } finally {
             FIELD_CACHE.put(clazz, cache);

@@ -24,7 +24,9 @@ import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
 import com.huawei.flowcontrol.service.InterceptorSupporter;
 
+import com.huaweicloud.sermant.core.common.LoggerFactory;
 import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
+import com.huaweicloud.sermant.core.utils.ReflectUtils;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.AsyncRpcResult;
@@ -35,6 +37,9 @@ import org.apache.dubbo.rpc.RpcException;
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 /**
  * apache dubbo拦截后的增强类,埋点定义sentinel资源
@@ -43,6 +48,10 @@ import java.util.Locale;
  * @since 2022-02-11
  */
 public class ApacheDubboInterceptor extends InterceptorSupporter {
+    private static final Logger LOGGER = LoggerFactory.getLogger();
+
+    private static final String LOW_VERSION_RPC_RESULT = "org.apache.dubbo.rpc.RpcResult";
+
     private final String className = ApacheDubboInterceptor.class.getName();
 
     /**
@@ -102,11 +111,48 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
 
     private void skipResult(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
             FlowControlResult result) {
+        if (isLowApacheDubbo()) {
+            skipWithLowVersion(context, invocation, invoker, result);
+        } else {
+            skipWithHighVersion(context, invocation, invoker, result);
+        }
+    }
+
+    private void skipWithLowVersion(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
+            FlowControlResult result) {
+        Optional<Object> rpcResult;
+        if (result.getResponse().isReplaceResult()) {
+            rpcResult = ReflectUtils.buildWithConstructor(LOW_VERSION_RPC_RESULT,
+                    new Class[]{Object.class},
+                    new Object[]{result.getResponse().getResult()});
+        } else {
+            rpcResult = ReflectUtils.buildWithConstructor(LOW_VERSION_RPC_RESULT,
+                    new Class[]{Throwable.class},
+                    new Object[]{wrapException(invocation, invoker, result)});
+        }
+        if (rpcResult.isPresent()) {
+            context.skip(rpcResult.get());
+        } else {
+            LOGGER.warning("Can not find class RpcResult at dubbo version below 2.7.3(not include)");
+        }
+    }
+
+    private void skipWithHighVersion(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
+            FlowControlResult result) {
         if (result.getResponse().isReplaceResult()) {
             context.skip(AsyncRpcResult.newDefaultAsyncResult(result.getResponse().getResult(), invocation));
         } else {
             context.skip(AsyncRpcResult.newDefaultAsyncResult(wrapException(invocation, invoker, result), invocation));
         }
+    }
+
+    /**
+     * 判断dubbo版本是否在2.7.0 - 2.7.3(不包含) 分界点通过AsyncRpcResult构造器判定, 从2.7.3起, AsyncRpcResult改变实现方式, 继承了CompleteFuture
+     *
+     * @return 是否在标记的区间
+     */
+    private boolean isLowApacheDubbo() {
+        return ReflectUtils.findConstructor(AsyncRpcResult.class, new Class[]{CompletableFuture.class}).isPresent();
     }
 
     private RpcException wrapException(Invocation invocation, Invoker<?> invoker, FlowControlResult result) {
