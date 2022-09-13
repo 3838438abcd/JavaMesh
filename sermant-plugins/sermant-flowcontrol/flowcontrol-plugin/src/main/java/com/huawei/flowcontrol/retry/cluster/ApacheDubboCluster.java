@@ -57,7 +57,7 @@ public class ApacheDubboCluster implements Cluster {
         }
         Invoker<T> delegate = null;
         Object curCluster = ClusterInvokerCreator.INSTANCE.buildInvoker();
-        if (!(curCluster instanceof Cluster)) {
+        if (curCluster instanceof Cluster) {
             if (isDubbo3x(curCluster)) {
                 final Optional<Object> join = ReflectUtils
                         .invokeMethod(curCluster, "join", new Class[]{Directory.class, boolean.class},

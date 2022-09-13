@@ -18,11 +18,15 @@
 package com.huawei.flowcontrol;
 
 import com.huawei.flowcontrol.common.config.CommonConst;
+import com.huawei.flowcontrol.common.context.FlowControlContext;
 import com.huawei.flowcontrol.common.entity.DubboRequestEntity;
 import com.huawei.flowcontrol.common.entity.FlowControlResult;
 import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
 import com.huawei.flowcontrol.service.InterceptorSupporter;
+
+import com.huaweicloud.sermant.core.common.LoggerFactory;
+import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
@@ -30,8 +34,6 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.RpcResult;
-import com.huaweicloud.sermant.core.common.LoggerFactory;
-import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -79,9 +81,18 @@ public class AlibabaDubboInterceptor extends InterceptorSupporter {
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
         final boolean isProvider = isProvider(curInvoker);
         return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
-                isProvider ? RequestType.SERVER : RequestType.CLIENT,
-                curInvoker.getUrl().getParameter(isProvider ? CommonConst.DUBBO_APPLICATION
-                        : CommonConst.DUBBO_REMOTE_APPLICATION), isGeneric);
+                isProvider ? RequestType.SERVER : RequestType.CLIENT, getApplication(url, interfaceName, isProvider),
+                isGeneric);
+    }
+
+    private String getApplication(URL url, String interfaceName, boolean isProvider) {
+        if (isProvider) {
+            return url.getParameter(CommonConst.DUBBO_APPLICATION);
+        }
+
+        // 首先从缓存拿, 否则从url取remote.application
+        return DubboApplicationCache.INSTANCE.getApplicationCache().getOrDefault(interfaceName,
+                url.getParameter(CommonConst.DUBBO_REMOTE_APPLICATION));
     }
 
     @Override
@@ -111,6 +122,7 @@ public class AlibabaDubboInterceptor extends InterceptorSupporter {
         } else {
             context.skip(new RpcResult(wrapException(invocation, invoker, result)));
         }
+        FlowControlContext.INSTANCE.triggerFlowControl();
     }
 
     private boolean isProvider(ExecuteContext context) {
@@ -137,8 +149,12 @@ public class AlibabaDubboInterceptor extends InterceptorSupporter {
     @Override
     protected final ExecuteContext doAfter(ExecuteContext context) {
         Result result = (Result) context.getResult();
+        final boolean isProvider = isProvider(context);
         if (result != null) {
-            chooseDubboService().onAfter(className, result, isProvider(context), result.hasException());
+            chooseDubboService().onAfter(className, result, isProvider, result.hasException());
+        }
+        if (isProvider) {
+            FlowControlContext.INSTANCE.clear();
         }
         return context;
     }

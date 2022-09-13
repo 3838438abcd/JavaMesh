@@ -18,6 +18,7 @@
 package com.huawei.flowcontrol;
 
 import com.huawei.flowcontrol.common.config.CommonConst;
+import com.huawei.flowcontrol.common.context.FlowControlContext;
 import com.huawei.flowcontrol.common.entity.DubboRequestEntity;
 import com.huawei.flowcontrol.common.entity.FlowControlResult;
 import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
@@ -89,8 +90,17 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
         final boolean isProvider = isProvider(curInvoker);
         return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
                 isProvider ? RequestType.SERVER : RequestType.CLIENT,
-                curInvoker.getUrl().getParameter(isProvider ? CommonConst.DUBBO_APPLICATION
-                        : CommonConst.DUBBO_REMOTE_APPLICATION), isGeneric);
+                getApplication(url, interfaceName, isProvider), isGeneric);
+    }
+
+    private String getApplication(URL url, String interfaceName, boolean isProvider) {
+        if (isProvider) {
+            return url.getParameter(CommonConst.DUBBO_APPLICATION);
+        }
+
+        // 首先从缓存拿, 否则从url取remote.application
+        return DubboApplicationCache.INSTANCE.getApplicationCache().getOrDefault(interfaceName,
+                url.getParameter(CommonConst.DUBBO_REMOTE_APPLICATION));
     }
 
     @Override
@@ -116,6 +126,7 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
         } else {
             skipWithHighVersion(context, invocation, invoker, result);
         }
+        FlowControlContext.INSTANCE.triggerFlowControl();
     }
 
     private void skipWithLowVersion(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
@@ -179,8 +190,12 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
     @Override
     protected final ExecuteContext doAfter(ExecuteContext context) {
         Result result = (Result) context.getResult();
+        final boolean isProvider = isProvider(context);
         if (result != null) {
-            chooseDubboService().onAfter(className, result, isProvider(context), result.hasException());
+            chooseDubboService().onAfter(className, result, isProvider, result.hasException());
+        }
+        if (isProvider) {
+            FlowControlContext.INSTANCE.clear();
         }
         return context;
     }

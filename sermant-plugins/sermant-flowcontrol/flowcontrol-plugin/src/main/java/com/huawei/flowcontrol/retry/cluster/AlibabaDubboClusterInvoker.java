@@ -17,10 +17,11 @@
 
 package com.huawei.flowcontrol.retry.cluster;
 
+import com.huawei.flowcontrol.DubboApplicationCache;
 import com.huawei.flowcontrol.common.config.CommonConst;
+import com.huawei.flowcontrol.common.context.FlowControlContext;
 import com.huawei.flowcontrol.common.entity.DubboRequestEntity;
 import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
-import com.huawei.flowcontrol.common.exception.InvokerException;
 import com.huawei.flowcontrol.common.handler.retry.AbstractRetry;
 import com.huawei.flowcontrol.common.handler.retry.Retry;
 import com.huawei.flowcontrol.common.handler.retry.RetryContext;
@@ -37,6 +38,7 @@ import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.alibaba.dubbo.rpc.cluster.LoadBalance;
 import com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker;
+import com.alibaba.dubbo.rpc.service.GenericException;
 
 import io.github.resilience4j.decorators.Decorators;
 import io.github.resilience4j.decorators.Decorators.DecorateCheckedSupplier;
@@ -102,15 +104,30 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         }
         try {
             return dcs.get();
+        } catch (RpcException ex) {
+            log(retryRule, invocation);
+            throw ex;
         } catch (Throwable ex) {
-            if (retryRule != null) {
-                LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
-                        "Retry %d times failed for interface %s.%s", retryRule.getRetryConfig().getMaxAttempts() - 1,
-                        invocation.getInvoker().getInterface().getName(), invocation.getMethodName()));
-            }
-            throw new InvokerException(ex);
+            log(retryRule, invocation);
+            throw formatEx(ex);
         } finally {
             RetryContext.INSTANCE.remove();
+            FlowControlContext.INSTANCE.clear();
+        }
+    }
+
+    private RuntimeException formatEx(Throwable ex) {
+        if (ex instanceof GenericException) {
+            return (GenericException) ex;
+        }
+        return new RpcException(ex.getMessage(), ex);
+    }
+
+    private void log(io.github.resilience4j.retry.Retry retryRule, Invocation invocation) {
+        if (retryRule != null) {
+            LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
+                    "Retry %d times failed for interface %s.%s", retryRule.getRetryConfig().getMaxAttempts() - 1,
+                    invocation.getInvoker().getInterface().getName(), invocation.getMethodName()));
         }
     }
 
@@ -121,19 +138,22 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
                 checkInvokers(invokers, invocation);
                 Invoker<T> invoker = select(loadbalance, invocation, invokers, null);
                 Result result = invoker.invoke(invocation);
-                if (result.hasException()) {
-                    throw result.getException();
-                }
+                checkThrowEx(result);
                 return result;
             };
         }
         return () -> {
             Result result = delegate.invoke(invocation);
-            if (result != null && result.hasException()) {
-                throw result.getException();
-            }
+            checkThrowEx(result);
             return result;
         };
+    }
+
+    private void checkThrowEx(Result result) throws Throwable {
+        if (result == null || !result.hasException() || FlowControlContext.INSTANCE.isFlowControl()) {
+            return;
+        }
+        throw result.getException();
     }
 
     /**
@@ -164,8 +184,12 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
         return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
-                RequestType.CLIENT,
-                invoker.getUrl().getParameter(CommonConst.DUBBO_REMOTE_APPLICATION), isGeneric);
+                RequestType.CLIENT, getRemoteApplication(url, interfaceName), isGeneric);
+    }
+
+    private String getRemoteApplication(URL url, String interfaceName) {
+        return DubboApplicationCache.INSTANCE.getApplicationCache()
+                .getOrDefault(interfaceName, url.getParameter(CommonConst.DUBBO_REMOTE_APPLICATION));
     }
 
     /**
