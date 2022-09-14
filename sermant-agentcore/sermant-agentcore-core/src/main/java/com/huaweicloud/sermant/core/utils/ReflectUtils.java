@@ -90,6 +90,50 @@ public class ReflectUtils {
     }
 
     /**
+     * 针对静态方法调用
+     *
+     * @param className 类全限定名
+     * @param methodName 方法名
+     * @param paramsType 参数类型
+     * @param params 参数
+     * @return 调用结果
+     */
+    public static Optional<Object> invokeMethod(String className, String methodName, Class<?>[] paramsType,
+            Object[] params) {
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        final Class<?> clazz;
+        try {
+            clazz = contextClassLoader.loadClass(className);
+        } catch (ClassNotFoundException ignored) {
+            // 找不到类直接返回
+            return Optional.empty();
+        }
+        final Optional<Method> method = findMethod(clazz, methodName, paramsType);
+        if (method.isPresent()) {
+            return invokeMethod(null, method.get(), params);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 针对静态方法调用
+     *
+     * @param clazz 类对象
+     * @param methodName 方法名
+     * @param paramsType 参数类型
+     * @param params 参数
+     * @return 调用结果
+     */
+    public static Optional<Object> invokeMethod(Class<?> clazz, String methodName, Class<?>[] paramsType,
+            Object[] params) {
+        final Optional<Method> method = findMethod(clazz, methodName, paramsType);
+        if (method.isPresent()) {
+            return invokeMethod(null, method.get(), params);
+        }
+        return Optional.empty();
+    }
+
+    /**
      * 反射调用方法
      *
      * @param method 方法
@@ -106,7 +150,8 @@ public class ReflectUtils {
             return Optional.ofNullable(method.invoke(target, params));
         } catch (InvocationTargetException | IllegalAccessException ex) {
             LOGGER.warning(String.format(Locale.ENGLISH, "Can not invoke method [%s] in class [%s], reason: %s",
-                    method.getName(), target.getClass().getName(), ex.getMessage()));
+                    method.getName(), target == null ? "static method " : target.getClass().getName(),
+                    ex.getMessage()));
         }
         return Optional.empty();
     }
