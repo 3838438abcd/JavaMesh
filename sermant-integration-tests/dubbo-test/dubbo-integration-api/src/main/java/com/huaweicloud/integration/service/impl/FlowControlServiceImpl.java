@@ -130,6 +130,10 @@ public class FlowControlServiceImpl implements FlowControlService {
         throw createRpcException();
     }
 
+    @Override
+    public void lb() {
+    }
+
     private boolean isAlibaba() {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {

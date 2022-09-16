@@ -110,4 +110,9 @@ public interface FlowControlService {
      * @return 结果
      */
     String retry(String invocationId);
+
+    /**
+     * lb测试
+     */
+    void lb();
 }

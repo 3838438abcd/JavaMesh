@@ -162,6 +162,15 @@ public class FlowControlTest {
     }
 
     /**
+     * 负载均衡测试
+     */
+    @Test
+    public void lb() {
+        final String result = RequestUtils.get(BASE_URL + "lb", Collections.emptyMap(), String.class);
+        Assertions.assertEquals(result, "roundrobin");
+    }
+
+    /**
      * 测试熔断-异常
      */
     @Test

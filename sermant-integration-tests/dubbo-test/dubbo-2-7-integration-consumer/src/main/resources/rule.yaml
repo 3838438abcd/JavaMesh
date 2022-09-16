@@ -1,5 +1,8 @@
 servicecomb:
   matchGroup:
+    demo-lb: |
+      matches:
+        - serviceName: dubbo-integration-provider
     demo-fault-null: |
       matches:
         - apiPath:
@@ -127,3 +130,6 @@ servicecomb:
       percentage: 100
       delayTime: 2000
       forceClosed: false
+  loadbalance:
+    demo-lb: |
+      rule: RoundRobin

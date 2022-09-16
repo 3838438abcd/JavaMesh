@@ -16,6 +16,7 @@
 
 package com.huaweicloud.integration.controller;
 
+import com.huaweicloud.integration.configuration.LbCache;
 import com.huaweicloud.integration.service.FlowControlService;
 import com.huaweicloud.integration.service.FlowControlVersionService;
 import com.huaweicloud.integration.utils.ReflectUtils;
@@ -180,6 +181,19 @@ public class FlowController {
     @GetMapping("/retry")
     public String retry() {
         return flowControlService.retry(UUID.randomUUID().toString());
+    }
+
+    /**
+     * 负载均衡
+     *
+     * @return 测试信息
+     */
+    @GetMapping("/lb")
+    public String lb() {
+        flowControlService.lb();
+        final String lb = LbCache.INSTANCE.getLb();
+        LbCache.INSTANCE.setLb(null);
+        return lb;
     }
 
     private void addAttachments(String key, String value) {
