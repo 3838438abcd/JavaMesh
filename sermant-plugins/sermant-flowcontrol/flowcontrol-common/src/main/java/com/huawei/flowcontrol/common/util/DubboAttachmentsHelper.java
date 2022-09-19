@@ -68,7 +68,7 @@ public class DubboAttachmentsHelper {
         if (!context.isPresent()) {
             return Collections.emptyMap();
         }
-        final Optional<Object> attachments = ReflectUtils.getFieldValue(contextClazz, ATTACHMENTS_FIELD);
+        final Optional<Object> attachments = ReflectUtils.getFieldValue(context.get(), ATTACHMENTS_FIELD);
         if (attachments.isPresent() && attachments.get() instanceof Map) {
             return (Map<String, String>) attachments.get();
         }
