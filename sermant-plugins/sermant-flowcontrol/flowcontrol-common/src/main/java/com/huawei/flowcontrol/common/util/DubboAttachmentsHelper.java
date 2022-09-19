@@ -19,6 +19,7 @@ package com.huawei.flowcontrol.common.util;
 import com.huaweicloud.sermant.core.utils.ReflectUtils;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,7 +31,10 @@ import java.util.Optional;
  */
 public class DubboAttachmentsHelper {
     private static final String APACHE_INVOCATION = "org.apache.dubbo.rpc.Invocation";
+    private static final String APACHE_RPC_CONTEXT = "org.apache.dubbo.rpc.RpcContext";
+    private static final String ALIBABA_RPC_CONTEXT = "com.alibaba.dubbo.rpc.RpcContext";
     private static final String ATTACHMENTS_FIELD = "attachments";
+    private static final String GET_CONTEXT_METHOD = "getContext";
 
     private DubboAttachmentsHelper() {
     }
@@ -45,9 +49,28 @@ public class DubboAttachmentsHelper {
         if (invocation == null) {
             return Collections.emptyMap();
         }
+        final Map<String, String> attachments = new HashMap<>();
         final Optional<Object> fieldValue = ReflectUtils.getFieldValue(invocation, ATTACHMENTS_FIELD);
         if (fieldValue.isPresent() && fieldValue.get() instanceof Map) {
-            return (Map<String, String>) fieldValue.get();
+            attachments.putAll((Map<? extends String, ? extends String>) fieldValue.get());
+        }
+        if (isApache(invocation)) {
+            attachments.putAll(getAttachmentsFromContext(APACHE_RPC_CONTEXT));
+        } else {
+            attachments.putAll(getAttachmentsFromContext(ALIBABA_RPC_CONTEXT));
+        }
+        return Collections.unmodifiableMap(attachments);
+    }
+
+    private static Map<String, String> getAttachmentsFromContext(String contextClazz) {
+        final Optional<Object> context = ReflectUtils.invokeMethod(contextClazz, GET_CONTEXT_METHOD, null,
+                null);
+        if (context.isPresent()) {
+            return Collections.emptyMap();
+        }
+        final Optional<Object> attachments = ReflectUtils.getFieldValue(contextClazz, ATTACHMENTS_FIELD);
+        if (attachments.isPresent() && attachments.get() instanceof Map) {
+            return (Map<String, String>) attachments.get();
         }
         return Collections.emptyMap();
     }
