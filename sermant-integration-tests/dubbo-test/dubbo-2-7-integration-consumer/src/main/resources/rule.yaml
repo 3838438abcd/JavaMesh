@@ -132,4 +132,4 @@ servicecomb:
       forceClosed: false
   loadbalance:
     demo-lb: |
-      rule: RoundRobin
+      rule: LeastActive

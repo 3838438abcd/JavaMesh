@@ -47,6 +47,7 @@ import org.apache.dubbo.rpc.cluster.LoadBalance;
 import org.apache.dubbo.rpc.cluster.support.AbstractClusterInvoker;
 import org.apache.dubbo.rpc.service.GenericException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -97,8 +98,9 @@ public class ApacheDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         checkInvokers(invokers, invocation);
         final List<io.github.resilience4j.retry.Retry> handlers = retryHandler
                 .getHandlers(convertToApacheDubboEntity(invocation, invokers.get(0)));
+        final List<Invoker<T>> selected = new ArrayList<>();
         DecorateCheckedSupplier<Result> dcs = Decorators.ofCheckedSupplier(buildFunc(invocation, invokers,
-                loadbalance));
+                loadbalance, selected));
         io.github.resilience4j.retry.Retry retryRule = null;
         if (!handlers.isEmpty()) {
             // 重试仅支持一种策略
@@ -116,6 +118,7 @@ public class ApacheDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         } finally {
             RetryContext.INSTANCE.remove();
             FlowControlContext.INSTANCE.clear();
+            selected.clear();
         }
     }
 
@@ -143,11 +146,12 @@ public class ApacheDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
     }
 
     private CheckedFunction0<Result> buildFunc(Invocation invocation, List<Invoker<T>> invokers,
-            LoadBalance loadbalance) {
+            LoadBalance loadbalance, List<Invoker<T>> selected) {
         if (this.delegate == null) {
             return () -> {
                 checkInvokers(invokers, invocation);
-                Invoker<T> invoker = select(loadbalance, invocation, invokers, null);
+                Invoker<T> invoker = select(loadbalance, invocation, invokers, selected);
+                selected.add(invoker);
                 Result result = invoker.invoke(invocation);
                 checkThrowEx(result);
                 return result;

@@ -168,7 +168,7 @@ public class FlowControlTest {
     @Test
     public void lb() {
         final String result = RequestUtils.get(BASE_URL + "lb", Collections.emptyMap(), String.class);
-        Assertions.assertEquals(result, "roundrobin");
+        Assertions.assertEquals(result, "leastactive");
     }
 
     /**
