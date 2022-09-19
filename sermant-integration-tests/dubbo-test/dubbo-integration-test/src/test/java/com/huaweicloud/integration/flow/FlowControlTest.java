@@ -64,7 +64,8 @@ public class FlowControlTest {
     public void testRateLimitingWithHeader() {
         rateTest("rateLimitingWithHeader?key=key&value=attachement");
         final AtomicBoolean check = new AtomicBoolean();
-        process("rateLimitingWithHeader", RATE_LIMITING_MSG, RATE_LIMITING_REQUEST_COUNT, check);
+        process("rateLimitingWithHeader?key=key&value=val", RATE_LIMITING_MSG, RATE_LIMITING_REQUEST_COUNT,
+                check);
         Assertions.assertFalse(check.get());
     }
 
