@@ -26,15 +26,16 @@ import com.huawei.flowcontrol.common.handler.retry.AbstractRetry;
 import com.huawei.flowcontrol.common.handler.retry.Retry;
 import com.huawei.flowcontrol.common.handler.retry.RetryContext;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
+import com.huawei.flowcontrol.common.util.DubboAttachmentsHelper;
 import com.huawei.flowcontrol.retry.handler.RetryHandlerV2;
 
-import com.alibaba.dubbo.rpc.RpcContext;
 import com.huaweicloud.sermant.core.common.LoggerFactory;
 
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.alibaba.dubbo.rpc.cluster.LoadBalance;
@@ -186,7 +187,7 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
-        return new DubboRequestEntity(apiPath, getAttachments(invocation),
+        return new DubboRequestEntity(apiPath, DubboAttachmentsHelper.resolveAttachments(invocation),
                 RequestType.CLIENT, getRemoteApplication(url, interfaceName), isGeneric);
     }
 

@@ -23,9 +23,9 @@ import com.huawei.flowcontrol.common.entity.DubboRequestEntity;
 import com.huawei.flowcontrol.common.entity.FlowControlResult;
 import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
+import com.huawei.flowcontrol.common.util.DubboAttachmentsHelper;
 import com.huawei.flowcontrol.service.InterceptorSupporter;
 
-import com.alibaba.dubbo.rpc.RpcContext;
 import com.huaweicloud.sermant.core.common.LoggerFactory;
 import com.huaweicloud.sermant.core.plugin.agent.entity.ExecuteContext;
 
@@ -36,10 +36,7 @@ import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.RpcResult;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * alibaba dubbo拦截后的增强类 埋点定义sentinel资源
@@ -83,15 +80,9 @@ public class AlibabaDubboInterceptor extends InterceptorSupporter {
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
         final boolean isProvider = isProvider(curInvoker);
-        return new DubboRequestEntity(apiPath, getAttachments(invocation),
+        return new DubboRequestEntity(apiPath, DubboAttachmentsHelper.resolveAttachments(invocation),
                 isProvider ? RequestType.SERVER : RequestType.CLIENT, getApplication(url, interfaceName, isProvider),
                 isGeneric);
-    }
-
-    private Map<String, String> getAttachments(Invocation invocation) {
-        final HashMap<String, String> attachments = new HashMap<>(RpcContext.getContext().getAttachments());
-        attachments.putAll(invocation.getAttachments());
-        return Collections.unmodifiableMap(attachments);
     }
 
     private String getApplication(URL url, String interfaceName, boolean isProvider) {
