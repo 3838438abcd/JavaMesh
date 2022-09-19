@@ -16,8 +16,6 @@
 
 package com.huaweicloud.integration.filter;
 
-import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER;
-
 import com.huaweicloud.integration.configuration.LbCache;
 
 import org.apache.dubbo.common.extension.Activate;
@@ -34,7 +32,7 @@ import org.apache.dubbo.rpc.support.RpcUtils;
  * @author zhouss
  * @since 2022-09-16
  */
-@Activate(group = {CONSUMER})
+@Activate(group = {"consumer"})
 public class LbFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
