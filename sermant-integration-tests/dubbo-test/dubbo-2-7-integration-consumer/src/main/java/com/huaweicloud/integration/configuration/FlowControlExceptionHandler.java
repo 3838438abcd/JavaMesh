@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.HandlerMethod;
 
 /**
  * 流控全局异常处理
@@ -31,7 +30,7 @@ import org.springframework.web.method.HandlerMethod;
  * @author zhouss
  * @since 2022-09-16
  */
-@ControllerAdvice(basePackageClasses = FlowController.class)
+@ControllerAdvice(assignableTypes = FlowController.class)
 public class FlowControlExceptionHandler {
     /**
      * 异常处理

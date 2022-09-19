@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @author zhouss
  * @since 2022-09-16
  */
-@ControllerAdvice(basePackageClasses = FlowController.class)
+@ControllerAdvice(assignableTypes = FlowController.class)
 public class FlowControlExceptionHandler {
     /**
      * 异常处理
