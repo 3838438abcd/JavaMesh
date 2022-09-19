@@ -28,6 +28,7 @@ import com.huawei.flowcontrol.common.handler.retry.RetryContext;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
 import com.huawei.flowcontrol.retry.handler.RetryHandlerV2;
 
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.huaweicloud.sermant.core.common.LoggerFactory;
 
 import com.alibaba.dubbo.common.URL;
@@ -45,8 +46,10 @@ import io.github.resilience4j.decorators.Decorators.DecorateCheckedSupplier;
 import io.vavr.CheckedFunction0;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -183,8 +186,14 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
         // 高版本使用api invocation.getTargetServiceUniqueName获取路径，此处使用版本加接口，达到的最终结果一致
         String apiPath = ConvertUtils.buildApiPath(interfaceName, version, methodName);
-        return new DubboRequestEntity(apiPath, Collections.unmodifiableMap(invocation.getAttachments()),
+        return new DubboRequestEntity(apiPath, getAttachments(invocation),
                 RequestType.CLIENT, getRemoteApplication(url, interfaceName), isGeneric);
+    }
+
+    private Map<String, String> getAttachments(Invocation invocation) {
+        final HashMap<String, String> attachments = new HashMap<>(RpcContext.getContext().getAttachments());
+        attachments.putAll(invocation.getAttachments());
+        return Collections.unmodifiableMap(attachments);
     }
 
     private String getRemoteApplication(URL url, String interfaceName) {
