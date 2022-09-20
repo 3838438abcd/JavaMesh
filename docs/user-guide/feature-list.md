@@ -4,7 +4,7 @@
 
 |Feature|Status|Microservice Framework Supported|Configuration Center Supported|Registration Center Supported|Notice|
 |:-:|:-:|:-----|:--|:--|:--|
-|[FlowControl](flowcontrol/flowcontrol.md)|Experimental Stage|SpringBoot 1.2.x - 2.6.x <br> SpringWebMvc 4.1.3.RELEASE - 5.3.x<br>|servicecomb-kie<br>ZooKeeper|N/A|-|
+|[FlowControl](flowcontrol/flowcontrol.md)|Experimental Stage|SpringBoot 1.2.x - 2.6.x <br> SpringWebMvc 4.1.3.RELEASE - 5.3.x<br>Dubbo 2.6.x-2.7.x|servicecomb-kie<br>ZooKeeper|N/A|-|
 |[Service Registration](registry/document.md)|GA|SpringBoot 1.5.x - 2.6.2 <br> SpringCloud Edgware.SR2 - 2021.0.0<br>Dubbo 2.6.x-2.7.x|N/A|servicecomb-service-center|-|
 |[Service Dual Registration and Migration](registry/spring-cloud-registry-migiration.md)|Experimental Stage|SpringBoot 1.5.x - 2.6.2 <br/> SpringCloud Edgware.SR2 - 2021.0.0<br>Dubbo 2.6.x-2.7.x|N/A|**Target Registration Center** supported：servicecomb-service-center<br/>**Original Registration Center of SpringCloud** supported：Eureka、Nacos、Zookeeper、Consul<br/>**Original Registration Center of Dubbo** supported：Nacos、Zookeeper|-|
 |[Loadbalancer](loadbalancer/document.md)|In Development|SpringBoot 1.5.x - 2.6.2 <br/> SpringCloud Edgware.SR2 - 2021.0.0|servicecomb-kie<br/>ZooKeeper|N/A|Different versions support different load balancing policies. For details, refer to [Policies Supported in Loadbalance](loadbalancer/document.md#负载均衡策略支持一览)<br/> Gateway applications are not supported at present.|
