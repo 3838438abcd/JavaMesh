@@ -97,7 +97,8 @@ public class ApacheDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         RetryContext.INSTANCE.markRetry(retry);
         checkInvokers(invokers, invocation);
         final List<io.github.resilience4j.retry.Retry> handlers = retryHandler
-                .getHandlers(convertToApacheDubboEntity(invocation, invokers.get(0)));
+                .getHandlers(FlowControlContext.INSTANCE.getRequestEntity(RequestType.CLIENT,
+                    () -> convertToApacheDubboEntity(invocation, invokers.get(0))));
         final List<Invoker<T>> selected = new ArrayList<>();
         DecorateCheckedSupplier<Result> dcs = Decorators.ofCheckedSupplier(buildFunc(invocation, invokers,
                 loadbalance, selected));

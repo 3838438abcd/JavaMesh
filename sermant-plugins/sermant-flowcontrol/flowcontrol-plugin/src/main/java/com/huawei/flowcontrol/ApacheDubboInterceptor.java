@@ -21,6 +21,7 @@ import com.huawei.flowcontrol.common.config.CommonConst;
 import com.huawei.flowcontrol.common.context.FlowControlContext;
 import com.huawei.flowcontrol.common.entity.DubboRequestEntity;
 import com.huawei.flowcontrol.common.entity.FlowControlResult;
+import com.huawei.flowcontrol.common.entity.RequestEntity;
 import com.huawei.flowcontrol.common.entity.RequestEntity.RequestType;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
 import com.huawei.flowcontrol.common.util.DubboAttachmentsHelper;
@@ -109,28 +110,29 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
         if (allArguments[1] instanceof Invocation) {
             final FlowControlResult result = new FlowControlResult();
             Invocation invocation = (Invocation) allArguments[1];
-            chooseDubboService().onBefore(className, convertToApacheDubboEntity(invocation,
-                    (Invoker<?>) allArguments[0]), result, isProvider(context));
+            final boolean isProvider = isProvider(context);
+            chooseDubboService().onBefore(className, getRequestEntity(invocation, (Invoker<?>) allArguments[0],
+                    isProvider), result, isProvider(context));
             if (!result.isSkip()) {
                 return context;
             }
-            skipResult(context, invocation, (Invoker<?>) allArguments[0], result);
+            skipResult(context, invocation, (Invoker<?>) allArguments[0], result, isProvider);
         }
         return context;
     }
 
     private void skipResult(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
-            FlowControlResult result) {
+            FlowControlResult result, boolean isProvider) {
         if (isLowApacheDubbo()) {
-            skipWithLowVersion(context, invocation, invoker, result);
+            skipWithLowVersion(context, invocation, invoker, result, isProvider);
         } else {
-            skipWithHighVersion(context, invocation, invoker, result);
+            skipWithHighVersion(context, invocation, invoker, result, isProvider);
         }
         FlowControlContext.INSTANCE.triggerFlowControl();
     }
 
     private void skipWithLowVersion(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
-            FlowControlResult result) {
+            FlowControlResult result, boolean isProvider) {
         Optional<Object> rpcResult;
         if (result.getResponse().isReplaceResult()) {
             rpcResult = ReflectUtils.buildWithConstructor(LOW_VERSION_RPC_RESULT,
@@ -139,7 +141,7 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
         } else {
             rpcResult = ReflectUtils.buildWithConstructor(LOW_VERSION_RPC_RESULT,
                     new Class[]{Throwable.class},
-                    new Object[]{wrapException(invocation, invoker, result)});
+                    new Object[]{wrapException(invocation, invoker, result, isProvider)});
         }
         if (rpcResult.isPresent()) {
             context.skip(rpcResult.get());
@@ -149,11 +151,12 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
     }
 
     private void skipWithHighVersion(ExecuteContext context, Invocation invocation, Invoker<?> invoker,
-            FlowControlResult result) {
+            FlowControlResult result, boolean isProvider) {
         if (result.getResponse().isReplaceResult()) {
             context.skip(AsyncRpcResult.newDefaultAsyncResult(result.getResponse().getResult(), invocation));
         } else {
-            context.skip(AsyncRpcResult.newDefaultAsyncResult(wrapException(invocation, invoker, result), invocation));
+            context.skip(AsyncRpcResult.newDefaultAsyncResult(wrapException(invocation, invoker, result, isProvider),
+                    invocation));
         }
     }
 
@@ -166,8 +169,9 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
         return ReflectUtils.findConstructor(AsyncRpcResult.class, new Class[]{CompletableFuture.class}).isPresent();
     }
 
-    private RpcException wrapException(Invocation invocation, Invoker<?> invoker, FlowControlResult result) {
-        final DubboRequestEntity entity = convertToApacheDubboEntity(invocation, invoker);
+    private RpcException wrapException(Invocation invocation, Invoker<?> invoker, FlowControlResult result,
+            boolean isProvider) {
+        final DubboRequestEntity entity = (DubboRequestEntity) getRequestEntity(invocation, invoker, isProvider);
         return new RpcException(result.getResponse().getCode(),
                 String.format(Locale.ENGLISH, "Failed to invoke%s service %s: %s",
                         entity.isGeneric() ? " generic" : "", entity.getApiPath(), result.buildResponseMsg()));
@@ -187,6 +191,11 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
                 CommonConst.DUBBO_PROVIDER));
     }
 
+    private RequestEntity getRequestEntity(Invocation invocation, Invoker<?> invoker, boolean isProvider) {
+        return FlowControlContext.INSTANCE.getRequestEntity(isProvider, () -> convertToApacheDubboEntity(invocation,
+                invoker));
+    }
+
     @Override
     protected final ExecuteContext doAfter(ExecuteContext context) {
         Result result = (Result) context.getResult();
@@ -195,8 +204,9 @@ public class ApacheDubboInterceptor extends InterceptorSupporter {
             chooseDubboService().onAfter(className, result, isProvider, result.hasException());
         }
         if (isProvider) {
-            FlowControlContext.INSTANCE.clear();
+            FlowControlContext.INSTANCE.removeFlowControl();
         }
+        FlowControlContext.INSTANCE.remove(isProvider);
         return context;
     }
 

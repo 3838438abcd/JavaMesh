@@ -97,7 +97,8 @@ public class AlibabaDubboClusterInvoker<T> extends AbstractClusterInvoker<T> {
         checkInvokers(invokers, invocation);
         RetryContext.INSTANCE.markRetry(retry);
         final List<io.github.resilience4j.retry.Retry> handlers = retryHandler
-                .getHandlers(convertToAlibabaDubboEntity(invocation, invokers.get(0)));
+                .getHandlers(FlowControlContext.INSTANCE.getRequestEntity(RequestType.CLIENT,
+                    () -> convertToAlibabaDubboEntity(invocation, invokers.get(0))));
         DecorateCheckedSupplier<Result> dcs = Decorators
                 .ofCheckedSupplier(buildFunc(invocation, invokers, loadbalance));
         io.github.resilience4j.retry.Retry retryRule = null;
