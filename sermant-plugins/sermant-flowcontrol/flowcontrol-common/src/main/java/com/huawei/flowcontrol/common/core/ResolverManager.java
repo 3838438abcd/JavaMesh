@@ -219,8 +219,7 @@ public enum ResolverManager {
     }
 
     private void loadSpiResolvers() {
-        for (AbstractResolver<?> resolver : ServiceLoader.load(AbstractResolver.class,
-            ResolverManager.class.getClassLoader())) {
+        for (AbstractResolver<?> resolver : ServiceLoader.load(AbstractResolver.class)) {
             final String configKeyPrefix = AbstractResolver.getConfigKeyPrefix(resolver.getConfigKey());
             if (".".equals(configKeyPrefix)) {
                 // 空配置跳过
