@@ -19,6 +19,8 @@ package com.huawei.flowcontrol.retry;
 
 import com.huawei.flowcontrol.common.config.CommonConst;
 import com.huawei.flowcontrol.common.config.FlowControlConfig;
+import com.huawei.flowcontrol.common.core.ResolverManager;
+import com.huawei.flowcontrol.common.core.resolver.AbstractResolver;
 import com.huawei.flowcontrol.common.util.ConvertUtils;
 import com.huawei.flowcontrol.retry.cluster.AlibabaDubboClusterInvoker;
 
@@ -45,6 +47,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.util.Collections;
+import java.util.ServiceLoader;
 
 /**
  * alibaba dubbo重试逻辑测试
@@ -74,6 +77,10 @@ public class AlibabaDubboInvokerInterceptorTest {
     @Before
     @Ignore
     public void before() throws Exception {
+        for (AbstractResolver<?> resolver : ServiceLoader.load(AbstractResolver.class,
+                ResolverManager.class.getClassLoader())) {
+            final String configKeyPrefix = AbstractResolver.getConfigKeyPrefix(resolver.getConfigKey());
+        }
         operationManagerMockedStatic = Mockito.mockStatic(OperationManager.class);
         operationManagerMockedStatic.when(() -> OperationManager.getOperation(YamlConverter.class)).thenReturn(new YamlConverterImpl());
         pluginConfigManagerMockedStatic = Mockito
