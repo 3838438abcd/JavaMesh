@@ -219,7 +219,7 @@ public enum ResolverManager {
     }
 
     private void loadSpiResolvers() {
-        /*for (AbstractResolver<?> resolver : ServiceLoader.load(AbstractResolver.class,
+        for (AbstractResolver<?> resolver : ServiceLoader.load(AbstractResolver.class,
             ResolverManager.class.getClassLoader())) {
             final String configKeyPrefix = AbstractResolver.getConfigKeyPrefix(resolver.getConfigKey());
             if (".".equals(configKeyPrefix)) {
@@ -228,6 +228,6 @@ public enum ResolverManager {
             }
             resolversMap.put(configKeyPrefix, resolver);
         }
-        resolverConfigPrefix = resolversMap.keySet();*/
+        resolverConfigPrefix = resolversMap.keySet();
     }
 }
