@@ -63,7 +63,7 @@ public enum ResolverManager {
     private Set<String> resolverConfigPrefix;
 
     ResolverManager() {
-        loadSpiResolvers();
+//        loadSpiResolvers();
     }
 
     /**
@@ -73,7 +73,8 @@ public enum ResolverManager {
      * @return 是否符合要求的配置
      */
     public boolean isTarget(String key) {
-        return resolverConfigPrefix.stream().anyMatch(key::startsWith);
+//        return resolverConfigPrefix.stream().anyMatch(key::startsWith);
+        return true;
     }
 
     /**
