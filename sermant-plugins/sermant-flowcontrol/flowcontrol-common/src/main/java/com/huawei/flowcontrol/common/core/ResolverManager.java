@@ -63,7 +63,11 @@ public enum ResolverManager {
     private Set<String> resolverConfigPrefix;
 
     ResolverManager() {
-        loadSpiResolvers();
+        try {
+            loadSpiResolvers();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
