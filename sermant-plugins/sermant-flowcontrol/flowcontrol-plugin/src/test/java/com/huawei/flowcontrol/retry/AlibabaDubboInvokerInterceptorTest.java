@@ -77,12 +77,13 @@ public class AlibabaDubboInvokerInterceptorTest {
     @Before
     @Ignore
     public void before() throws Exception {
+
+        operationManagerMockedStatic = Mockito.mockStatic(OperationManager.class);
+        operationManagerMockedStatic.when(() -> OperationManager.getOperation(YamlConverter.class)).thenReturn(new YamlConverterImpl());
         for (AbstractResolver<?> resolver : ServiceLoader.load(AbstractResolver.class,
                 ResolverManager.class.getClassLoader())) {
             final String configKeyPrefix = AbstractResolver.getConfigKeyPrefix(resolver.getConfigKey());
         }
-        operationManagerMockedStatic = Mockito.mockStatic(OperationManager.class);
-        operationManagerMockedStatic.when(() -> OperationManager.getOperation(YamlConverter.class)).thenReturn(new YamlConverterImpl());
         pluginConfigManagerMockedStatic = Mockito
                 .mockStatic(PluginConfigManager.class);
         pluginConfigManagerMockedStatic.when(() -> PluginConfigManager.getPluginConfig(FlowControlConfig.class))
