@@ -104,6 +104,10 @@ public enum ResolverManager {
         }
     }
 
+    public YamlConverter getYamlConverter() {
+        return OperationManager.getOperation(YamlConverter.class);
+    }
+
     /**
      * 单个kv解析
      *
@@ -162,7 +166,7 @@ public enum ResolverManager {
      */
     private Map<String, Object> tryResolveWithYaml(String value) {
         final Map<String, Object> kvMap = new HashMap<>();
-        final Optional<Map<String, Object>> convert = yamlConverter.convert(value,Map.class);
+        final Optional<Map<String, Object>> convert = getYamlConverter().convert(value,Map.class);
         if (convert.isPresent()) {
             final Map<String, Object> map = convert.get();
             MapUtils.resolveNestMap(kvMap, map, null);
