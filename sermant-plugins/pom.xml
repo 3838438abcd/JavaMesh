@@ -30,9 +30,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-<!--                <module>sermant-flowcontrol</module>-->
+                <module>sermant-flowcontrol</module>
                 <module>sermant-service-registry</module>
-<!--                <module>sermant-dynamic-config</module>-->
+                <module>sermant-dynamic-config</module>
                 <module>sermant-router</module>
                 <module>sermant-loadbalancer</module>
             </modules>
