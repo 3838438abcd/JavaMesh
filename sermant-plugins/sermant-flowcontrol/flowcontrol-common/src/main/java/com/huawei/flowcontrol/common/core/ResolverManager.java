@@ -53,11 +53,6 @@ public enum ResolverManager {
     private final Map<String, AbstractResolver<?>> resolversMap = new HashMap<>();
 
     /**
-     * 配置解析器 当前只支持yaml格式
-     */
-    private YamlConverter yamlConverter;
-
-    /**
      * 解析器配置前缀集合
      */
     private Set<String> resolverConfigPrefix;
