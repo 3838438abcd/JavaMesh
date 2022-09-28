@@ -55,7 +55,7 @@ public enum ResolverManager {
     /**
      * 配置解析器 当前只支持yaml格式
      */
-    private final YamlConverter yamlConverter = OperationManager.getOperation(YamlConverter.class);
+    private YamlConverter yamlConverter;
 
     /**
      * 解析器配置前缀集合
@@ -63,7 +63,7 @@ public enum ResolverManager {
     private Set<String> resolverConfigPrefix;
 
     ResolverManager() {
-//        loadSpiResolvers();
+        loadSpiResolvers();
     }
 
     /**
@@ -73,8 +73,7 @@ public enum ResolverManager {
      * @return 是否符合要求的配置
      */
     public boolean isTarget(String key) {
-//        return resolverConfigPrefix.stream().anyMatch(key::startsWith);
-        return true;
+        return resolverConfigPrefix.stream().anyMatch(key::startsWith);
     }
 
     /**
