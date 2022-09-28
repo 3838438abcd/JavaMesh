@@ -54,6 +54,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.huaweicloud.sermant</groupId>
+            <artifactId>sermant-agentcore-implement</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
