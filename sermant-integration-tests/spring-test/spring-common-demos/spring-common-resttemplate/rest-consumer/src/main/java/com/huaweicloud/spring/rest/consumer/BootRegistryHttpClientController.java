@@ -44,7 +44,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
@@ -64,8 +63,6 @@ public class BootRegistryHttpClientController {
     private final String getMethod = "get";
 
     private final String postMethod = "post";
-
-    private final IOException reqError = new IOException("req error");
 
     @Resource(name = "defaultHttpClient")
     private HttpClient defaultHttpClient;
@@ -175,7 +172,7 @@ public class BootRegistryHttpClientController {
         try {
             response = curClient.execute(requestBase);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw reqError;
+                throw new IOException("req error sync");
             }
             return EntityUtils.toString(response.getEntity());
         } finally {
@@ -238,7 +235,7 @@ public class BootRegistryHttpClientController {
             response = execute.get(futureTimeout, TimeUnit.SECONDS);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 LOGGER.error("error==={}", EntityUtils.toString(response.getEntity()));
-                throw reqError;
+                throw new IOException("req error async");
             }
             return EntityUtils.toString(response.getEntity());
         } finally {
@@ -313,24 +310,24 @@ public class BootRegistryHttpClientController {
     }
 
     private String asyncInvokerThread(HttpAsyncClient httpAsyncClient, HttpRequestBase requestBase)
-            throws IOException, InterruptedException {
+            throws Exception {
         final Future<HttpResponse> execute = getFuture(httpAsyncClient, requestBase);
         AtomicReference<HttpResponse> response = new AtomicReference<>();
         try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
-            final AtomicBoolean isError = new AtomicBoolean();
+            final AtomicReference<Exception> isError = new AtomicReference<>();
             executorService.execute(() -> {
                 try {
                     response.set(execute.get(futureTimeout, TimeUnit.SECONDS));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     LOGGER.error(e.getMessage(), e);
-                    isError.set(true);
+                    isError.set(e);
                 } finally {
                     countDownLatch.countDown();
                 }
             });
-            if (isError.get()) {
-                throw reqError;
+            if (isError.get() != null) {
+                throw isError.get();
             }
             countDownLatch.await();
             return EntityUtils.toString(response.get().getEntity());
