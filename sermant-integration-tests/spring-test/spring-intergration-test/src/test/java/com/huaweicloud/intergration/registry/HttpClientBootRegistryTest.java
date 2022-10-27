@@ -78,7 +78,7 @@ public class HttpClientBootRegistryTest extends BootRegistryTest {
             return;
         }
         check("httpAsyncClientGet", HttpMethod.GET);
-        check("httpAsyncClientPost", HttpMethod.GET);
+//        check("httpAsyncClientPost", HttpMethod.GET);
         check("minimalHttpAsyncClientPost", HttpMethod.GET);
         check("minimalHttpAsyncClientGet", HttpMethod.GET);
         check("minimalHttpAsyncClientThreadGet", HttpMethod.GET);
