@@ -237,6 +237,7 @@ public class BootRegistryHttpClientController {
         try {
             response = execute.get(futureTimeout, TimeUnit.SECONDS);
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                LOGGER.error("error==={}", EntityUtils.toString(response.getEntity()));
                 throw reqError;
             }
             return EntityUtils.toString(response.getEntity());
@@ -295,11 +296,13 @@ public class BootRegistryHttpClientController {
         return httpAsyncClient.execute(requestBase, new FutureCallback<HttpResponse>() {
             @Override
             public void completed(HttpResponse result) {
+                LOGGER.error("success callback!");
                 LOGGER.info(String.valueOf(result));
             }
 
             @Override
             public void failed(Exception ex) {
+                LOGGER.error("error callback!");
                 LOGGER.error(ex.getMessage(), ex);
             }
 
