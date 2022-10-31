@@ -296,8 +296,8 @@
             <modules>
                 <module>sermant-agentcore</module>
                 <module>sermant-plugins</module>
-                <module>sermant-backend-lite</module>
-                <module>report</module>
+                <!--<module>sermant-backend-lite</module>
+                <module>report</module>-->
             </modules>
             <build>
                 <plugins>

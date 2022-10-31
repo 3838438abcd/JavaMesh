@@ -10,6 +10,7 @@ plugins:
   - monitor
   - springboot-registry
   - mq-consume-deny
+  - empty
 adaptors:
   - lubanops
 profiles:
