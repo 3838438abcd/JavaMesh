@@ -35,7 +35,6 @@ jobs:
         run: |
           export ROOT_PATH=$(pwd)
           bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh zk
-          ls -l
 #  test-for-spring-1-5-x:
 #    name: Test for spring 1.5.x
 #    runs-on: ubuntu-latest
