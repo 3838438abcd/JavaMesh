@@ -927,13 +927,6 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
-      - name: upload agent
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ runner.os }}-agent-${{ github.run_id }}
-          path: sermant-agent-*/
-          if-no-files-found: error
-          retention-days: 1
       - name: package agent
         run: |
           sed -i '/sermant-backend/d' pom.xml
@@ -941,6 +934,13 @@ jobs:
           sed -i '/sermant-integration-tests/d' pom.xml
           sed -i '/sermant-injector/d' pom.xml
           mvn package -DskipTests -Ptest --file pom.xml
+      - name: upload agent
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }}-agent-${{ github.run_id }}
+          path: sermant-agent-*/
+          if-no-files-found: error
+          retention-days: 1
   test-for-spring-graceful:
     name: Test for spring graceful
     runs-on: ubuntu-latest
