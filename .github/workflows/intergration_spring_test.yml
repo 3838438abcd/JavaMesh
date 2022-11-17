@@ -916,7 +916,7 @@ jobs:
 #            ./logs/**/*.log
 #          if-no-files-found: warn
 #          retention-days: 5
-  build-agent:
+  build-agent-and-upload:
     name: build agent
     runs-on: ubuntu-latest
     steps:
@@ -927,11 +927,13 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
-      - name: cache agent
-        uses: actions/cache@v3
+      - name: upload agent
+        uses: actions/upload-artifact@v3
         with:
+          name: ${{ runner.os }}-agent-${{ github.run_id }}
           path: sermant-agent-*/
-          key: ${{ runner.os }}-agent-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 1
       - name: package agent
         run: |
           sed -i '/sermant-backend/d' pom.xml
@@ -942,7 +944,7 @@ jobs:
   test-for-spring-graceful:
     name: Test for spring graceful
     runs-on: ubuntu-latest
-    needs: [build-agent]
+    needs: [build-agent-and-upload]
     strategy:
       matrix:
         include:
