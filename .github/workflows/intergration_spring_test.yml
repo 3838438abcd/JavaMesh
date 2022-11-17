@@ -951,7 +951,7 @@ jobs:
   test-for-spring-graceful:
     name: Test for spring graceful
     runs-on: ubuntu-latest
-    needs: [build-agent-and-upload]
+    needs: [build-agent-and-cache]
     strategy:
       matrix:
         include:
