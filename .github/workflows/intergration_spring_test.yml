@@ -8,8 +8,8 @@ on:
       - main
       - develop
 jobs:
-  download-cse-and-cache:
-    name: download cse and cache
+  download-midwares-and-cache:
+    name: download midwares and cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,11 +22,20 @@ jobs:
             ${{ runner.os }}-local-cse
       - name: download cse
         run: |
-          num=`ls -l | grep Local-CSE-2.1.3-linux-amd64.zip | wc -l`;
-          if [ $num -eq 0 ];then
-            export ROOT_PATH=$(pwd)
-            bash ./sermant-integration-tests/scripts/downloadCse.sh
-          fi
+          export ROOT_PATH=$(pwd)
+          bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh
+      - name: cache zookeeper
+        uses: actions/cache@v3
+        with:
+          path: apache-zookeeper-3.6.3-bin.tar.gz
+          key: ${{ runner.os }}-apache-zookeeper-3.6.3
+          restore-keys: |
+            ${{ runner.os }}-apache-zookeeper-3.6.3
+      - name: download zookeeper
+        run: |
+          export ROOT_PATH=$(pwd)
+          bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh zk
+          ls -l
 #  test-for-spring-1-5-x:
 #    name: Test for spring 1.5.x
 #    runs-on: ubuntu-latest
@@ -916,8 +925,8 @@ jobs:
 #            ./logs/**/*.log
 #          if-no-files-found: warn
 #          retention-days: 5
-  build-agent-and-upload:
-    name: build agent
+  build-agent-and-cache:
+    name: build agent and cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -927,6 +936,11 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: maven
+      - name: cache agent
+        uses: actions/cache@v3
+        with:
+          path: sermant-agent-*/
+          key: ${{ runner.os }}-agent-${{ github.run_id }}
       - name: package agent
         run: |
           sed -i '/sermant-backend/d' pom.xml
@@ -934,13 +948,6 @@ jobs:
           sed -i '/sermant-integration-tests/d' pom.xml
           sed -i '/sermant-injector/d' pom.xml
           mvn package -DskipTests -Ptest --file pom.xml
-      - name: upload agent
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ runner.os }}-agent-${{ github.run_id }}
-          path: sermant-agent-*/
-          if-no-files-found: error
-          retention-days: 1
   test-for-spring-graceful:
     name: Test for spring graceful
     runs-on: ubuntu-latest
