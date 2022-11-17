@@ -16,7 +16,7 @@ runs:
     - name: start provider that has closed graceful ability
       shell: bash
       run: |
-        mkdir logs
+        mkdir -p logs
         nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=feign -Dserver.port=8014 \
         -Dsermant_log_dir=./logs/feign-provider-8014${{ env.tailVersion }} -jar \
         sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign${{ env.tailVersion }}/feign-provider${{ env.tailVersion }}/target/feign-provider${{ env.tailVersion }}.jar > feign-provider-8014.log 2>&1 &
