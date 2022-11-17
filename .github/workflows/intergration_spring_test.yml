@@ -23,7 +23,7 @@ jobs:
       - name: download cse
         run: |
           export ROOT_PATH=$(pwd)
-          bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh
+          bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh cse
       - name: cache zookeeper
         uses: actions/cache@v3
         with:
@@ -976,5 +976,7 @@ jobs:
       springCloudVersion: ${{ matrix.springCloudVersion }}
     steps:
       - uses: actions/checkout@v2
-      - name: test for graceful springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
         uses: ./.github/actions/scenarios/graceful
+      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+        uses: ./.github/actions/scenarios/spring-common
