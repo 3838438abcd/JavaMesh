@@ -10,10 +10,14 @@ runs:
         java-version: '8'
         distribution: 'adopt'
         cache: maven
-    - name: download zookeeper and run
+    - name: download zookeeper
+      uses: actions/cache@v3
+      with:
+        path: apache-zookeeper-3.6.3-bin.tar.gz
+        key: ${{ runner.os }}-apache-zookeeper-3.6.3
+    - name: run zookeeper
       shell: bash
       run: |
-        curl -o apache-zookeeper-3.6.3-bin.tar.gz -L https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
         tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
         bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
     - name: download agent
