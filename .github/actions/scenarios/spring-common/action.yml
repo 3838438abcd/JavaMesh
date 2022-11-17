@@ -67,11 +67,11 @@ runs:
     - name: integration test module CLOUD_REGISTRY
       shell: bash
       run: mvn test -Dsermant.integration.test.type=CLOUD_REGISTRY --file sermant-integration-tests/spring-test/pom.xml
-    - name: reset 1.5.x config
-      if: matrix.springBootVersion == '1.5.0.RELEASE' && matrix.springCloudVersion == 'Edgware.SR2'
+    - name: reset
       shell: bash
       run: |
         echo "tailVersion=" >> $GITHUB_ENV
+        jps -l | grep ^jps | awk '{print $1}' | xargs -n 1 kill -9
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
       if: failure()
