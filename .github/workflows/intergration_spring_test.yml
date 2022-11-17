@@ -983,7 +983,7 @@ jobs:
       springCloudVersion: ${{ matrix.springCloudVersion }}
     steps:
       - uses: actions/checkout@v2
-      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/graceful
+#      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/graceful
       - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
         uses: ./.github/actions/scenarios/spring-common

@@ -12,6 +12,7 @@ runs:
         restore-keys: |
           ${{ runner.os }}-local-cse
     - name: start cse
+      shell: bash
       run: |
         export ROOT_PATH=$(pwd)
         bash ./sermant-integration-tests/scripts/startCse.sh
@@ -95,7 +96,6 @@ runs:
       shell: bash
       run: mvn test -Dsermant.integration.test.type=CLOUD_REGISTRY --file sermant-integration-tests/spring-test/pom.xml
     - name: if failure then upload error log
-      shell: bash
       uses: actions/upload-artifact@v3
       if: failure()
       with:
