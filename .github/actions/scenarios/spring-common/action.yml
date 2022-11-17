@@ -79,7 +79,11 @@ runs:
     - name: integration test module LOAD_BALANCER
       run: mvn test -Dsermant.integration.test.type=LOAD_BALANCER -Dspring.boot.version=${{ matrix.springBootVersion }} --file sermant-integration-tests/spring-test/pom.xml
     - name: integration test module BOOT_REGISTRY
+      if: matrix.springBootVersion == '1.5.0.RELEASE' && matrix.springCloudVersion == 'Edgware.SR2'
       run: mvn test -Dsermant.integration.test.type=BOOT_REGISTRY -Dapp.version=1.5.x -Dspring.boot.version=${{ matrix.springBootVersion }} --file sermant-integration-tests/spring-test/pom.xml
+    - name: integration test module BOOT_REGISTRY
+      if: matrix.springBootVersion != '1.5.0.RELEASE' && matrix.springCloudVersion != 'Edgware.SR2'
+      run: mvn test -Dsermant.integration.test.type=BOOT_REGISTRY -Dspring.boot.version=${{ matrix.springBootVersion }} -Dhttp.client.version=${{ matrix.httpClientVersion }} --file sermant-integration-tests/spring-test/pom.xml
     - name: integration test module CLOUD_REGISTRY
       run: mvn test -Dsermant.integration.test.type=CLOUD_REGISTRY --file sermant-integration-tests/spring-test/pom.xml
     - name: if failure then upload error log
