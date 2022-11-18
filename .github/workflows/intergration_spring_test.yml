@@ -561,14 +561,14 @@ jobs:
       - uses: actions/checkout@v2
       - name: common operations
         uses: ./.github/actions/common
-      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/graceful
-      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/spring-common
-      - name: nacos dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        if: ${{ matrix.nacosVersion }}
-        uses: ./.github/actions/scenarios/dynamic-config-nacos
-      - name: zk dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/dynamic-config-zk
+#      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/graceful
+#      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/spring-common
+#      - name: nacos dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        if: ${{ matrix.nacosVersion }}
+#        uses: ./.github/actions/scenarios/dynamic-config-nacos
+#      - name: zk dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/dynamic-config-zk
       - name: spring router test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
         uses: ./.github/actions/scenarios/spring-router

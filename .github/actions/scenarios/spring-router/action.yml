@@ -9,7 +9,7 @@ runs:
       run: |
         echo "tailVersion=-1.5.x" >> $GITHUB_ENV
         echo "logDir=./logs/spring-router" >> $GITHUB_ENV
-        mkdir -p ${{ env.logDir }}
+        mkdir -p ${env.logDir}
     - name: package common demos
       shell: bash
       run: |
