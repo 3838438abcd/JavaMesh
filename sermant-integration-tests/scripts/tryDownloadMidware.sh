@@ -62,7 +62,7 @@ midleware=$1
 if [ $midleware == "zk" ];then
   ADDRESS=$ZK_ADDRESS
   FILE_NAME=$ZK_FILE_NAME
-elif [ $mideware == "nacos" ]; then
+elif [ $midleware == "nacos" ]; then
   ADDRESS=$NACOS_ADDRESS
   FILE_NAME=$NACOS_FILE_NAME
 else
