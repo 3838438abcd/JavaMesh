@@ -789,5 +789,5 @@ jobs:
       - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
         uses: ./.github/actions/scenarios/spring-common
       - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        if: ${{ matric.nacosVersion }} != ""
+        if: ${{ matrix.nacosVersion }} != ""
         uses: ./.github/actions/scenarios/dynamic-config-nacos
