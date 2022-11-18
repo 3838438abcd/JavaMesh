@@ -84,4 +84,4 @@ runs:
           ./*.log
           ./logs/**
         if-no-files-found: warn
-        retention-days: 5
+        retention-days: 2
