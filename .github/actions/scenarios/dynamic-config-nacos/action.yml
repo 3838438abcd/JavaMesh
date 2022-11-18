@@ -44,7 +44,8 @@ runs:
         service.meta.application: dynamic
         service.meta.environment: development
       run: |
-        ps -ef | grep nacos-config | head -n 1 | awk '{print $2}' | xargs -n 1 kill -9
+        jps -l | grep -E "nacos-config" | awk '{print $1}' | xargs -n 1 kill -9
+        log_dir=./logs/dynamic-config-nacos
         nohup java -javaagent:sermant-agent-${{ env.sermantVersion }}/agent/sermant-agent.jar=appName=default \
         -Dspring.cloud.bootstrap.enabled=true \
         -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar >> \
