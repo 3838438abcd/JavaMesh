@@ -25,6 +25,10 @@ CSE_FILE_NAME=Local-CSE-2.1.3-linux-amd64.zip
 ZK_ADDRESS=https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
 ZK_FILE_NAME=apache-zookeeper-3.6.3-bin.tar.gz
 
+#======================================Nacos server配置======================================
+NACOS_ADDRESS=https://github.com/alibaba/nacos/releases/download/1.4.2/nacos-server-1.4.2.tar.gz
+NACOS_FILE_NAME=nacos-server-1.4.2.tar.gz
+
 #重试次数
 TRY_TIMES=3
 
@@ -58,6 +62,9 @@ midleware=$1
 if [ $midleware == "zk" ];then
   ADDRESS=$ZK_ADDRESS
   FILE_NAME=$ZK_FILE_NAME
+elif [ $mideware == "nacos" ]; then
+  ADDRESS=$NACOS_ADDRESS
+  FILE_NAME=$NACOS_FILE_NAME
 else
   ADDRESS=$CSE_ADDRESS
   FILE_NAME=$CSE_FILE_NAME
