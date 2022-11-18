@@ -47,120 +47,6 @@ jobs:
         run: |
           export ROOT_PATH=$(pwd)
           bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh nacos
-#  test-for-spring-nacos-config:
-#    name: Test for spring nacos config
-#    runs-on: ubuntu-latest
-#    needs: [download-cse-and-cache]
-#    strategy:
-#      matrix:
-#        include:
-#          - nacosVersion: "1.5.0.RELEASE"
-#            springBootVersion: "1.5.0.RELEASE"
-#            springCloudVersion: "Edgware.SR6"
-#          - nacosVersion: "2.0.0.RELEASE"
-#            springBootVersion: "2.0.0.RELEASE"
-#            springCloudVersion: "Finchley.RELEASE"
-#          - nacosVersion: "2.1.0.RELEASE"
-#            springBootVersion: "2.1.0.RELEASE"
-#            springCloudVersion: "Greenwich.RELEASE"
-#          - nacosVersion: "2.2.0.RELEASE"
-#            springBootVersion: "2.2.0.RELEASE"
-#            springCloudVersion: "Hoxton.RELEASE"
-#          - nacosVersion: "2.2.8.RELEASE"
-#            springBootVersion: "2.3.0.RELEASE"
-#            springCloudVersion: "Hoxton.RELEASE"
-#          - nacosVersion: "2021.0.1.0"
-#            springBootVersion: "2.4.0"
-#            springCloudVersion: "2020.0.0"
-#          - nacosVersion: "2021.1"
-#            springBootVersion: "2.6.2"
-#            springCloudVersion: "2021.0.0"
-#      fail-fast: false
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Set up JDK 8
-#        uses: actions/setup-java@v2
-#        with:
-#          java-version: '8'
-#          distribution: 'adopt'
-#          cache: maven
-#      - name: download nacos server and run
-#        run: |
-#          curl -o nacos-server-1.4.2.tar.gz -L https://github.com/alibaba/nacos/releases/download/1.4.2/nacos-server-1.4.2.tar.gz
-#          tar -zxf nacos-server-1.4.2.tar.gz
-#          bash nacos/bin/startup.sh -m standalone
-#      - name: download local cse
-#        uses: actions/cache@v3
-#        with:
-#          path: Local-CSE-2.1.3-linux-amd64.zip
-#          key: ${{ runner.os }}-local-cse
-#          restore-keys: |
-#            ${{ runner.os }}-local-cse
-#      - name: start cse
-#        run: |
-#          export ROOT_PATH=$(pwd)
-#          bash ./sermant-integration-tests/scripts/startCse.sh
-#      - name: cache dependencies
-#        uses: actions/cache@v3
-#        with:
-#          path: ~/.m2/repository
-#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: |
-#            ${{ runner.os }}-maven-
-#      - name: package agent
-#        run: |
-#          sed -i '/sermant-backend/d' pom.xml
-#          sed -i '/sermant-backend-lite/d' pom.xml
-#          sed -i '/sermant-integration-tests/d' pom.xml
-#          sed -i '/sermant-injector/d' pom.xml
-#          mvn package -DskipTests -Ptest --file pom.xml
-#      - name: package spring nacos config
-#        run: |
-#          sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
-#          mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -Dnacos.version=${{ matrix.nacosVersion }} -DskipTests -P dynamic-config-nacos --file sermant-integration-tests/spring-test/pom.xml
-#      - name: start service with disable origin config center
-#        env:
-#          dynamic.config.serverAddress: 127.0.0.1:30110
-#          dynamic.config.dynamicConfigType: KIE
-#          dynamic.config.plugin.enableOriginConfigCenter: false
-#          dynamic.config.plugin.enableDynamicConfig: true
-#          server.port: 8989
-#          service.meta.application: disable
-#          service.meta.environment: development
-#        run: |
-#          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar >> nacos-config.log 2>&1 &
-#      - name: waiting for services start
-#        run: |
-#          ps -ef | grep java
-#          bash ./sermant-integration-tests/scripts/checkService.sh http://127.0.0.1:8989/dynamic/config/check 30
-#      - name: integration test
-#        run: mvn test -Dsermant.integration.test.type=dynamic_config_nacos --file sermant-integration-tests/spring-test/pom.xml
-#      - name: start service with enable origin config center
-#        env:
-#          dynamic.config.serverAddress: 127.0.0.1:30110
-#          dynamic.config.dynamicConfigType: KIE
-#          dynamic.config.plugin.enableOriginConfigCenter: true
-#          dynamic.config.plugin.enableDynamicConfig: true
-#          server.port: 8989
-#          service.meta.application: dynamic
-#          service.meta.environment: development
-#        run: |
-#          ps -ef | grep nacos-config | head -n 1 | awk '{print $2}' | xargs -n 1 kill -9
-#          nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dspring.cloud.bootstrap.enabled=true -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar >> nacos-dynamic-config.log 2>&1 &
-#      - name: wait for ready and test
-#        run: |
-#          bash ./sermant-integration-tests/scripts/checkService.sh http://127.0.0.1:8989/dynamic/config/check 30
-#          mvn test -Dsermant.integration.test.type=dynamic_config_nacos --file sermant-integration-tests/spring-test/pom.xml
-#      - name: if failure then upload error log
-#        uses: actions/upload-artifact@v3
-#        if: failure()
-#        with:
-#          name: (${{ github.job }})-(${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion}}-${{ matrix.nacosVersion }})-logs
-#          path: |
-#            ./*.log
-#            ./logs/**/*.log
-#          if-no-files-found: warn
-#          retention-days: 5
 #  test-for-spring-zk-config:
 #    name: Test for spring zk config
 #    runs-on: ubuntu-latest
@@ -784,10 +670,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: common operation
         uses: ./.github/actions/common
-      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/graceful
-      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/spring-common
-      - name: nacos test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/graceful
+#      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/spring-common
+      - name: nacos dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
         if: ${{ matrix.nacosVersion }}
         uses: ./.github/actions/scenarios/dynamic-config-nacos
+      - name: zk dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+        uses: ./.github/actions/scenarios/dynamic-config-zk
