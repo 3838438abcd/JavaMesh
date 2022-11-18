@@ -8,11 +8,12 @@ runs:
       shell: bash
       run: |
         echo "tailVersion=-1.5.x" >> $GITHUB_ENV
-        echo "logDir=./logs/spring-router" >> $GITHUB_ENV
-        mkdir -p ${env.logDir}
     - name: package common demos
       shell: bash
       run: |
+        echo "logDir=./logs/spring-router" >> $GITHUB_ENV
+        mkdir -p ${env.logDir}
+        ls -l
         sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
         mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests -P common-test${{ env.tailVersion }} --file sermant-integration-tests/spring-test/pom.xml
     - name: post config
