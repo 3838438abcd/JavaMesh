@@ -32,6 +32,25 @@ runs:
       run: |
         export ROOT_PATH=$(pwd)
         bash ./sermant-integration-tests/scripts/startCse.sh
+    - name: download nacos server
+      uses: actions/cache@v3
+      with:
+        path: nacos-server-1.4.2.tar.gz
+        key: ${{ runner.os }}-nacos-server-1.4.2
+        restore-keys: |
+          ${{ runner.os }}-nacos-server-1.4.2
+    - name: start nacos server
+      shell: bash
+      run: |
+        tar -zxf nacos-server-1.4.2.tar.gz
+        bash nacos/bin/startup.sh -m standalone
+    - name: cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     - name: download agent
       uses: actions/cache@v3
       with:
