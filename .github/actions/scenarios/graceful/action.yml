@@ -16,7 +16,7 @@ runs:
     - name: start provider that has closed graceful ability
       shell: bash
       run: |
-        log_dir=${log_dir}/graceful
+        log_dir=./logs/graceful
         mkdir -p ${log_dir}
         nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=feign -Dserver.port=8014 \
         -Dsermant_log_dir=${log_dir}/feign-provider-8014${{ env.tailVersion }} -jar \
@@ -33,7 +33,7 @@ runs:
         grace.rule.enableOfflineNotify: true
         grace.rule.warmUpTime: 600
       run: |
-        log_dir=${log_dir}/graceful
+        log_dir=./logs/graceful
         cp sermant-integration-tests/spring-test/spring-common-demos/spring-common-feign${{ env.tailVersion }}/feign-provider${{ env.tailVersion }}/target/feign-provider${{ env.tailVersion }}.jar graceful-feign-provider${{ env.tailVersion }}.jar
         nohup java -javaagent:sermant-agent-1.0.0/agent/sermant-agent.jar=appName=default -Dservice.meta.application=feign -Dserver.port=8013 -jar \
         -Dsermant_log_dir=${log_dir}/feign-provider${{ env.tailVersion }} -Dgrace.rule.httpServerPort=16777 \
