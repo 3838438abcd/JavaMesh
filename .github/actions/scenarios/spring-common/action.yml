@@ -75,7 +75,7 @@ runs:
         jps -l | grep -E "feign|rest" | awk '{print $1}' | xargs -n 1 kill -9
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
-#      if: failure()
+      if: failure() || cancelled()
       with:
         name: (${{ github.job }})-spring-common-(${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }})-logs
         path: |
