@@ -23,7 +23,7 @@ jobs:
             ${{ runner.os }}-local-cse
       - name: download cse
         run: |
-          export ROOT_PATH="$(cd "$(dirname $0)"; pwd)"
+          export ROOT_PATH=$(pwd)
           bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh cse
       - name: cache zookeeper
         uses: actions/cache@v3
