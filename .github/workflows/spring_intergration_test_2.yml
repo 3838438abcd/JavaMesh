@@ -55,7 +55,7 @@ jobs:
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
+          java-version: '8'
           distribution: 'adopt'
           cache: maven
       - name: cache agent
@@ -112,13 +112,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: common operations
         uses: ./.github/actions/common/spring
-      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/spring/graceful
-      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        uses: ./.github/actions/scenarios/spring/spring-common
-      - name: nacos dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
-        if: ${{ matrix.nacosVersion }}
-        uses: ./.github/actions/scenarios/spring/dynamic-config-nacos
+#      - name: graceful test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/spring/graceful
+#      - name: spring common test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        uses: ./.github/actions/scenarios/spring/spring-common
+#      - name: nacos dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+#        if: ${{ matrix.nacosVersion }}
+#        uses: ./.github/actions/scenarios/spring/dynamic-config-nacos
       - name: zk dynamic config test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
         uses: ./.github/actions/scenarios/spring/dynamic-config-zk
       - name: spring router test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
