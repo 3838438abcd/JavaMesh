@@ -108,9 +108,6 @@ jobs:
             springCloudVersion: "2021.0.3"
             httpClientVersion: "4.5.13"
       fail-fast: false
-    env:
-      springBootVersion: ${{ matrix.springBootVersion }}
-      springCloudVersion: ${{ matrix.springCloudVersion }}
     steps:
       - uses: actions/checkout@v2
       - name: common operations
