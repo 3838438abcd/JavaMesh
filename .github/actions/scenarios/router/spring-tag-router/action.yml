@@ -42,7 +42,7 @@ runs:
       run: |
         log_dir=./logs/tag-router
         mkdir -p ${log_dir}
-        echo "logDir=${logDir}" >> $GITHUB_ENV
+        echo "logDir=${log_dir}" >> $GITHUB_ENV
     - name: start cse feign provider service
       shell: bash
       env:
