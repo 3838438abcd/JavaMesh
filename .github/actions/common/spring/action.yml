@@ -16,7 +16,6 @@ runs:
         path: apache-zookeeper-3.6.3-bin.tar.gz
         key: ${{ runner.os }}-apache-zookeeper-3.6.3
     - name: run zookeeper
-      shell: bash
       run: |
         tar -zxf apache-zookeeper-3.6.3-bin.tar.gz
         bash apache-zookeeper-3.6.3-bin/bin/zkServer.sh start apache-zookeeper-3.6.3-bin/conf/zoo_sample.cfg
@@ -28,7 +27,6 @@ runs:
         restore-keys: |
           ${{ runner.os }}-local-cse
     - name: start cse
-      shell: bash
       run: |
         export ROOT_PATH=$(pwd)
         bash ./sermant-integration-tests/scripts/startCse.sh
@@ -40,7 +38,6 @@ runs:
         restore-keys: |
           ${{ runner.os }}-nacos-server-1.4.2
     - name: start nacos server
-      shell: bash
       run: |
         tar -zxf nacos-server-1.4.2.tar.gz
         bash nacos/bin/startup.sh -m standalone
