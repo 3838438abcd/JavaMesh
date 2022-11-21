@@ -109,17 +109,18 @@ public class ZookeeperConfigTest {
 
     private void check(long maxWaitTimeMs, long sleepTimeMs, Supplier<Boolean> checkFunc) {
         final long start = System.currentTimeMillis();
-        while ((start + maxWaitTimeMs >= System.currentTimeMillis()) && !checkFunc.get()) {
+        boolean result = false;
+        while ((start + maxWaitTimeMs >= System.currentTimeMillis()) && !(result = checkFunc.get())) {
             try {
                 Thread.sleep(sleepTimeMs);
             } catch (InterruptedException e) {
                 // ignored
             }
         }
-        if (!checkFunc.get()) {
+        if (!result) {
             LOGGER.error("=======配置中心配置内容: [{}]==================", JSONObject.toJSONString(kieClient.query(null)));
         }
-        Assert.assertTrue(checkFunc.get());
+        Assert.assertTrue(result);
     }
 
     private void publishKieConfig() {
