@@ -1,4 +1,4 @@
-name: intergration spring test
+name: Spring Intergration Test
 env:
   projectSpringBootVersion: 2.2.0.RELEASE
   sermantVersion: 1.0.0
