@@ -7,9 +7,10 @@ runs:
       shell: bash
       if: matrix.dubbo-version == '2-6' && matrix.dubbo-versions == '0'
       run: mvn package -Dalibaba.dubbo.version=2.6.${{ matrix.dubbo-versions }} -DskipTests -P260 --file sermant-integration-tests/dubbo-test/pom.xml
-        - name: package dubbo 2.6.x tests
-          if: matrix.dubbo-version == '2-6' && matrix.dubbo-versions != '0'
-          run: mvn package -Dalibaba.dubbo.version=2.6.${{ matrix.dubbo-versions }} -DskipTests --file sermant-integration-tests/dubbo-test/pom.xml
+    - name: package dubbo 2.6.x tests
+      shell: bash
+      if: matrix.dubbo-version == '2-6' && matrix.dubbo-versions != '0'
+      run: mvn package -Dalibaba.dubbo.version=2.6.${{ matrix.dubbo-versions }} -DskipTests --file sermant-integration-tests/dubbo-test/pom.xml
     - name: package dubbo 2.7.x tests
       shell: bash
       if: matrix.dubbo-version == '2-7'
