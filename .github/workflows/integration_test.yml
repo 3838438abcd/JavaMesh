@@ -24,6 +24,7 @@ jobs:
           key: ${{ runner.os }}-middlewares-${{ github.run_id }}
       - name: download middlewares
         run: |
+          export ROOT_PATH="$(cd "$(dirname $0)"; pwd)"
           bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh sc
           tar -zxf apache-servicecomb-service-center-2.1.0-linux-amd64.tar.gz
           bash ./sermant-integration-tests/scripts/tryDownloadMidware.sh zk
