@@ -3,6 +3,12 @@ description: "Auto test for dubbo route for plugin sermant-router"
 runs:
   using: "composite"
   steps:
+    - name: create log dir
+      shell: bash
+      run: |
+        log_dir=./logs/router
+        mkdir -p ${log_dir}
+        echo "logDir=${log_dir}" >> $GITHUB_ENV
     - name: package dubbo 2.6.0 tests
       shell: bash
       if: matrix.dubbo-version == '2-6' && matrix.dubbo-versions == '0'
@@ -15,12 +21,6 @@ runs:
       shell: bash
       if: matrix.dubbo-version == '2-7'
       run: mvn package -Ddubbo.version=2.7.${{ matrix.dubbo-versions }} -DskipTests --file sermant-integration-tests/dubbo-test/pom.xml
-    - name: create log dir
-      shell: bash
-      run: |
-        log_dir=./logs/router
-        mkdir -p ${log_dir}
-        echo "logDir=${log_dir}" >> $GITHUB_ENV
     - name: post config to zookeeper
       shell: bash
       run: bash ./sermant-integration-tests/scripts/createStrategy.sh all
