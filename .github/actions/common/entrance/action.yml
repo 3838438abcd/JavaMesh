@@ -14,5 +14,7 @@ runs:
         log_dir=${{ inputs.log-dir }}
         mkdir -p ${log_dir}
         echo "logDir=${log_dir}" >> $GITHUB_ENV
+        echo "=======check log dir======"
+        ls -l ${log_dir}
 
 

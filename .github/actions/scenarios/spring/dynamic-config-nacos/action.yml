@@ -3,12 +3,10 @@ description: "Auto test for nacos config center which achieved in sermant-dynami
 runs:
   using: "composite"
   steps:
-    - name: create log dir
-      shell: bash
-      run: |
-        log_dir=./logs/dynamic-config-nacos
-        mkdir -p ${log_dir}
-        echo "logDir=${log_dir}" >> $GITHUB_ENV
+    - name: entry
+      uses: ./.github/actions/common/entrance
+      with:
+        log-dir: ./logs/dynamic-config-nacos
     - name: package spring nacos config
       shell: bash
       run: |
@@ -58,11 +56,11 @@ runs:
       run: |
         bash ./sermant-integration-tests/scripts/checkService.sh http://127.0.0.1:8989/dynamic/config/check 120
         mvn test -Dsermant.integration.test.type=dynamic_config_nacos --file sermant-integration-tests/spring-test/pom.xml
-    - name: reset
-      shell: bash
-      run: |
-        echo "logDir=" >> $GITHUB_ENV
-        jps -l | grep -E "nacos-config" | awk '{print $1}' | xargs -n 1 kill -9
+    - name: exit
+      if: always()
+      uses: ./.github/actions/common/exit
+      with:
+        processor-keyword: nacos-config
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
       if: failure() || cancelled()

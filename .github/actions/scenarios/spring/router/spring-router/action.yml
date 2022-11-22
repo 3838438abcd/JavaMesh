@@ -3,12 +3,10 @@ description: "Auto test for spring route for plugin sermant-router"
 runs:
   using: "composite"
   steps:
-    - name: create log dir
-      shell: bash
-      run: |
-        log_dir=./logs/spring-router
-        mkdir -p ${log_dir}
-        echo "logDir=${log_dir}" >> $GITHUB_ENV
+    - name: entry
+      uses: ./.github/actions/common/entrance
+      with:
+        log-dir: ./logs/spring-router
     - name: 1.5.x config
       if: matrix.springBootVersion == '1.5.0.RELEASE' && matrix.springCloudVersion == 'Edgware.SR2'
       shell: bash
@@ -193,13 +191,11 @@ runs:
     - name: integration test module ROUTER
       shell: bash
       run: mvn test -Dsermant.integration.test.type=ROUTER --file sermant-integration-tests/spring-test/pom.xml
-    - name: reset
-      shell: bash
-      run: |
-        echo "tailVersion=" >> $GITHUB_ENV
-        echo "healthApi=" >> $GITHUB_ENV
-        echo "logDir=" >> $GITHUB_ENV
-        jps -l | grep -E "feign|rest" | awk '{print $1}' | xargs -n 1 kill -9
+    - name: exit
+      if: always()
+      uses: ./.github/actions/common/exit
+      with:
+        processor-keyword: feign|rest
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
       if: failure() || cancelled()

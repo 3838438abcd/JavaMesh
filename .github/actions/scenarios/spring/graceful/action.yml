@@ -3,12 +3,10 @@ description: "Auto test for graceful"
 runs:
   using: "composite"
   steps:
-    - name: create log dir
-      shell: bash
-      run: |
-        log_dir=./logs/graceful
-        mkdir -p ${log_dir}
-        echo "logDir=${log_dir}" >> $GITHUB_ENV
+    - name: entry
+      uses: ./.github/actions/common/entrance
+      with:
+        log-dir: ./logs/graceful
     - name: 1.5.x config
       if: matrix.springBootVersion == '1.5.0.RELEASE' && matrix.springCloudVersion == 'Edgware.SR2'
       shell: bash
@@ -73,12 +71,11 @@ runs:
         mvn test -Dsermant.integration.test.type=GRACEFUL -Dgraceful.test.type=down --file sermant-integration-tests/spring-test/pom.xml
         echo "=======check process====="
         jps -l
-    - name: reset
-      shell: bash
-      run: |
-        echo "tailVersion=" >> $GITHUB_ENV
-        echo "logDir=" >> $GITHUB_ENV
-        jps -l | grep -E "feign|rest" | awk '{print $1}' | xargs -n 1 kill -9
+    - name: exit
+      if: always()
+      uses: ./.github/actions/common/exit
+      with:
+        processor-keyword: feign|rest
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
       if: failure() || cancelled()
