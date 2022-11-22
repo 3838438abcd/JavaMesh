@@ -3,6 +3,12 @@ description: "Auto test for spring route for plugin sermant-router"
 runs:
   using: "composite"
   steps:
+    - name: create log dir
+      shell: bash
+      run: |
+        log_dir=./logs/tag-router
+        mkdir -p ${log_dir}
+        echo "logDir=${log_dir}" >> $GITHUB_ENV
     - name: 1.5.x config
       if: matrix.springBootVersion == '1.5.0.RELEASE' && matrix.springCloudVersion == 'Edgware.SR2'
       shell: bash
@@ -37,12 +43,6 @@ runs:
     - name: post config to local-cse
       shell: bash
       run: mvn test -Dsermant.integration.test.type=TAG_ROUTER_CONFIG --file sermant-integration-tests/spring-test/pom.xml
-    - name: create log dir
-      shell: bash
-      run: |
-        log_dir=./logs/tag-router
-        mkdir -p ${log_dir}
-        echo "logDir=${log_dir}" >> $GITHUB_ENV
     - name: start cse feign provider service
       shell: bash
       env:

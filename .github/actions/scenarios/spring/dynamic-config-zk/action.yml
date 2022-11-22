@@ -3,17 +3,17 @@ description: "Auto test for zookeeper config center which achieved in sermant-dy
 runs:
   using: "composite"
   steps:
-    - name: package spring zk config
-      shell: bash
-      run: |
-        sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
-        mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests -P dynamic-config-zk --file sermant-integration-tests/spring-test/pom.xml
     - name: create log dir
       shell: bash
       run: |
         log_dir=./logs/dynamic-config-zk
         mkdir -p ${log_dir}
         echo "logDir=${log_dir}" >> $GITHUB_ENV
+    - name: package spring zk config
+      shell: bash
+      run: |
+        sed -i 's|<version>${{ env.projectSpringBootVersion }}</version>|<version>${{ matrix.springBootVersion }}</version>|g' sermant-integration-tests/spring-test/pom.xml
+        mvn package -Dspring.cloud.version=${{ matrix.springCloudVersion }} -Dspring.boot.version=${{ matrix.springBootVersion }} -DskipTests -P dynamic-config-zk --file sermant-integration-tests/spring-test/pom.xml
     - name: start service with disable origin config center
       shell: bash
       env:

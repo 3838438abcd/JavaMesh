@@ -3,6 +3,12 @@ description: "Auto test for nacos config center which achieved in sermant-dynami
 runs:
   using: "composite"
   steps:
+    - name: create log dir
+      shell: bash
+      run: |
+        log_dir=./logs/dynamic-config-nacos
+        mkdir -p ${log_dir}
+        echo "logDir=${log_dir}" >> $GITHUB_ENV
     - name: package spring nacos config
       shell: bash
       run: |
@@ -19,12 +25,10 @@ runs:
         service.meta.application: disable
         service.meta.environment: development
       run: |
-        log_dir=./logs/dynamic-config-nacos
-        mkdir -p ${log_dir}
         nohup java -javaagent:sermant-agent-${{ env.sermantVersion }}/agent/sermant-agent.jar=appName=default \
         -Dspring.cloud.bootstrap.enabled=true \
         -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar >> \
-        ${log_dir}/nacos-config-disable.log 2>&1 &
+        ${{ env.logDir }}/nacos-config-disable.log 2>&1 &
     - name: waiting for services start
       shell: bash
       run: |
@@ -45,11 +49,10 @@ runs:
         service.meta.environment: development
       run: |
         jps -l | grep -E "nacos-config" | awk '{print $1}' | xargs -n 1 kill -9
-        log_dir=./logs/dynamic-config-nacos
         nohup java -javaagent:sermant-agent-${{ env.sermantVersion }}/agent/sermant-agent.jar=appName=default \
         -Dspring.cloud.bootstrap.enabled=true \
         -jar sermant-integration-tests/spring-test/spring-nacos-config/target/nacos-config.jar >> \
-        ${log_dir}/nacos-dynamic-config-enable.log 2>&1 &
+        ${{ env.logDir }}/nacos-dynamic-config-enable.log 2>&1 &
     - name: wait for ready and test
       shell: bash
       run: |
@@ -58,6 +61,7 @@ runs:
     - name: reset
       shell: bash
       run: |
+        echo "logDir=" >> $GITHUB_ENV
         jps -l | grep -E "nacos-config" | awk '{print $1}' | xargs -n 1 kill -9
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
