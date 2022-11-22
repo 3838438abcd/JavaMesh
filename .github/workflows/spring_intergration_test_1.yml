@@ -9,16 +9,13 @@ on:
       - main
       - develop
 concurrency:
-  group: ${{ github.job }}-${{ github.ref }}
+  group: ${{ github.job }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
   download-midwares-and-cache:
     name: download midwares and cache
     runs-on: ubuntu-latest
     steps:
-      - name: echo
-        run: |
-          echo ${{ github.job }}
       - uses: actions/checkout@v2
       - name: cache local cse
         uses: actions/cache@v3
