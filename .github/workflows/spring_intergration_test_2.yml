@@ -16,6 +16,9 @@ jobs:
     name: download midwares and cache
     runs-on: ubuntu-latest
     steps:
+      - name: echo
+        run: |
+          echo ${{ github.job }}
       - uses: actions/checkout@v2
       - name: cache local cse
         uses: actions/cache@v3
