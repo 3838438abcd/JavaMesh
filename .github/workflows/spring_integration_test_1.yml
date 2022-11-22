@@ -124,7 +124,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: test path
         run: |
-          echo "========path======="
+          echo "========path========"
           echo ${{ github.event_path }}
       - name: common operations
         uses: ./.github/actions/common/spring
