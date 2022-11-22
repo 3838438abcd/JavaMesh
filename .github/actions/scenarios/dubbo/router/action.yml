@@ -3,12 +3,10 @@ description: "Auto test for dubbo route for plugin sermant-router"
 runs:
   using: "composite"
   steps:
-    - name: create log dir
-      shell: bash
-      run: |
-        log_dir=./logs/router
-        mkdir -p ${log_dir}
-        echo "logDir=${log_dir}" >> $GITHUB_ENV
+    - name: entry
+      uses: ./.github/actions/common/entrance
+      with:
+        log-dir: ./logs/dubbo-router
     - name: package dubbo 2.6.0 tests
       shell: bash
       if: matrix.dubbo-version == '2-6' && matrix.dubbo-versions == '0'
@@ -180,13 +178,11 @@ runs:
       env:
         TEST_TYPE: router
       run: mvn -Dcontroller.port=18019 test --file sermant-integration-tests/dubbo-test/pom.xml
-    - name: reset
-      shell: bash
-      run: |
-        echo "logDir=" >> $GITHUB_ENV
-        jps -l | grep -E "dubbo" | awk '{print $1}' | xargs -n 1 kill -9
-        echo "========check process========"
-        jps -l
+    - name: exit
+      if: always()
+      uses: ./.github/actions/common/exit
+      with:
+        processor-keyword: dubbo
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
       if: failure()

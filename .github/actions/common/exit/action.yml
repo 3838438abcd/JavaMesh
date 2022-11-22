@@ -18,6 +18,9 @@ runs:
         keyword=${{ inputs.processor-keyword }}
         if [ $keyword != '' ];then
           jps -l | grep -E "${{ inputs.processor-keyword }}" | awk '{print $1}' | xargs -n 1 kill -9
+          echo "========check process========"
+          jps -l
         fi
+
 
 
