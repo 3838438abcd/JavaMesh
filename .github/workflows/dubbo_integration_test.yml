@@ -7,6 +7,15 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - 'sermant-agentcore/**'
+      - 'sermant-plugins/sermant-dynamic-config/**'
+      - 'sermant-plugins/sermant-flowcontrol/**'
+      - 'sermant-plugins/sermant-loadbalancer/**'
+      - 'sermant-plugins/sermant-router/**'
+      - 'sermant-plugins/sermant-service-registry/**'
+      - 'sermant-plugins/sermant-springboot-registry/**'
+      - '.github/workflows/dubbo_integration*.yaml'
 concurrency:
   group: Dubbo Integration Test-${{ github.head_ref }}-${{ github.ref }}
   cancel-in-progress: true
