@@ -16,6 +16,7 @@ on:
       - 'sermant-plugins/sermant-service-registry/**'
       - 'sermant-plugins/sermant-springboot-registry/**'
       - '.github/workflows/dubbo_integration*.yaml'
+      - '.github/actions/**'
 concurrency:
   group: Dubbo Integration Test-${{ github.head_ref }}-${{ github.ref }}
   cancel-in-progress: true

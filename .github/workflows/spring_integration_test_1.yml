@@ -16,6 +16,7 @@ on:
       - 'sermant-plugins/sermant-service-registry/**'
       - 'sermant-plugins/sermant-springboot-registry/**'
       - '.github/workflows/spring_integration*.yaml'
+      - '.github/actions/**'
 concurrency:
   group: Spring Integration Test1-${{ github.head_ref }}-${{ github.ref }}
   cancel-in-progress: true
