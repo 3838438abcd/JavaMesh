@@ -7,6 +7,7 @@ on:
     branches:
       - master
       - develop
+      - ss
 concurrency:
   group: ${{ github.head_ref }}-${{ github.name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
