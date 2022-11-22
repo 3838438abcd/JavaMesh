@@ -124,8 +124,8 @@ runs:
           echo "enableSpringTagRouter=true" >> $GITHUB_ENV
         fi
         # all workflow will trigger while workflow changed
-#        if [ ${{ steps.changed-workflow-or-test.outputs.changed }} == 'true' ];then
-#          echo "enableDubboRouter=true" >> $GITHUB_ENV
-#          echo "enableDubboCommon=true" >> $GITHUB_ENV
-#        fi
+        if [ ${{ steps.changed-workflow-or-test.outputs.changed }} == 'true' ];then
+          echo "enableDubboRouter=true" >> $GITHUB_ENV
+          echo "enableDubboCommon=true" >> $GITHUB_ENV
+        fi
 
