@@ -127,5 +127,9 @@ runs:
         if [ ${{ steps.changed-workflow-or-test.outputs.changed }} == 'true' ];then
           echo "enableDubboRouter=true" >> $GITHUB_ENV
           echo "enableDubboCommon=true" >> $GITHUB_ENV
+          echo "enableSpringRouter=true" >> $GITHUB_ENV
+          echo "enableSpringTagRouter=true" >> $GITHUB_ENV
+          echo "enableDynamicConfig=true" >> $GITHUB_ENV
+          echo "enableGraceful=true" >> $GITHUB_ENV
         fi
 
