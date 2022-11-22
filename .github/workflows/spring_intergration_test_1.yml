@@ -1,4 +1,4 @@
-name: Spring Intergration Test
+name: Spring Intergration Test1
 env:
   projectSpringBootVersion: 2.2.0.RELEASE
   sermantVersion: 1.0.0
@@ -9,7 +9,7 @@ on:
       - main
       - develop
 concurrency:
-  group: spring-intergration-1-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.job }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   download-midwares-and-cache:
