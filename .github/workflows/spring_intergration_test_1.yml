@@ -9,7 +9,7 @@ on:
       - main
       - develop
 concurrency:
-  group: ${{ github.job }}-${{ github.event.pull_request.number || github.ref }}
+  group: Spring Intergration Test1-${{ github.head_ref }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   download-midwares-and-cache:

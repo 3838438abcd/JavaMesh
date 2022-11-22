@@ -7,9 +7,8 @@ on:
     branches:
       - master
       - develop
-      - ss
 concurrency:
-  group: ${{ github.head_ref }}-${{ github.name }}-${{ github.event.pull_request.number || github.ref }}
+  group: Dubbo Integration Test-${{ github.head_ref }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   download-midwares-and-cache:
