@@ -193,7 +193,7 @@ runs:
         processor-keyword: feign|rest|zuul|gateway
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
-      if: failure() || cancelled()
+      if: ${{ failure() || cancelled() }}
       with:
         name: (${{ github.job }})-tag-router-(${{ matrix.springBootVersion }}-${{ matrix.springCloudVersion }})-logs
         path: |

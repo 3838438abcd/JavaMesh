@@ -95,9 +95,13 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - name: dubbo test common
         uses: ./.github/actions/common/dubbo
-      - name: dubbo router test for ${{ matrix.dubbo-version }}
+      - name: (dubbo router) test for ${{ matrix.dubbo-version }}
+        if: env.enableDubboRouter == 'true'
         uses: ./.github/actions/scenarios/dubbo/router
-      - name: dubbo common test for ${{ matrix.dubbo-version }}
+      - name: (dubbo common) test for ${{ matrix.dubbo-version }}
+        if: env.enableDubboCommon == 'true'
         uses: ./.github/actions/scenarios/dubbo/dubbo-common

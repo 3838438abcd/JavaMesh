@@ -119,9 +119,13 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - name: common operations
         uses: ./.github/actions/common/spring
       - name: spring router test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+        if: env.enableSpringRouter == 'true'
         uses: ./.github/actions/scenarios/spring/router/spring-router
       - name: spring tag router test for springboot=${{ matrix.springBootVersion }} springCloudVersion=${{ matrix.springCloudVersion }}
+        if: env.enableSpringTagRouter == 'true'
         uses: ./.github/actions/scenarios/spring/router/spring-tag-router

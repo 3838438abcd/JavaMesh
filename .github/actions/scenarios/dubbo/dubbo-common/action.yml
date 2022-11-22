@@ -108,7 +108,7 @@ runs:
         processor-keyword: dubbo
     - name: if failure then upload error log
       uses: actions/upload-artifact@v3
-      if: failure()
+      if: ${{ failure() || cancelled() }}
       with:
         name: (test-for-dubbo)-(${{ matrix.dubbo-version }}-${{ matrix.dubbo-versions }})-logs
         path: |
