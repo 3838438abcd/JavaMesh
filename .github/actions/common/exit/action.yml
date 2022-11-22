@@ -15,9 +15,9 @@ runs:
         echo "tailVersion=" >> $GITHUB_ENV
         echo "healthApi=" >> $GITHUB_ENV
         echo "logDir=" >> $GITHUB_ENV
-        keyword=${{ inputs.processor-keyword }}
+        keyword='${{ inputs.processor-keyword }}'
         if [ $keyword != '' ];then
-          jps -l | grep -E "${{ inputs.processor-keyword }}" | awk '{print $1}' | xargs -n 1 kill -9
+          jps -l | grep -E "${keyword}" | awk '{print $1}' | xargs -n 1 kill -9
           echo "========check process========"
           jps -l
         fi
