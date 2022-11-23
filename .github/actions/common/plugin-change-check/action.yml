@@ -6,7 +6,7 @@ runs:
     - uses: marceloprado/has-changed-path@v1
       id: changed-sermant-agentcore
       with:
-        paths: sermant-plugins/sermant-agentcore
+        paths: sermant-agentcore
     - name: env sermant-agentcore
       shell: bash
       run: |
