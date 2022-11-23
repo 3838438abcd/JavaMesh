@@ -139,8 +139,12 @@ public class KieListenerWrapper {
                         // 已通知的listener不再通知, 避免针对同一个group的多个不同key进行多次重复通知
                         return;
                     }
+                    if (event.getEventType() == DynamicConfigEventType.INIT && versionListener.isInitializer) {
+                        return;
+                    }
                     versionListener.listener.process(event);
                     versionListener.version = currentVersion;
+                    versionListener.isInitializer = true;
                 } catch (Exception ex) {
                     LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
                             "Process config data failed, key: [%s], group: [%s]",
@@ -244,6 +248,11 @@ public class KieListenerWrapper {
          * 已通知的版本号, 基于KIE数据版本号，即revision
          */
         long version;
+
+        /**
+         * 是否被INIT事件通知, 该事件仅通知一次
+         */
+        boolean isInitializer = false;
 
         VersionListener(long version, DynamicConfigListener listener) {
             this.listener = listener;
