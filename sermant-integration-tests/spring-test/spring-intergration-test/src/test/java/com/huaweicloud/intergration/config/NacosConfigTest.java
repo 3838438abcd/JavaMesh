@@ -154,9 +154,9 @@ public class NacosConfigTest {
             return;
         }
         checkNacos();
+        publishKieConfig();
         // 发布动态关闭开关
         kieClient.publishConfig("closeOriginConfigCenter", "sermant.origin.config.needClose: true");
-        publishKieConfig();
         // 睡眠等待刷新， 由于LocalCse无实时通知能力，因此需要等待30S（长连接时间）,保证配置已刷新
         check(40 * 1000, 2000, this::checkAgentConfig);
     }
