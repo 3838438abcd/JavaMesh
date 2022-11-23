@@ -18,10 +18,12 @@
 package com.huawei.dynamic.config.source;
 
 import com.huawei.dynamic.config.ConfigHolder;
+import com.huawei.dynamic.config.DynamicConfigListener;
 import com.huawei.dynamic.config.closer.ConfigCenterCloser;
 import com.huawei.dynamic.config.entity.DynamicConstants;
 
 import com.huaweicloud.sermant.core.common.LoggerFactory;
+import com.huaweicloud.sermant.core.service.dynamicconfig.common.DynamicConfigEvent;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -69,21 +71,29 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
     @PostConstruct
     public void addListener() {
         loadClosers();
-        ConfigHolder.INSTANCE.addListener(event -> {
-            if (!check()) {
-                return;
-            }
-            disableConfigCenter();
-            for (ConfigCenterCloser closer : configCenterClosers) {
-                if (!closer.isSupport(beanFactory)) {
-                    continue;
+        ConfigHolder.INSTANCE.addListener(new DynamicConfigListener() {
+            @Override
+            public void configChange(DynamicConfigEvent event) {
+                if (!check()) {
+                    return;
                 }
-                if (closer.close(beanFactory, environment)) {
-                    LOGGER.warning(String.format(Locale.ENGLISH, "Origin Config Center [%s] has been unSubscribed!",
-                            closer.type()));
+                disableConfigCenter();
+                for (ConfigCenterCloser closer : configCenterClosers) {
+                    if (!closer.isSupport(beanFactory)) {
+                        continue;
+                    }
+                    if (closer.close(beanFactory, environment)) {
+                        LOGGER.warning(String.format(Locale.ENGLISH, "Origin Config Center [%s] has been unSubscribed!",
+                                closer.type()));
+                    }
                 }
+                tryAddDynamicSourceToFirst(environment);
             }
-            tryAddDynamicSourceToFirst(environment);
+
+            @Override
+            public int getOrder() {
+                return 100;
+            }
         });
     }
 

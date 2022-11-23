@@ -18,6 +18,7 @@
 package com.huawei.dynamic.config.source;
 
 import com.huawei.dynamic.config.ConfigHolder;
+import com.huawei.dynamic.config.DynamicConfigListener;
 
 import com.huaweicloud.sermant.core.plugin.subscribe.processor.OrderConfigEvent;
 import com.huaweicloud.sermant.core.service.dynamicconfig.common.DynamicConfigEvent;
@@ -45,7 +46,17 @@ public class SpringEventPublisher implements ApplicationEventPublisherAware {
     }
 
     private void initDynamicConfig() {
-        ConfigHolder.INSTANCE.addListener(this::publishRefreshEvent);
+        ConfigHolder.INSTANCE.addListener(new DynamicConfigListener() {
+            @Override
+            public void configChange(DynamicConfigEvent event) {
+                publishRefreshEvent(event);
+            }
+
+            @Override
+            public int getOrder() {
+                return 1000;
+            }
+        });
     }
 
     /**

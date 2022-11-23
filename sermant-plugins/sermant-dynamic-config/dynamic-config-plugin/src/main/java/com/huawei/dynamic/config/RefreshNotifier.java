@@ -42,6 +42,7 @@ public class RefreshNotifier {
     public void addListener(DynamicConfigListener listener) {
         dynamicConfigListeners.add(listener);
         dynamicConfigListeners.sort(Comparator.comparingInt(DynamicConfigListener::getOrder));
+        System.out.println(dynamicConfigListeners);
     }
 
     /**
