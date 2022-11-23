@@ -19,6 +19,7 @@ package com.huawei.dynamic.config.source;
 
 import com.huawei.dynamic.config.ConfigHolder;
 
+import com.huaweicloud.sermant.core.plugin.subscribe.processor.OrderConfigEvent;
 import com.huaweicloud.sermant.core.service.dynamicconfig.common.DynamicConfigEvent;
 import com.huaweicloud.sermant.core.service.dynamicconfig.common.DynamicConfigEventType;
 
@@ -54,6 +55,14 @@ public class SpringEventPublisher implements ApplicationEventPublisherAware {
         if (event.getEventType() == DynamicConfigEventType.INIT) {
             return;
         }
+        System.out.println("========发布事件=====");
+        System.out.println(event.getContent());
+        if (event instanceof OrderConfigEvent) {
+            System.out.println(((OrderConfigEvent) event).getAllData());
+        }
+        System.out.println("========configHolder=====");
+        System.out.println(ConfigHolder.INSTANCE.getConfigNames());
+        System.out.println(ConfigHolder.INSTANCE.getConfigSources());
         applicationEventPublisher.publishEvent(new RefreshEvent(this, null, "sermant refresh"));
     }
 }
