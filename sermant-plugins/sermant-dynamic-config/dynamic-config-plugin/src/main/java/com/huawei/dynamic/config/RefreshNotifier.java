@@ -62,6 +62,7 @@ public class RefreshNotifier {
         for (DynamicConfigListener listener : dynamicConfigListeners) {
             System.out.println("start notify listener:" + listener + "  " + LocalDateTime.now());
             listener.configChange(event);
+            System.out.println("end notify listener:" + listener + "  " + LocalDateTime.now());
         }
     }
 }
