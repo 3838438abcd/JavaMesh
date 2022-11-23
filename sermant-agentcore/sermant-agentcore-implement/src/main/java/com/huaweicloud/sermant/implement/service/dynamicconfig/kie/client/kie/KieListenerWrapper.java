@@ -139,9 +139,10 @@ public class KieListenerWrapper {
                         // 已通知的listener不再通知, 避免针对同一个group的多个不同key进行多次重复通知
                         continue;
                     }
-//                    if (event.getEventType() == DynamicConfigEventType.INIT && versionListener.isInitializer) {
-//                        continue;
-//                    }
+                    if (event.getEventType() == DynamicConfigEventType.INIT && versionListener.isInitializer) {
+                        System.out.println("has notify=======:" + versionListener.listener);
+                        continue;
+                    }
                     versionListener.listener.process(event);
                     versionListener.version = currentVersion;
                     versionListener.isInitializer = true;
