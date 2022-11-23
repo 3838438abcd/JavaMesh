@@ -132,25 +132,28 @@ public class KieListenerWrapper {
     }
 
     private void processAllListeners(DynamicConfigEvent event, VersionListenerWrapper versionListenerWrapper) {
-        if (versionListenerWrapper.listeners != null) {
-            for (VersionListener versionListener : versionListenerWrapper.listeners) {
-                try {
-                    if (versionListener.version > currentVersion) {
-                        // 已通知的listener不再通知, 避免针对同一个group的多个不同key进行多次重复通知
-                        continue;
-                    }
-                    if (event.getEventType() == DynamicConfigEventType.INIT && versionListener.isInitializer) {
-                        System.out.println("has notify=======:" + versionListener.listener);
-                        continue;
-                    }
-                    versionListener.listener.process(event);
-                    versionListener.version = currentVersion;
-                    versionListener.isInitializer = true;
-                } catch (Exception ex) {
-                    LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
-                            "Process config data failed, key: [%s], group: [%s]",
-                            event.getKey(), this.group), ex);
+        if (versionListenerWrapper.listeners == null) {
+            return;
+        }
+        for (VersionListener versionListener : versionListenerWrapper.listeners) {
+            try {
+                if (versionListener.version > currentVersion) {
+                    // 已通知的listener不再通知, 避免针对同一个group的多个不同key进行多次重复通知
+                    continue;
                 }
+                if (event.getEventType() == DynamicConfigEventType.INIT) {
+                    if (versionListener.isInitializer) {
+                        continue;
+                    } else {
+                        versionListener.isInitializer = true;
+                    }
+                }
+                versionListener.listener.process(event);
+                versionListener.version = currentVersion;
+            } catch (Exception ex) {
+                LOGGER.log(Level.WARNING, String.format(Locale.ENGLISH,
+                        "Process config data failed, key: [%s], group: [%s]",
+                        event.getKey(), this.group), ex);
             }
         }
     }
