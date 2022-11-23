@@ -28,6 +28,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 /**
  * spring事件发布器
  *
@@ -55,7 +57,7 @@ public class SpringEventPublisher implements ApplicationEventPublisherAware {
         if (event.getEventType() == DynamicConfigEventType.INIT) {
             return;
         }
-        System.out.println("========发布事件=====");
+        System.out.println("========发布事件=====" + LocalDateTime.now());
         System.out.println(event.getContent());
         if (event instanceof OrderConfigEvent) {
             System.out.println(((OrderConfigEvent) event).getAllData());

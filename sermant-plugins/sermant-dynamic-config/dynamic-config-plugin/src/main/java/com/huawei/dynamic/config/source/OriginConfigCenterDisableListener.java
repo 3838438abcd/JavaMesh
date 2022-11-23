@@ -33,6 +33,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +74,7 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
             if (!check()) {
                 return;
             }
+            System.out.println("====start dis====" + LocalDateTime.now());
             disableConfigCenter();
             for (ConfigCenterCloser closer : configCenterClosers) {
                 if (!closer.isSupport(beanFactory)) {
@@ -81,6 +83,7 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
                 if (closer.close(beanFactory, environment)) {
                     LOGGER.warning(String.format(Locale.ENGLISH, "Origin Config Center [%s] has been unSubscribed!",
                             closer.type()));
+                    System.out.println("=====end dis=====" + LocalDateTime.now());
                 }
             }
             tryAddDynamicSourceToFirst(environment);
