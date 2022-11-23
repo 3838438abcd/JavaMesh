@@ -50,7 +50,9 @@ public class ConfigController {
         if (environment instanceof ConfigurableEnvironment) {
             System.out.println(((ConfigurableEnvironment) environment).getPropertySources());
         }
-        return configValue.getTest();
+        final String result = configValue.getTest();
+        System.out.println(result);
+        return result;
     }
 
     @RequestMapping("property")
@@ -59,7 +61,8 @@ public class ConfigController {
         if (environment instanceof ConfigurableEnvironment) {
             System.out.println(((ConfigurableEnvironment) environment).getPropertySources());
         }
-        return configProperty.getParam1() + "," + configProperty.getParam2();
+        final String result = configProperty.getParam1() + "," + configProperty.getParam2();
+        return result;
     }
 
     @RequestMapping("check")
