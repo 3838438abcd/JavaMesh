@@ -137,10 +137,10 @@ public class KieListenerWrapper {
                 try {
                     if (versionListener.version > currentVersion) {
                         // 已通知的listener不再通知, 避免针对同一个group的多个不同key进行多次重复通知
-                        return;
+                        continue;
                     }
                     if (event.getEventType() == DynamicConfigEventType.INIT && versionListener.isInitializer) {
-                        return;
+                        continue;
                     }
                     versionListener.listener.process(event);
                     versionListener.version = currentVersion;
