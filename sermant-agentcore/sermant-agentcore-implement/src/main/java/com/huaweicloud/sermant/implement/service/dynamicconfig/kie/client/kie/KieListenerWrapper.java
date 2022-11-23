@@ -143,6 +143,7 @@ public class KieListenerWrapper {
                 }
                 if (event.getEventType() == DynamicConfigEventType.INIT) {
                     if (versionListener.isInitializer) {
+                        System.out.println("listener has inited:" + versionListener.listener);
                         continue;
                     } else {
                         versionListener.isInitializer = true;
