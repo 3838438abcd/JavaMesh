@@ -78,7 +78,7 @@ public enum ConfigHolder {
      * @param event 事件
      */
     public void resolve(DynamicConfigEvent event) {
-        executorService.submit(() -> {
+        /*executorService.submit(() -> {
             boolean isNeedRefresh = false;
             for (ConfigSource configSource : configSources) {
                 isNeedRefresh |= doAccept(configSource, event);
@@ -86,7 +86,14 @@ public enum ConfigHolder {
             if (isNeedRefresh) {
                 notifier.refresh(event);
             }
-        });
+        });*/
+        boolean isNeedRefresh = false;
+        for (ConfigSource configSource : configSources) {
+            isNeedRefresh |= doAccept(configSource, event);
+        }
+        if (isNeedRefresh) {
+            notifier.refresh(event);
+        }
     }
 
     private boolean doAccept(ConfigSource configSource, DynamicConfigEvent event) {

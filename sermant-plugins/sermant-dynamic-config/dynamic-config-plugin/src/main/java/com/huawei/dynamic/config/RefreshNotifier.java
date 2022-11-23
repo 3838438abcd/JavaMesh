@@ -40,8 +40,15 @@ public class RefreshNotifier {
      * @param listener 监听器
      */
     public void addListener(DynamicConfigListener listener) {
-        dynamicConfigListeners.add(listener);
-        dynamicConfigListeners.sort(Comparator.comparingInt(DynamicConfigListener::getOrder));
+        if (!dynamicConfigListeners.isEmpty()) {
+            if (listener.getClass().getName().contains("SpringEventPublisher")) {
+                dynamicConfigListeners.add(listener);
+            } else {
+                dynamicConfigListeners.add(0, listener);
+            }
+        } else {
+            dynamicConfigListeners.add(listener);
+        }
         System.out.println(dynamicConfigListeners);
     }
 
