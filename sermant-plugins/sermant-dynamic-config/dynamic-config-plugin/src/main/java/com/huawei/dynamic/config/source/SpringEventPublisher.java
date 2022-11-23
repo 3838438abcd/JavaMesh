@@ -52,12 +52,14 @@ public class SpringEventPublisher implements ApplicationEventPublisherAware {
 
     /**
      * 发布spring刷新事件{@link org.springframework.cloud.endpoint.event.RefreshEvent}
+     *
+     * @param event 发布刷新事件
      */
-    private void publishRefreshEvent(DynamicConfigEvent event) {
+    public void publishRefreshEvent(DynamicConfigEvent event) {
         System.out.println("publisher event:" + event);
-//        if (event.getEventType() == DynamicConfigEventType.INIT) {
-//            return;
-//        }
+        if (event.getEventType() == DynamicConfigEventType.INIT) {
+            return;
+        }
         System.out.println("========发布事件=====" + LocalDateTime.now());
         System.out.println(event.getContent());
         if (event instanceof OrderConfigEvent) {
