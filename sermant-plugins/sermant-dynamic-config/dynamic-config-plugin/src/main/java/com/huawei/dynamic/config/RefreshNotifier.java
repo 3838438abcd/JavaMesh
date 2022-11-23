@@ -19,6 +19,7 @@ package com.huawei.dynamic.config;
 
 import com.huaweicloud.sermant.core.service.dynamicconfig.common.DynamicConfigEvent;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -59,6 +60,7 @@ public class RefreshNotifier {
      */
     public void refresh(DynamicConfigEvent event) {
         for (DynamicConfigListener listener : dynamicConfigListeners) {
+            System.out.println("start notify listener:" + listener + "  " + LocalDateTime.now());
             listener.configChange(event);
         }
     }
