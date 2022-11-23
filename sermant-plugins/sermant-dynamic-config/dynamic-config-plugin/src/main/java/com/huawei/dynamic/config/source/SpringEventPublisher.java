@@ -55,9 +55,9 @@ public class SpringEventPublisher implements ApplicationEventPublisherAware {
      */
     private void publishRefreshEvent(DynamicConfigEvent event) {
         System.out.println("publisher event:" + event);
-        if (event.getEventType() == DynamicConfigEventType.INIT) {
-            return;
-        }
+//        if (event.getEventType() == DynamicConfigEventType.INIT) {
+//            return;
+//        }
         System.out.println("========发布事件=====" + LocalDateTime.now());
         System.out.println(event.getContent());
         if (event instanceof OrderConfigEvent) {
