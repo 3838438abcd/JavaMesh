@@ -21,6 +21,7 @@ import com.huaweicloud.spring.common.config.entity.ConfigProperty;
 import com.huaweicloud.spring.common.config.entity.ConfigValue;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,11 +46,19 @@ public class ConfigController {
 
     @RequestMapping("value")
     public String getValue() {
+        System.out.println("==========value sources=======");
+        if (environment instanceof ConfigurableEnvironment) {
+            System.out.println(((ConfigurableEnvironment) environment).getPropertySources());
+        }
         return configValue.getTest();
     }
 
     @RequestMapping("property")
     public String getProperty() {
+        System.out.println("==========property sources=======");
+        if (environment instanceof ConfigurableEnvironment) {
+            System.out.println(((ConfigurableEnvironment) environment).getPropertySources());
+        }
         return configProperty.getParam1() + "," + configProperty.getParam2();
     }
 
