@@ -83,7 +83,7 @@ public class KieListenerWrapper {
         currentVersion = eventDataHolder.getVersion();
         if (!eventDataHolder.getAdded().isEmpty()) {
             // 新增事件
-            notify(eventDataHolder.getAdded(), isFirst ? DynamicConfigEventType.INIT : DynamicConfigEventType.CREATE);
+            notifyAdded(eventDataHolder.getAdded(), eventDataHolder.getLatestData(), isFirst);
         }
         if (!eventDataHolder.getDeleted().isEmpty()) {
             // 删除事件
@@ -100,7 +100,13 @@ public class KieListenerWrapper {
             notify(addedData, DynamicConfigEventType.CREATE);
             return;
         }
+        for (Map.Entry<String, String> entry : addedData.entrySet()) {
+            // 通知单个key监听器
+            notifyEvent(entry.getKey(), entry.getValue(), DynamicConfigEventType.INIT, false, latestData);
 
+            // 通知该Group的监听器做更新
+            notifyEvent(entry.getKey(), entry.getValue(), DynamicConfigEventType.INIT, true, latestData);
+        }
     }
 
     private void notify(Map<String, String> configData, DynamicConfigEventType dynamicConfigEventType) {
@@ -111,6 +117,20 @@ public class KieListenerWrapper {
             // 通知该Group的监听器做更新
             notifyEvent(entry.getKey(), entry.getValue(), dynamicConfigEventType, true);
         }
+    }
+
+    private void notifyEvent(String key, String value, DynamicConfigEventType eventType, boolean isGroup,
+            Map<String, String> latestData) {
+        final VersionListenerWrapper versionListenerWrapper = keyListenerMap
+                .get(isGroup ? KieConstants.DEFAULT_GROUP_KEY : key);
+        if (versionListenerWrapper == null) {
+            return;
+        }
+        notifyEvent(key, value, eventType, versionListenerWrapper, latestData);
+    }
+
+    private void notifyEvent(String key, String value, DynamicConfigEventType eventType, boolean isGroup) {
+        notifyEvent(key, value, eventType, isGroup, null);
     }
 
     private void notifyEvent(String key, String value, DynamicConfigEventType eventType, VersionListenerWrapper wrapper,
@@ -134,15 +154,6 @@ public class KieListenerWrapper {
                 return;
         }
         processAllListeners(event, wrapper, latestData);
-    }
-
-    private void notifyEvent(String key, String value, DynamicConfigEventType eventType, boolean isGroup) {
-        final VersionListenerWrapper versionListenerWrapper = keyListenerMap
-                .get(isGroup ? KieConstants.DEFAULT_GROUP_KEY : key);
-        if (versionListenerWrapper == null) {
-            return;
-        }
-        notifyEvent(key, value, eventType, versionListenerWrapper, null);
     }
 
     private void processAllListeners(DynamicConfigEvent event, VersionListenerWrapper versionListenerWrapper,
