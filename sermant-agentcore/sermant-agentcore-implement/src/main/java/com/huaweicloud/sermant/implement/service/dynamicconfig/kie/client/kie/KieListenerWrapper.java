@@ -87,35 +87,30 @@ public class KieListenerWrapper {
         }
         if (!eventDataHolder.getDeleted().isEmpty()) {
             // 删除事件
-            notify(eventDataHolder.getDeleted(), DynamicConfigEventType.DELETE);
+            notify(eventDataHolder.getDeleted(), DynamicConfigEventType.DELETE, null);
         }
         if (!eventDataHolder.getModified().isEmpty()) {
             // 修改事件
-            notify(eventDataHolder.getModified(), DynamicConfigEventType.MODIFY);
+            notify(eventDataHolder.getModified(), DynamicConfigEventType.MODIFY, null);
         }
     }
 
     private void notifyAdded(Map<String, String> addedData, Map<String, String> latestData, boolean isFirst) {
         if (!isFirst) {
-            notify(addedData, DynamicConfigEventType.CREATE);
+            notify(addedData, DynamicConfigEventType.CREATE, null);
             return;
         }
-        for (Map.Entry<String, String> entry : addedData.entrySet()) {
-            // 通知单个key监听器
-            notifyEvent(entry.getKey(), entry.getValue(), DynamicConfigEventType.INIT, false, latestData);
-
-            // 通知该Group的监听器做更新
-            notifyEvent(entry.getKey(), entry.getValue(), DynamicConfigEventType.INIT, true, latestData);
-        }
+        notify(addedData, DynamicConfigEventType.CREATE, latestData);
     }
 
-    private void notify(Map<String, String> configData, DynamicConfigEventType dynamicConfigEventType) {
+    private void notify(Map<String, String> configData, DynamicConfigEventType dynamicConfigEventType,
+            Map<String, String> latestData) {
         for (Map.Entry<String, String> entry : configData.entrySet()) {
             // 通知单个key监听器
-            notifyEvent(entry.getKey(), entry.getValue(), dynamicConfigEventType, false);
+            notifyEvent(entry.getKey(), entry.getValue(), dynamicConfigEventType, false, latestData);
 
             // 通知该Group的监听器做更新
-            notifyEvent(entry.getKey(), entry.getValue(), dynamicConfigEventType, true);
+            notifyEvent(entry.getKey(), entry.getValue(), dynamicConfigEventType, true, latestData);
         }
     }
 
@@ -127,10 +122,6 @@ public class KieListenerWrapper {
             return;
         }
         notifyEvent(key, value, eventType, versionListenerWrapper, latestData);
-    }
-
-    private void notifyEvent(String key, String value, DynamicConfigEventType eventType, boolean isGroup) {
-        notifyEvent(key, value, eventType, isGroup, null);
     }
 
     private void notifyEvent(String key, String value, DynamicConfigEventType eventType, VersionListenerWrapper wrapper,
@@ -190,10 +181,13 @@ public class KieListenerWrapper {
                         .process(DynamicConfigEvent.initEvent(entry.getKey(), event.getGroup(), entry.getValue()));
             }
             versionListener.isInitializer = true;
+            versionListener.initVersion = currentVersion;
         } else {
-            // 其他已经通知过或者不需要通知的采用add事件
-            versionListener.listener.process(DynamicConfigEvent.createEvent(event.getKey(), event.getGroup(),
-                    event.getContent()));
+            if (versionListener.initVersion != 0 && versionListener.initVersion != currentVersion) {
+                // 其他已经通知过或者不需要通知的采用add事件, 通知前判断其初始化通知的版本是否为当前版本, 若为当前版本则表示已经全量通知过, 无需再次通知
+                versionListener.listener.process(DynamicConfigEvent.createEvent(event.getKey(), event.getGroup(),
+                        event.getContent()));
+            }
         }
     }
 
@@ -298,7 +292,15 @@ public class KieListenerWrapper {
          */
         boolean isInitializer = false;
 
+        /**
+         * 是否需要首次通知
+         */
         boolean isNeedInit;
+
+        /**
+         * 被初始化的版本
+         */
+        long initVersion;
 
         VersionListener(long version, DynamicConfigListener listener, boolean isNeedInit) {
             this.listener = listener;
