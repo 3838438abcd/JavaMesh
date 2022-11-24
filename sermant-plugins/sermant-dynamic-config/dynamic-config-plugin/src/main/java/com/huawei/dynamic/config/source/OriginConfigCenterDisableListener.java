@@ -93,8 +93,8 @@ public class OriginConfigCenterDisableListener implements BeanFactoryAware {
             tryAddDynamicSourceToFirst(environment);
 
             // 发布事件补偿
-            springEventPublisher.publishRefreshEvent(DynamicConfigEvent.modifyEvent(event.getKey(), event.getGroup(),
-                    event.getContent()));
+//            springEventPublisher.publishRefreshEvent(DynamicConfigEvent.modifyEvent(event.getKey(), event.getGroup(),
+//                    event.getContent()));
         });
     }
 
