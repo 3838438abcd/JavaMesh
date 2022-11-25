@@ -50,6 +50,7 @@ public class ChainContext {
             contextMap = new ConcurrentHashMap<>(MAX_SIZE);
             THREAD_LOCAL_CONTEXT_MAP.set(contextMap);
         }
+        System.out.println("==========create name=======::" + name);
         if (contextMap.size() >= MAX_SIZE) {
             throw new IllegalArgumentException("Can not create context in current thread!");
         }
