@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - develop
+      - merge-*
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}-${{ github.event.pull_request.number }}-${{ github.ref }}
   cancel-in-progress: true
