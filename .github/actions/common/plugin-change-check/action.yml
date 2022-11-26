@@ -82,7 +82,9 @@ runs:
     - name: check push event
       shell: bash
       run: |
-        echo ${{ github.workflow }}-${{ github.head_ref || env.number || env.number2 }}-${{ github.ref }}-aa
+        echo "head_ref:" ${{ github.head_ref  }}
+        echo "ref:" ${{ github.ref  }}
+        echo ${{ github.workflow }}-rr-${{ github.head_ref || env.number || env.number2 }}-${{ github.ref }}-aa
         eventName=${{ github.event_name }}
         if [ $eventName == 'push' ];then
           echo "triggerPushEvent=true" >> $GITHUB_ENV
