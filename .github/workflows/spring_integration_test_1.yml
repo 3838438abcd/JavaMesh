@@ -3,6 +3,7 @@ env:
   projectSpringBootVersion: 2.2.0.RELEASE
   sermantVersion: 1.0.0
   number: 988
+  number2: 9999
 on:
   push:
   pull_request:
