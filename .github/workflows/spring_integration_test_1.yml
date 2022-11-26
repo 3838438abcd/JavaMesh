@@ -2,6 +2,7 @@ name: Spring Integration Test1
 env:
   projectSpringBootVersion: 2.2.0.RELEASE
   sermantVersion: 1.0.0
+  push: ${{ github.event.push.created }}
 on:
   push:
   pull_request:

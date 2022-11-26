@@ -88,6 +88,7 @@ runs:
         echo ${{ github.event.pull_request }}
         echo ${{ github.event.pull_request.number }}
         echo ${{ github.workflow }}-${{ github.head_ref }}-${{ github.ref }}
+        echo ${{ env.push }}
 #        echo "triggerPushEvent=true" >> $GITHUB_ENV
     - name: statistic scenarios change env
       shell: bash
