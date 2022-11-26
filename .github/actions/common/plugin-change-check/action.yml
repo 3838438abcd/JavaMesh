@@ -79,7 +79,7 @@ runs:
       id: changed-workflow-or-test
       with:
         paths: ./.github/actions ./.github/workflows sermant-integration-tests
-    - uses: check push event
+    - name: check push event
       shell: bash
       if: ${{ github.event.push.created == 'true' }}
       run: |
