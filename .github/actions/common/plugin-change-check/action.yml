@@ -87,6 +87,7 @@ runs:
           echo "triggerPushEvent=true" >> $GITHUB_ENV
         else
           echo "triggerPushEvent=false" >> $GITHUB_ENV
+        fi
     - name: statistic scenarios change env
       shell: bash
       run: |
