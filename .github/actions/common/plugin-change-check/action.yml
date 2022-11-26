@@ -82,16 +82,11 @@ runs:
     - name: check push event
       shell: bash
       run: |
-        echo "============"
-        echo ${{ github.event.push.created }}
-        echo ${{ github.event.push }}
-        echo ${{ github.event.pull_request }}
-        echo ${{ github.event.pull_request.number }}
-        echo ${{ github.workflow }}-${{ github.head_ref }}-${{ github.ref }}
-        echo ${{ env.push }}
-        echo ${{ github.event }}
-        echo ${{ github.event_name }}
-#        echo "triggerPushEvent=true" >> $GITHUB_ENV
+        eventName=${{ github.event_name }}
+        if [ $eventName == 'push' ];then
+          echo "triggerPushEvent=true" >> $GITHUB_ENV
+        else
+          echo "triggerPushEvent=false" >> $GITHUB_ENV
     - name: statistic scenarios change env
       shell: bash
       run: |
