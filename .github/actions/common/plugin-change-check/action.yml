@@ -81,7 +81,7 @@ runs:
         paths: ./.github/actions ./.github/workflows sermant-integration-tests
     - uses: check push event
       shell: bash
-      if: ${{ github.event.push.created }}
+      if: ${{ github.event.push.created == 'true' }}
       run: |
         echo "triggerPushEvent=true" >> $GITHUB_ENV
     - name: statistic scenarios change env
