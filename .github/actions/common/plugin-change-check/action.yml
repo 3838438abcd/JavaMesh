@@ -85,6 +85,8 @@ runs:
         echo "============"
         echo ${{ github.event.push.created }}
         echo ${{ github.event.push }}
+        echo ${{ github.event.pull_request }}
+        echo ${{ github.event.pull_request.number }}
 #        echo "triggerPushEvent=true" >> $GITHUB_ENV
     - name: statistic scenarios change env
       shell: bash
